@@ -17,17 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
+import static top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity.SPIRIT_LANTERN_ENTITY;
+
 public class LanternInStorm implements ModInitializer {
 	public static final String MOD_ID = "lantern-in-storm";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final NbtDataStorage LSData = new NbtDataStorage("LS_Data");
-
-	// 注册灵魂灯笼实体
-	public static final EntityType<SpiritLanternEntity> SPIRIT_LANTERN_ENTITY = Registry.register(
-			Registries.ENTITY_TYPE,
-			Identifier.of("lanterninstorm", "spirit_lantern"),
-			FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, (type, world) -> new SpiritLanternEntity(SpiritLanternEntity, world)).dimensions(EntityDimensions.fixed(1.0f, 1.0f)).build()
-	);
 
 	@Override
 	public void onInitialize() {
@@ -36,6 +31,9 @@ public class LanternInStorm implements ModInitializer {
 		PlayerDataApi.register(LSData);
 		// 使用CommandRegistrationCallback.EVENT注册命令
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment)->LanternInStormCommands.registerCommands(dispatcher)); // 调用静态方法注册命令
+
+
+
 		// 注册实体
 		FabricDefaultAttributeRegistry.register(SPIRIT_LANTERN_ENTITY, SpiritLanternEntity.());
 	}
