@@ -88,11 +88,11 @@ public class LSPlayer {
         }
     }
 
-    public int getCELevel() {
+    public int getLSLevel() {
         return this.level;
     }
 
-    public  boolean setCELevel(int level) {
+    public  boolean setLSLevel(int level) {
         if(level<0||level>4) return false;
         this.level = level;
         NbtCompound data = new NbtCompound();
@@ -103,7 +103,7 @@ public class LSPlayer {
 
     public void levelUP() {
         if (this.level < LSLevel.LEVELS.size() - 1) {
-            this.setCELevel(this.level+1);
+            this.setLSLevel(this.level+1);
         }
     }
 
