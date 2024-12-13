@@ -8,6 +8,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import top.bearcabbage.lanterninstorm.interfaces.CEPlayerAccessor;
+import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
 import top.bearcabbage.lanterninstorm.team.LSTeamManager;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -98,7 +99,7 @@ public class CECommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        if (CETeamManager.denyInvitation(player)) {
+                        if (LSTeamManager.denyInvitation(player)) {
                             return sendSuccessFeedback(source, "成功清空邀请");
                         } else {
                             return sendErrorFeedback(source, "没有未处理的邀请");
@@ -191,7 +192,7 @@ public class CECommands {
                     if (targetPlayer == null) {
                         return sendErrorFeedback(source, "该命令只能由玩家执行");
                     }
-                    int level = (targetPlayer instanceof CEPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getCE().getCELevel() : -1;
+                    int level = (targetPlayer instanceof LSPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getLSLevel() : -1;
                     return sendSuccessFeedback(source, "您的CE等级为: " + level);
                 })
                 .then(argument("targetPlayer", EntityArgumentType.player())
@@ -199,7 +200,7 @@ public class CECommands {
                             // 如果提供了targetPlayer参数，使用参数指定的玩家
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
-                            int level = (targetPlayer instanceof CEPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getCE().getCELevel() : -1;
+                            int level = (targetPlayer instanceof LSPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getLSLevel() : -1;
                             return sendSuccessFeedback(source, targetPlayer.getName().getLiteralString() + " 的CE等级为: " + level);
                         })
                 ));
@@ -226,7 +227,7 @@ public class CECommands {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
                                     int newLevel = IntegerArgumentType.getInteger(context, "level");
-                                    if (targetPlayer instanceof LSPlayerAccessor cePlayerAccessor && cePlayerAccessor.getLS().setCELevel(newLevel)) {
+                                    if (targetPlayer instanceof LSPlayerAccessor cePlayerAccessor && cePlayerAccessor.getLS().setLSLevel(newLevel)) {
                                         return sendSuccessFeedback(source, "成功设置 " + targetPlayer.getName().getLiteralString() + " 的等级为: " + newLevel);
                                     } else {
                                         return sendErrorFeedback(source, "无法设置等级: 请确保等级在0-4之间且玩家在线");
@@ -238,7 +239,7 @@ public class CECommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        int level = (player instanceof LSPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getCELevel() : -1;
+                        int level = (player instanceof LSPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getLSLevel() : -1;
                         sendSuccessFeedback(source, "您的CE等级为: " + level);
                         return level; // 返回等级信息
                     }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import top.bearcabbage.lanterninstorm.interfaces.CEPlayerAccessor;
+import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
 
 //满足CECommands的调用 进行权限判断和聊天框报错反馈
 public class LSTeamManager {
@@ -16,7 +16,7 @@ public class LSTeamManager {
 
     public static boolean sendInvitation(ServerPlayerEntity sender, ServerPlayerEntity recipient) {
         // 确保被邀请玩家不在任何队伍中
-        if (((LSPlayerAccessor) recipient).getCE().isTeamed()) {
+        if (((LSPlayerAccessor) recipient).getLS().isTeamed()) {
             recipient.sendMessage(Text.literal("您已经在队伍中，不能接受新的队伍邀请！"), true);
             return false;
         }
@@ -39,7 +39,7 @@ public class LSTeamManager {
                 return false; // 存在多个邀请，返回 false 表示此情况
             }
             // 确保被邀请玩家没有已经在队伍中
-            if (((LSPlayerAccessor) player).getCE().isTeamed()) {
+            if (((LSPlayerAccessor) player).getLS().isTeamed()) {
                 player.sendMessage(Text.of("您已经在队伍中，不能加入其他队伍！"), true);
                 return false;
             }
@@ -84,7 +84,7 @@ public class LSTeamManager {
             LSTeam newCETeam = new LSTeam(targetPlayer);
             teamList.put(targetPlayer, newCETeam);
             cePlayerAccessorJoining.getLS().joinTeam(newCETeam);
-            ((LSPlayerAccessor) targetPlayer).getCE().joinTeam(newCETeam);
+            ((LSPlayerAccessor) targetPlayer).getLS().joinTeam(newCETeam);
             return newCETeam.addMember(playerJoining);
         } else {
             // 目标玩家已有队伍，尝试加入
