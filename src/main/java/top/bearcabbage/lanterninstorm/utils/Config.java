@@ -16,12 +16,12 @@ import java.util.Vector;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
-public class LSConfig {
+public class Config {
     private final Path filePath;
     private JsonObject jsonObject;
     private final Gson gson;
 
-    public LSConfig(Path filePath) {
+    public Config(Path filePath) {
         this.filePath = filePath;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         try {

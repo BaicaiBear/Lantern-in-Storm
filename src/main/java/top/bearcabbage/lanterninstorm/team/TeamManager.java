@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
+import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
 
 //满足Commands的调用 进行权限判断和聊天框报错反馈
-public class LSTeamManager {
-    private static final Map<ServerPlayerEntity, LSTeam> teamList = new HashMap<>();
+public class TeamManager {
+    private static final Map<ServerPlayerEntity, Team> teamList = new HashMap<>();
     public record TeamInvite(ServerPlayerEntity sender, ServerPlayerEntity recipient) {}
     public static final Map<UUID, TeamInvite> pendingInvitations = new HashMap<>();
 
     public static boolean sendInvitation(ServerPlayerEntity sender, ServerPlayerEntity recipient) {
         // 确保被邀请玩家不在任何队伍中
-        if (((LSPlayerAccessor) recipient).getLS().isTeamed()) {
+        if (((PlayerAccessor) recipient).getLS().isTeamed()) {
             recipient.sendMessage(Text.literal("您已经在队伍中，不能接受新的队伍邀请！"), true);
             return false;
         }
@@ -39,7 +39,7 @@ public class LSTeamManager {
                 return false; // 存在多个邀请，返回 false 表示此情况
             }
             // 确保被邀请玩家没有已经在队伍中
-            if (((LSPlayerAccessor) player).getLS().isTeamed()) {
+            if (((PlayerAccessor) player).getLS().isTeamed()) {
                 player.sendMessage(Text.of("您已经在队伍中，不能加入其他队伍！"), true);
                 return false;
             }
@@ -76,29 +76,29 @@ public class LSTeamManager {
     public static boolean createOrJoinTeam(ServerPlayerEntity playerJoining, ServerPlayerEntity targetPlayer) {
         if (!teamList.containsKey(targetPlayer)) {
             // 使用 CEPlayerAccessor 直接获取 isTeamed 状态
-            LSPlayerAccessor cePlayerAccessorJoining = (LSPlayerAccessor) playerJoining;
+            PlayerAccessor cePlayerAccessorJoining = (PlayerAccessor) playerJoining;
             if (cePlayerAccessorJoining.getLS().isTeamed()) {
                 // 如果playerJoining已在队伍中，则返回失败
                 return false;
             }
-            LSTeam newCETeam = new LSTeam(targetPlayer);
+            Team newCETeam = new Team(targetPlayer);
             teamList.put(targetPlayer, newCETeam);
             cePlayerAccessorJoining.getLS().joinTeam(newCETeam);
-            ((LSPlayerAccessor) targetPlayer).getLS().joinTeam(newCETeam);
+            ((PlayerAccessor) targetPlayer).getLS().joinTeam(newCETeam);
             return newCETeam.addMember(playerJoining);
         } else {
             // 目标玩家已有队伍，尝试加入
-            LSTeam existingCETeam = teamList.get(targetPlayer);
+            Team existingCETeam = teamList.get(targetPlayer);
             return existingCETeam.addMember(playerJoining);
         }
     }
 
     public static boolean removeMember(ServerPlayerEntity playerToRemove, ServerPlayerEntity teamLeader) {
         if (teamList.containsKey(teamLeader)) {
-            LSTeam CETeam = teamList.get(teamLeader);
+            Team CETeam = teamList.get(teamLeader);
             if (CETeam.getMembers().size() == 2) {
                 // 如果移除玩家后队伍将只剩队长一人，则解散队伍
-                LSTeamManager.disbandTeam(teamLeader);
+                TeamManager.disbandTeam(teamLeader);
                 return true;
             } else {
                 // 否则正常尝试移除成员
@@ -112,7 +112,7 @@ public class LSTeamManager {
         if (!teamList.containsKey(teamLeader)) {
             return false;
         }
-        LSTeam CETeam = teamList.get(teamLeader);
+        Team CETeam = teamList.get(teamLeader);
         if (!CETeam.getLeader().equals(teamLeader)) {
             return false; // 尝试解散的人不是队长
         }
@@ -122,18 +122,18 @@ public class LSTeamManager {
     }
 
     public static boolean LeaveTeam(ServerPlayerEntity player) {
-        LSPlayerAccessor cePlayerAccessor = (LSPlayerAccessor) player;
+        PlayerAccessor cePlayerAccessor = (PlayerAccessor) player;
         if (!cePlayerAccessor.getLS().isTeamed()) {
             player.sendMessage(Text.literal("您当前没有加入任何队伍！"), true);
             return false;
         }// 玩家不在任何队伍中
-        for (Map.Entry<ServerPlayerEntity, LSTeam> entry : teamList.entrySet()) {
-            LSTeam team = entry.getValue();
+        for (Map.Entry<ServerPlayerEntity, Team> entry : teamList.entrySet()) {
+            Team team = entry.getValue();
             if (team.getMembers().contains(player)) {
                 // 玩家存在于某个队伍中
                 if (team.getMembers().size() == 2) {
                     // 如果队伍只剩下队长（即当前玩家）且没有其他成员，直接解散队伍
-                    LSTeamManager.disbandTeam(team.getLeader());
+                    TeamManager.disbandTeam(team.getLeader());
                     return true;
                 } else {
                     // 玩家是普通成员，可以直接移除
@@ -147,8 +147,8 @@ public class LSTeamManager {
 
     public static String listAllTeams() {
         StringBuilder allTeamsInfo = new StringBuilder("当前所有队伍列表:\n");
-        for (Map.Entry<ServerPlayerEntity, LSTeam> entry : teamList.entrySet()) {
-            LSTeam team = entry.getValue();
+        for (Map.Entry<ServerPlayerEntity, Team> entry : teamList.entrySet()) {
+            Team team = entry.getValue();
             allTeamsInfo.append("队伍名称: ").append(team.getLeader().getName().getLiteralString()).append("\n")
                     .append("队长: ").append(team.getLeader().getName().getLiteralString()).append("\n")
                     .append("成员: ");
@@ -169,8 +169,8 @@ public class LSTeamManager {
     public static String listMyTeam(ServerPlayerEntity player) {
         // 初始化返回信息
         StringBuilder myTeamInfo = new StringBuilder();
-        LSPlayerAccessor cePlayer = (LSPlayerAccessor) player;
-        LSTeam team = cePlayer.getLS().getTeam();
+        PlayerAccessor cePlayer = (PlayerAccessor) player;
+        Team team = cePlayer.getLS().getTeam();
         if (cePlayer.getLS().isTeamed()) {
             myTeamInfo.append("队伍名称: ").append(team.getLeader().getName().getLiteralString()).append("\n")
                     .append("队长: ").append(team.getLeader().getName().getLiteralString()).append("\n")

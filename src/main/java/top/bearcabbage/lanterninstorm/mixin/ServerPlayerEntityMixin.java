@@ -14,26 +14,26 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
-import top.bearcabbage.lanterninstorm.player.LSPlayer;
-import top.bearcabbage.lanterninstorm.player.LSPlayerHandler;
+import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.player.Player;
+import top.bearcabbage.lanterninstorm.player.PlayerHandler;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements LSPlayerAccessor {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerAccessor {
     public ServerPlayerEntityMixin(ServerWorld world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile);
     }
 
     @Unique
-    private LSPlayer LS;
+    private Player LS;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(CallbackInfo ci) {
-        LS = new LSPlayer((ServerPlayerEntity) (Object) this);
+        LS = new Player((ServerPlayerEntity) (Object) this);
     }
 
     @Override
-    public LSPlayer getLS() {
+    public Player getLS() {
         return LS;
     }
 
@@ -51,13 +51,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements LS
 
     @Inject(method = "onDeath", at = @At("TAIL"))
     private void onDeath(CallbackInfo ci) {
-        LSPlayerAccessor player = (LSPlayerAccessor) this;
+        PlayerAccessor player = (PlayerAccessor) this;
         player.getLS().onDeath();
     }
 
     //CEPlayer日常任务
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(CallbackInfo ci) {
-        LSPlayerHandler.onTick((ServerPlayerEntity) (Object) this);
+        PlayerHandler.onTick((ServerPlayerEntity) (Object) this);
     }
 }

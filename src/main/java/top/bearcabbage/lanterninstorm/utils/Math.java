@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-public class LSMath {
+public class Math {
     public static double HorizontalDistance(BlockPos pos1, BlockPos pos2){
         return HorizontalDistance(new Vec3d(pos1.getX(), pos1.getY(), pos1.getZ()), new Vec3d(pos2.getX(), pos2.getY(), pos2.getZ()));
     }
@@ -18,6 +18,6 @@ public class LSMath {
     }
 
     public static double HorizontalDistance(Vec3d pos1, Vec3d pos2){
-        return Math.sqrt(Math.pow(pos1.getX()-pos2.getX(), 2) + Math.pow(pos1.getZ()-pos2.getZ(), 2));
+        return java.lang.Math.sqrt(java.lang.Math.pow(pos1.getX()-pos2.getX(), 2) + java.lang.Math.pow(pos1.getZ()-pos2.getZ(), 2));
     }
 }

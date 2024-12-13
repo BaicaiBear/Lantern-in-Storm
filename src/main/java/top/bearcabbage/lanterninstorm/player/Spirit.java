@@ -1,4 +1,4 @@
 package top.bearcabbage.lanterninstorm.player;
 
-public class LSSpirit {
+public class Spirit {
 }

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
+import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -22,8 +22,8 @@ public class SpawnPointCommandMixin {
         Iterator<ServerPlayerEntity> iterator = targets.iterator();
         while (iterator.hasNext()) {
             ServerPlayerEntity serverPlayerEntity = iterator.next();
-            if(serverPlayerEntity instanceof LSPlayerAccessor lsPlayerAccessor){
-                lsPlayerAccessor.getLS().setRtpSpawn(pos);
+            if(serverPlayerEntity instanceof PlayerAccessor playerAccessor){
+                playerAccessor.getLS().setRtpSpawn(pos);
             }
         }
     }

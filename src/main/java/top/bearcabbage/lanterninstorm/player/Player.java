@@ -10,20 +10,20 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
-import top.bearcabbage.lanterninstorm.team.LSTeam;
+import top.bearcabbage.lanterninstorm.team.Team;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import static top.bearcabbage.lanterninstorm.utils.LSMath.HorizontalDistance;
+import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 
-public class LSPlayer {
+public class Player {
     private ServerPlayerEntity player;
     private BlockPos rtpSpawn;
     private BlockPos spawnPoint;
     private RegistryKey<World> spawnWorld;
     private int level;
     private boolean isTeamed;
-    private LSTeam team;
+    private Team team;
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -34,7 +34,7 @@ public class LSPlayer {
     private int unsafeTick;
     private int damageTick;
 
-    public LSPlayer(ServerPlayerEntity player) {
+    public Player(ServerPlayerEntity player) {
         this.player = player;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         if(data == null){
@@ -102,7 +102,7 @@ public class LSPlayer {
     }
 
     public void levelUP() {
-        if (this.level < LSLevel.LEVELS.size() - 1) {
+        if (this.level < Level.LEVELS.size() - 1) {
             this.setLSLevel(this.level+1);
         }
     }
@@ -147,7 +147,7 @@ public class LSPlayer {
             rtpSpawn = player.getServerWorld().getSpawnPos();
         }
         if (worldRegistryKey == World.OVERWORLD) {
-            if (HorizontalDistance(rtpSpawn, pos) <= LSLevel.RADIUS.get(this.level)) {
+            if (HorizontalDistance(rtpSpawn, pos) <= Level.RADIUS.get(this.level)) {
                 this.spawnWorld = worldRegistryKey;
                 this.spawnPoint = pos;
                 NbtCompound data = new NbtCompound();
@@ -161,7 +161,7 @@ public class LSPlayer {
             this.player.sendMessage(Text.of("[CE]重生点设置失败！重生点超出原始探索范围！"));
             return false;
         } else if (worldRegistryKey == World.NETHER) {
-            if (HorizontalDistance(rtpSpawn, pos.multiply(8)) <= LSLevel.RADIUS.get(this.level)) {
+            if (HorizontalDistance(rtpSpawn, pos.multiply(8)) <= Level.RADIUS.get(this.level)) {
                 this.spawnWorld = worldRegistryKey;
                 this.spawnPoint = pos;
                 NbtCompound data = new NbtCompound();
@@ -183,7 +183,7 @@ public class LSPlayer {
         return isTeamed;
     }
 
-    public boolean joinTeam(LSTeam newTeam) {
+    public boolean joinTeam(Team newTeam) {
         lock.lock();
         try {
             if(this.isTeamed || newTeam == null) {
@@ -211,7 +211,7 @@ public class LSPlayer {
         }
     }
 
-    public LSTeam getTeam(){
+    public Team getTeam(){
         return this.team;
     }
 
@@ -225,10 +225,10 @@ public class LSPlayer {
     }
 
     public double getRadiusForTeam(){
-        if(this.level==LSLevel.LEVELS.getLast()){
-            return LSLevel.RADIUS.get(LSLevel.RADIUS.size()-2);
+        if(this.level== Level.LEVELS.getLast()){
+            return Level.RADIUS.get(Level.RADIUS.size()-2);
         }
-        return LSLevel.RADIUS.get(this.level);
+        return Level.RADIUS.get(this.level);
     }
     public void onDeath() {
         LSTick = damageTick = unsafeTick = 0;
