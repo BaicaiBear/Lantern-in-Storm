@@ -14,7 +14,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 //注册命令并引用对应的CETeamManager方法 包括一些简单的使用者判断
-public class LanternInStormCommand {
+public class LSCommands {
 
     private static int sendSuccessFeedback(ServerCommandSource source, String message) {
         if (source.getEntity() instanceof ServerPlayerEntity player) {
