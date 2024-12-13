@@ -1,4 +1,4 @@
-package top.bearcabbage.chainedexploration.command;
+package top.bearcabbage.lanterninstorm;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -7,8 +7,8 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import top.bearcabbage.chainedexploration.interfaces.CEPlayerAccessor;
-import top.bearcabbage.chainedexploration.team.CETeamManager;
+import top.bearcabbage.lanterninstorm.interfaces.CEPlayerAccessor;
+import top.bearcabbage.lanterninstorm.team.LSTeamManager;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -49,7 +49,7 @@ public class CECommands {
                                 if (targetPlayer.getUuid().equals(player.getUuid())) {
                                     return sendErrorFeedback(source, "不能向自己发送队伍邀请");
                                 }//检测自己
-                                if (CETeamManager.sendInvitation(player, targetPlayer)) {
+                                if (LSTeamManager.sendInvitation(player, targetPlayer)) {
                                     return sendSuccessFeedback(source, "已向 " + targetPlayer.getName().getLiteralString() + " 发送队伍邀请");
                                 } else {
                                     return sendErrorFeedback(source, "无法发送邀请: 目标玩家已有未处理的邀请或已达队伍人数限制");
@@ -66,7 +66,7 @@ public class CECommands {
                             ServerPlayerEntity player = source.getPlayer();
                             ServerPlayerEntity sender = context.getArgument("sender", ServerPlayerEntity.class);
 
-                            if (CETeamManager.acceptInvitation(player, sender)) {
+                            if (LSTeamManager.acceptInvitation(player, sender)) {
                                 return sendSuccessFeedback(source, "成功接受来自 " + sender.getName().getString() + " 的邀请并加入队伍");
                             } else {
                                 return sendErrorFeedback(source, "没有来自 " + sender.getName().getString() + " 的未处理邀请或接受邀请失败");
@@ -77,13 +77,13 @@ public class CECommands {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
                         // 检查是否存在多个邀请
-                        long multipleInvitationsCount = CETeamManager.pendingInvitations.values().stream()
+                        long multipleInvitationsCount = LSTeamManager.pendingInvitations.values().stream()
                                 .filter(inv -> inv.recipient().equals(player))
                                 .count();
                         if (multipleInvitationsCount > 1) {
                             return sendErrorFeedback(source, "您有多个未处理的邀请，请先使用 /cet list invite 来查看并管理它们。");
                         }
-                        if (CETeamManager.acceptInvitation(player)) {
+                        if (LSTeamManager.acceptInvitation(player)) {
                             return sendSuccessFeedback(source, "成功接受邀请并加入队伍");
                         } else {
                             return sendErrorFeedback(source, "没有未处理的邀请或接受邀请失败");
@@ -113,7 +113,7 @@ public class CECommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        if (CETeamManager.LeaveTeam(player)) {
+                        if (LSTeamManager.LeaveTeam(player)) {
                             return sendSuccessFeedback(source, "成功退出队伍");
                         } else {
                             return sendErrorFeedback(source, "无法退出队伍: 您没有在任何队伍中");
@@ -133,7 +133,7 @@ public class CECommands {
                                 if (player.getUuid().equals(targetPlayer.getUuid())) {
                                     return sendErrorFeedback(source, "您不能移除自己");
                                 }//检测自己
-                                if (CETeamManager.removeMember(targetPlayer, player)) {
+                                if (LSTeamManager.removeMember(targetPlayer, player)) {
                                     return sendSuccessFeedback(source, "成功移除队员: " + targetPlayer.getName().getLiteralString());
                                 } else {
                                     return sendErrorFeedback(source, "无法移除队员: 玩家不在队伍中或您不是队伍的发起者");
@@ -148,7 +148,7 @@ public class CECommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        if (CETeamManager.disbandTeam(player)) {
+                        if (LSTeamManager.disbandTeam(player)) {
                             return sendSuccessFeedback(source, "成功解散队伍");
                         } else {
                             return sendErrorFeedback(source, "无法解散队伍: 您不是队伍的发起者");
@@ -163,7 +163,7 @@ public class CECommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        String myTeamInfo = CETeamManager.listMyTeam(player);
+                        String myTeamInfo = LSTeamManager.listMyTeam(player);
                         if (myTeamInfo.isEmpty()) {
                             sendErrorFeedback(source, "您当前没有在任何队伍中");
                         } else {
@@ -207,7 +207,7 @@ public class CECommands {
         ceRoot.then(literal("list")
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
-                    String allTeamsInfo = CETeamManager.listAllTeams();
+                    String allTeamsInfo = LSTeamManager.listAllTeams();
                     if (allTeamsInfo.equals("当前所有队伍列表:")) {
                         sendErrorFeedback(source, "当前没有队伍存在");
                     } else {
@@ -226,7 +226,7 @@ public class CECommands {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
                                     int newLevel = IntegerArgumentType.getInteger(context, "level");
-                                    if (targetPlayer instanceof CEPlayerAccessor cePlayerAccessor && cePlayerAccessor.getCE().setCELevel(newLevel)) {
+                                    if (targetPlayer instanceof LSPlayerAccessor cePlayerAccessor && cePlayerAccessor.getLS().setCELevel(newLevel)) {
                                         return sendSuccessFeedback(source, "成功设置 " + targetPlayer.getName().getLiteralString() + " 的等级为: " + newLevel);
                                     } else {
                                         return sendErrorFeedback(source, "无法设置等级: 请确保等级在0-4之间且玩家在线");
@@ -238,7 +238,7 @@ public class CECommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        int level = (player instanceof CEPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getCE().getCELevel() : -1;
+                        int level = (player instanceof LSPlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getCELevel() : -1;
                         sendSuccessFeedback(source, "您的CE等级为: " + level);
                         return level; // 返回等级信息
                     }
