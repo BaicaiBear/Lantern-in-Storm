@@ -7,7 +7,6 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import top.bearcabbage.lanterninstorm.interfaces.CEPlayerAccessor;
 import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
 import top.bearcabbage.lanterninstorm.team.LSTeamManager;
 
@@ -15,7 +14,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 //注册命令并引用对应的CETeamManager方法 包括一些简单的使用者判断
-public class CECommands {
+public class LanternInStormCommand {
 
     private static int sendSuccessFeedback(ServerCommandSource source, String message) {
         if (source.getEntity() instanceof ServerPlayerEntity player) {
