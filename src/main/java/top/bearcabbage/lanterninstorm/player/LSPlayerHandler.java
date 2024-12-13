@@ -21,7 +21,7 @@ public abstract class LSPlayerHandler {
     //检查安全状态
     private static boolean checkSafety(ServerPlayerEntity player){
         LSPlayerAccessor ceplayer = (LSPlayerAccessor) player;
-        return false;
+        return true;
     }
 
 }
