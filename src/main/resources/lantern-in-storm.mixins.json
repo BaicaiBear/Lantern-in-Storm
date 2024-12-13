@@ -3,7 +3,8 @@
 	"package": "top.bearcabbage.lanterninstorm.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"ServerPlayerEntityMixin",
+		"SpawnPointCommandMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

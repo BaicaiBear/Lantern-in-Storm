@@ -13,7 +13,7 @@ public class LSTeam {
     private double radius;
     private final boolean wasSetOut;
 
-    public CETeam(ServerPlayerEntity leader) {
+    public LSTeam(ServerPlayerEntity leader) {
         this.wasSetOut = false;
         this.leader = leader;
         this.members = new HashSet<>();
