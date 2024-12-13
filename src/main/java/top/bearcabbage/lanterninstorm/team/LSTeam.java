@@ -11,10 +11,8 @@ public class LSTeam {
     private final ServerPlayerEntity leader;
     private final Set<ServerPlayerEntity> members;
     private double radius;
-    private final boolean wasSetOut;
 
     public LSTeam(ServerPlayerEntity leader) {
-        this.wasSetOut = false;
         this.leader = leader;
         this.members = new HashSet<>();
         members.add(leader);
@@ -67,10 +65,6 @@ public class LSTeam {
             }
         }
         members.clear();
-    }
-
-    public boolean wasSetOut() {
-        return wasSetOut;
     }
 
     public ServerPlayerEntity getLeader() {
