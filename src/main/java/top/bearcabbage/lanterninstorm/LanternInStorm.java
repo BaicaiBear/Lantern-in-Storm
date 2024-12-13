@@ -26,7 +26,7 @@ public class LanternInStorm implements ModInitializer {
 	public static final EntityType<SpiritLanternEntity> SPIRIT_LANTERN_ENTITY = Registry.register(
 			Registries.ENTITY_TYPE,
 			Identifier.of("lanterninstorm", "spirit_lantern"),
-			FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, SpiritLanternEntity::new).dimensions(EntityDimensions.fixed(1.0f, 1.0f)).build()
+			FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, (type, world) -> new SpiritLanternEntity(SpiritLanternEntity, world)).dimensions(EntityDimensions.fixed(1.0f, 1.0f)).build()
 	);
 
 	@Override
@@ -37,6 +37,6 @@ public class LanternInStorm implements ModInitializer {
 		// 使用CommandRegistrationCallback.EVENT注册命令
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment)->LanternInStormCommands.registerCommands(dispatcher)); // 调用静态方法注册命令
 		// 注册实体
-		FabricDefaultAttributeRegistry.register(SPIRIT_LANTERN_ENTITY, SpiritLanternEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(SPIRIT_LANTERN_ENTITY, SpiritLanternEntity.());
 	}
 }
