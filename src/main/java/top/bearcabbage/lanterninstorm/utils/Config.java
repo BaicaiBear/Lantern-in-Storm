@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import top.bearcabbage.lanterninstorm.player.SpiritPos;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -69,7 +70,7 @@ public class Config {
         jsonObject.addProperty(key, value);
     }
 
-    public void set(String key, Map<String, Vector<Integer>> value) {
+    public void set(String key, Map<String, SpiritPos> value) {
         jsonObject.add(key, gson.toJsonTree(value));
     }
 
@@ -101,7 +102,7 @@ public class Config {
         return jsonObject.get(key).getAsBoolean();
     }
 
-    public Map<String, Vector<Integer>> getMap(String key) {
+    public Map<String, SpiritPos> getMap(String key) {
         return gson.fromJson(jsonObject.get(key), Map.class);
     }
 

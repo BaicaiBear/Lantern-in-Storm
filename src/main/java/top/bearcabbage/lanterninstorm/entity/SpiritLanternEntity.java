@@ -123,52 +123,7 @@ public class SpiritLanternEntity extends Entity {
                 this.crystalDestroyed(source);
             }
 
-            return true;
-        }
-    }
-
-    public void kill() {
-        this.crystalDestroyed(this.getDamageSources().generic());
-        super.kill();
-    }
-
-    private void crystalDestroyed(DamageSource source) {
-        if (this.getWorld() instanceof ServerWorld) {
-            EnderDragonFight enderDragonFight = ((ServerWorld)this.getWorld()).getEnderDragonFight();
-            if (enderDragonFight != null) {
-                enderDragonFight.crystalDestroyed(this, source);
-            }
-        }
-
-    }
-
-    public void setBeamTarget(@Nullable BlockPos beamTarget) {
-        this.getDataTracker().set(BEAM_TARGET, Optional.ofNullable(beamTarget));
-    }
-
-    @Nullable
-    public BlockPos getBeamTarget() {
-        return (BlockPos)((Optional)this.getDataTracker().get(BEAM_TARGET)).orElse((Object)null);
-    }
-
-    public void setShowBottom(boolean showBottom) {
-        this.getDataTracker().set(SHOW_BOTTOM, showBottom);
-    }
-
-    public boolean shouldShowBottom() {
-        return (Boolean)this.getDataTracker().get(SHOW_BOTTOM);
-    }
-
-    public boolean shouldRender(double distance) {
-        return super.shouldRender(distance) || this.getBeamTarget() != null;
-    }
-
-    public ItemStack getPickBlockStack() {
-        return new ItemStack(Items.END_CRYSTAL);
-    }
-
-    static {
-        BEAM_TARGET = DataTracker.registerData(net.minecraft.entity.decoration.EndCrystalEntity.class, TrackedDataHandlerRegistry.OPTIONAL_BLOCK_POS);
-        SHOW_BOTTOM = DataTracker.registerData(net.minecraft.entity.decoration.EndCrystalEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    public String getLSid() {
+        return this.getUuidAsString();
     }
 }

@@ -10,23 +10,20 @@ import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
 public class Team {
     private final ServerPlayerEntity leader;
     private final Set<ServerPlayerEntity> members;
-    private double radius;
 
     public Team(ServerPlayerEntity leader) {
         this.leader = leader;
         this.members = new HashSet<>();
         members.add(leader);
         PlayerAccessor ceLeader = (PlayerAccessor) leader;
-        radius = ceLeader.getLS().getRadiusForTeam()/10;
     }
 
     public boolean addMember(ServerPlayerEntity player) {
         if (members.add(player)) {
             if (player instanceof PlayerAccessor cePlayerAccessor) {
                 cePlayerAccessor.getLS().joinTeam(this); // 更新玩家的isTeamed状态
-                this.radius += cePlayerAccessor.getLS().getRadiusForTeam()/10/this.members.size();
                 for(ServerPlayerEntity member : members){
-                    member.sendMessage(Text.of(player.getName().getLiteralString()+"加入了队伍，现在队伍的半径变为"+ this.radius));
+                    member.sendMessage(Text.of(player.getName().getLiteralString()+"加入了队伍"));
                 }
             }
             //向队伍所有成员发送玩家加入队伍的消息
@@ -47,9 +44,8 @@ public class Team {
         }
         if (player instanceof PlayerAccessor cePlayerAccessor) {
             cePlayerAccessor.getLS().quitTeam(); // 确保玩家离开队伍时更新isTeamed状态
-            this.radius = this.radius*(this.members.size()+1)/(this.members.size()) - cePlayerAccessor.getLS().getRadiusForTeam()/10/this.members.size();
             for(ServerPlayerEntity member : members){
-                member.sendMessage(Text.of(player.getName().getLiteralString()+"离开了队伍，现在队伍的半径变为"+ this.radius));
+                member.sendMessage(Text.of(player.getName().getLiteralString()+"离开了队伍"));
             }
         }
         return true;

@@ -179,11 +179,11 @@ public class LanternInStormCommands {
         dispatcher.register(cetRoot);
 
         // ce 命令及其子命令
-        LiteralArgumentBuilder<ServerCommandSource> ceRoot = literal("ce")
+        LiteralArgumentBuilder<ServerCommandSource> ceRoot = literal("lis")
                 .requires(source -> source.hasPermissionLevel(0));
 
         // 查询level
-        ceRoot.then(literal("level")
+        ceRoot.then(literal("mass")
                 .executes(context -> {
                     // 如果没有提供targetPlayer参数，获取命令发出者作为默认查询对象
                     ServerCommandSource source = context.getSource();
@@ -191,16 +191,16 @@ public class LanternInStormCommands {
                     if (targetPlayer == null) {
                         return sendErrorFeedback(source, "该命令只能由玩家执行");
                     }
-                    int level = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getLSLevel() : -1;
-                    return sendSuccessFeedback(source, "您的CE等级为: " + level);
+                    int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                    return sendSuccessFeedback(source, "您的灵魂质量为: " + mass + "g");
                 })
                 .then(argument("targetPlayer", EntityArgumentType.player())
                         .executes(context -> {
                             // 如果提供了targetPlayer参数，使用参数指定的玩家
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
-                            int level = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getLSLevel() : -1;
-                            return sendSuccessFeedback(source, targetPlayer.getName().getLiteralString() + " 的CE等级为: " + level);
+                            int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                            return sendSuccessFeedback(source, targetPlayer.getName().getLiteralString() + " 的灵魂质量为: " + mass + "g");
                         })
                 ));
 
@@ -219,17 +219,17 @@ public class LanternInStormCommands {
 
         // 设置level子命令
         ceRoot.then(argument("targetPlayer", EntityArgumentType.player())
-                .then(literal("set")
-                        .then(argument("level", IntegerArgumentType.integer(0))
+                .then(literal("add")
+                        .then(argument("mass", IntegerArgumentType.integer(0))
                                 .requires(source -> source.hasPermissionLevel(2))
                                 .executes(context -> {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
-                                    int newLevel = IntegerArgumentType.getInteger(context, "level");
-                                    if (targetPlayer instanceof PlayerAccessor cePlayerAccessor && cePlayerAccessor.getLS().setLSLevel(newLevel)) {
-                                        return sendSuccessFeedback(source, "成功设置 " + targetPlayer.getName().getLiteralString() + " 的等级为: " + newLevel);
+                                    int mass = IntegerArgumentType.getInteger(context, "mass");
+                                    if (targetPlayer instanceof PlayerAccessor cePlayerAccessor && cePlayerAccessor.getLS().getSpirit().addMass(mass)) {
+                                        return sendSuccessFeedback(source, "成功增重 " + targetPlayer.getName().getLiteralString() + " 的灵魂 " + mass + "g");
                                     } else {
-                                        return sendErrorFeedback(source, "无法设置等级: 请确保等级在0-4之间且玩家在线");
+                                        return sendErrorFeedback(source, "失败了呜呜呜");
                                     }
                                 })
                         )
@@ -238,9 +238,9 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        int level = (player instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getLSLevel() : -1;
-                        sendSuccessFeedback(source, "您的CE等级为: " + level);
-                        return level; // 返回等级信息
+                        int mass = (player instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                        sendSuccessFeedback(source, "您的灵魂质量为: " + mass + "g");
+                        return mass; // 返回等级信息
                     }
                     return 0;
                 })
