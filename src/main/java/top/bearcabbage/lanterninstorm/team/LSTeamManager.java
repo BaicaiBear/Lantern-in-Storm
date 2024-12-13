@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import top.bearcabbage.lanterninstorm.interfaces.LSPlayerAccessor;
 
-//满足CECommands的调用 进行权限判断和聊天框报错反馈
+//满足Commands的调用 进行权限判断和聊天框报错反馈
 public class LSTeamManager {
     private static final Map<ServerPlayerEntity, LSTeam> teamList = new HashMap<>();
     public record TeamInvite(ServerPlayerEntity sender, ServerPlayerEntity recipient) {}

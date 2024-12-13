@@ -13,7 +13,7 @@ import top.bearcabbage.lanterninstorm.team.LSTeamManager;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-//注册命令并引用对应的CETeamManager方法 包括一些简单的使用者判断
+//注册命令并引用对应的TeamManager方法 包括一些简单的使用者判断
 public class LanternInStormCommands {
 
     private static int sendSuccessFeedback(ServerCommandSource source, String message) {
@@ -35,7 +35,7 @@ public class LanternInStormCommands {
     }
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
-        // CETeam相关命令整合
+        // LSTeam相关命令整合
         LiteralArgumentBuilder<ServerCommandSource> cetRoot = literal("cet")
                 .requires(source -> source.hasPermissionLevel(0));
 
