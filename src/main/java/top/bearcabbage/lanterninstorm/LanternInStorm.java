@@ -35,6 +35,7 @@ public class LanternInStorm implements ModInitializer {
 
 
 		// 注册实体
-		FabricDefaultAttributeRegistry.register(SPIRIT_LANTERN_ENTITY, SpiritLanternEntity.());
+		EntityAttributeRegistry.INSTANCE. register(type, LivingEntity. createLivingAttributes());
+		FabricDefaultAttributeRegistry.register(type, SpiritLanternEntity.());
 	}
 }

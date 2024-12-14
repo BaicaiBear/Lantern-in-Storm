@@ -9,6 +9,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.client.util.math.MatrixStack;
 //import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.util.Identifier;
@@ -22,13 +23,17 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
     private static final Identifier TEXTURE = Identifier.of("lanterninstorm", "textures/entity/spirit_lantern/spirit_lantern.png");
     private static final RenderLayer END_CRYSTAL;
     private static final float SINE_45_DEGREES;
+    private final ModelPart core;
     private final ModelPart frame;
+    private final ModelPart bottom;
 
     public SpiritLanternEntityRenderer(EntityRendererFactory.Context context) {
         super(context);
         this.shadowRadius = 0.5F;
         ModelPart modelPart = context.getPart(EntityModelLayers.END_CRYSTAL);
         this.frame = modelPart.getChild("glass");
+        this.core = modelPart.getChild(EntityModelPartNames.CUBE);
+        this.bottom = modelPart.getChild("base");
     }
 
     public static TexturedModelData getTexturedModelData() {
