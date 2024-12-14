@@ -39,6 +39,25 @@ public abstract class SpiritLanternEntityManager {
         LANTERNS.put(entity.getLSid(), Arrays.asList(null, entity.getSpiritMap()));
     }
 
+    /*
+        破防的xxbc：
+            求求好人帮我改改下面的load和save吧啊啊啊啊啊啊啊啊
+            现在只能存出来这样的json：
+                {
+                  "8a2cfe7a-e562-48aa-97e4-34377274bdd9": [],
+                  "b6273155-f1f1-406d-b0e2-e553c969669e": [],
+                  "ba057be4-bda7-4f61-87cc-27c90a2c82b7": [],
+                  "0d1192c8-5a9f-416f-bc35-ed4d26bacf76": [],
+                  "ea18c990-766d-4ee5-bac9-8ca73d4e8fb9": [],
+                  "3f331361-2af7-4d39-bd35-b2b325ac4150": [],
+                  "4f5de68e-eaac-4280-8432-ed38390cc7ad": [],
+                  "5f47f47b-5e61-4c62-9bdd-25b76c7baaa5": []
+                }
+             简单来说，现在做的事情是在试图调用Google的Gson包（在utils.Config里做了些小工具）来存，但这需要将数据可逆转换为Gson能读写的简单的数据结构。
+             以下就是在尝试转换）））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））））爆了！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+            此致
+        敬礼
+     */
     // Mod初始化时从配置文件读取全局灯笼列表
     public static void load(MinecraftServer server, Path path){
         // 从配置文件读取全局灯笼列表
