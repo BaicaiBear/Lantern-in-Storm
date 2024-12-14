@@ -1,9 +1,5 @@
 package top.bearcabbage.lanterninstorm.entity;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
@@ -15,33 +11,34 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import top.bearcabbage.lanterninstorm.LanternInStorm;
+import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
+import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
 
-
-
-
-  /*      //向EntityType类import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity
-        public static final EntityType<SpiritLanternEntity> END_CRYSTAL = EntityType.register(
-                "SpiritLanternEntity",
-                EntityType.Builder.<SpiritLanternEntity>create(SpiritLanternEntity::new, SpawnGroup.MISC)
-                        .makeFireImmune()
-                        .dimensions(2.0F, 2.0F)
-                        .maxTrackingRange(64)
-                        .trackingTickInterval(Integer.MAX_VALUE)
-        );
-        // 注册灵魂灯笼实体 注入到EntityType中间
-        EntityRendererRegistry.register(SpiritLanternEntity, SpiritLanternEntityRenderer::new);
-    }
-}*/
 
 public class SpiritLanternEntity extends Entity {
-    public int Age;
 
-    public static final EntityType<SpiritLanternEntity> SPIRIT_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","spirit_lantern"), EntityType.Builder.<SpiritLanternEntity>create(SpiritLanternEntity::new, SpawnGroup.MISC)
+    // 这里是xxbc写的灯笼交互逻辑
+    private String LSid;
+
+
+    // 获取灯笼实体的LSid
+    public String getLSid () {
+        return this.LSid;
+    }
+
+
+    // 从这里开始是HHHor写的实体代码，xxbc看不懂AwA
+    public int Age;
+    public static final EntityType<PrivateLantern> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLantern>create(PrivateLantern::new, SpawnGroup.MISC)
             .makeFireImmune()
             .dimensions(2.0F, 2.0F)
             .maxTrackingRange(64)
-            .trackingTickInterval(Integer.MAX_VALUE).build("SpiritLanternEntity"));
+            .trackingTickInterval(Integer.MAX_VALUE).build("PrivateLantern"));
+    public static final EntityType<PublicLantern> PUBLIC_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","public_lantern"), EntityType.Builder.<PublicLantern>create(PublicLantern::new, SpawnGroup.MISC)
+            .makeFireImmune()
+            .dimensions(5.0F, 5.0F)
+            .maxTrackingRange(64)
+            .trackingTickInterval(Integer.MAX_VALUE).build("PublicLantern"));
 
 
     public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
@@ -50,14 +47,6 @@ public class SpiritLanternEntity extends Entity {
         this.Age = this.random.nextInt(100000);
     }//参考net.minecraft.client.render.entity.EndCrystalEntity
 
-    public SpiritLanternEntity(World world, double x, double y, double z) {
-        this(SPIRIT_LANTERN, world);
-        this.setPosition(x, y, z);
-    }
-
-//    public SpiritLanternEntity(EntityType<?> type, World world) {
-//        super(type, world);
-//    }
 
     protected Entity.MoveEffect getMoveEffect() {
         return MoveEffect.NONE;
@@ -97,7 +86,6 @@ public class SpiritLanternEntity extends Entity {
         }
     }
 
-    public String getLSid () {
-        return this.getUuid().toString();
-    }
+
+
 }

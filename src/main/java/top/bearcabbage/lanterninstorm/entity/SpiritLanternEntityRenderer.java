@@ -20,12 +20,12 @@ import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEntity> {
-    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/end_crystal/end_crystal.png");//Identifier.of("lanterninstorm", "textures/entity/spirit_lantern/spirit_lantern.png");
-    private static final RenderLayer END_CRYSTAL;
-    private static final float SINE_45_DEGREES;
-    private final ModelPart core;
-    private final ModelPart frame;
-    private final ModelPart bottom;
+    protected static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/end_crystal/end_crystal.png");//Identifier.of("lanterninstorm", "textures/entity/spirit_lantern/spirit_lantern.png");
+    protected static final RenderLayer END_CRYSTAL;
+    protected static final float SINE_45_DEGREES;
+    protected final ModelPart core;
+    protected final ModelPart frame;
+    protected final ModelPart bottom;
 
     public SpiritLanternEntityRenderer(EntityRendererFactory.Context context) {
         super(context);
@@ -69,7 +69,7 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         matrixStack.pop();
         matrixStack.pop();
-//        BlockPos blockPos = Entity.getBeamTarget();
+        BlockPos blockPos = Entity.getBlockPos();
 //        if (blockPos != null) {
 //            float m = (float)blockPos.getX() + 0.5F;
 //            float n = (float)blockPos.getY() + 0.5F;

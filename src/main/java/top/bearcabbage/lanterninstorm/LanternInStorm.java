@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityRenderer;
+import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
 
 public class LanternInStorm implements ModInitializer {
 	public static final String MOD_ID = "lantern-in-storm";
@@ -30,7 +31,7 @@ public class LanternInStorm implements ModInitializer {
 		PlayerDataApi.register(LSData);
 		// 使用CommandRegistrationCallback.EVENT注册命令
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment)->LanternInStormCommands.registerCommands(dispatcher)); // 调用静态方法注册命令
-
+		PlayerEventRegistrator.register();
 
 	}
 }
