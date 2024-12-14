@@ -4,36 +4,32 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.EnderDragonEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.client.util.math.MatrixStack;
 //import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
 import org.joml.Quaternionf;
+import top.bearcabbage.lanterninstorm.LanternInStorm;
 
 @Environment(EnvType.CLIENT)
 public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEntity> {
-    protected static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/end_crystal/end_crystal.png");//Identifier.of("lanterninstorm", "textures/entity/spirit_lantern/spirit_lantern.png");
+    protected static final Identifier TEXTURE = Identifier.of(LanternInStorm.MOD_ID, "textures/entity/lantern_ring.png");
     protected static final RenderLayer END_CRYSTAL;
     protected static final float SINE_45_DEGREES;
-    protected final ModelPart core;
-    protected final ModelPart frame;
+    protected final ModelPart light_ring;
+    protected final ModelPart dark_ring;
     protected final ModelPart bottom;
 
     public SpiritLanternEntityRenderer(EntityRendererFactory.Context context) {
         super(context);
         this.shadowRadius = 0.5F;
         ModelPart modelPart = context.getPart(EntityModelLayers.END_CRYSTAL);
-        this.frame = modelPart.getChild("glass");
-        this.core = modelPart.getChild(EntityModelPartNames.CUBE);
+        this.dark_ring = modelPart.getChild("glass");
+        this.light_ring = modelPart.getChild(EntityModelPartNames.CUBE);
         this.bottom = modelPart.getChild("base");
     }
 
@@ -52,22 +48,38 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
         float j = ((float)Entity.Age + g) * 3.0F;
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(END_CRYSTAL);
         matrixStack.push();
-        matrixStack.scale(2.0F, 2.0F, 2.0F);
-        matrixStack.translate(0.0F, -0.5F, 0.0F);
+        matrixStack.translate(0.0F,  1.0F + h, 0.0F);
+        matrixStack.scale(3.0F, 3.0F, 3.0F);
         int k = OverlayTexture.DEFAULT_UV;
+        float l = 0.875F;
 
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-        matrixStack.translate(0.0F, 1.5F + h / 2.0F, 0.0F);
         matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
-        this.frame.render(matrixStack, vertexConsumer, i, k);
-        float l = 0.875F;
-        matrixStack.scale(0.875F, 0.875F, 0.875F);
-        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-        this.frame.render(matrixStack, vertexConsumer, i, k);
-        matrixStack.scale(0.875F, 0.875F, 0.875F);
-        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+
+        for(int r=0;r<6 ;++r) {
+            if((r & 1) == 0) {
+                this.dark_ring.render(matrixStack, vertexConsumer, i, k);
+            } else{
+                this.light_ring.render(matrixStack, vertexConsumer, i, k);
+            }
+            matrixStack.scale(l, l, l);
+            matrixStack.multiply((new Quaternionf()).setAngleAxis(((float) Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+            j /= l;
+        }
+//        this.frame.render(matrixStack, vertexConsumer, i, k);
+//        matrixStack.scale(l, l, l);
+//        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
+//        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+//        this.frame.render(matrixStack, vertexConsumer, i, k);
+//        matrixStack.scale(l, l, l);
+//        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
+//        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+//        this.frame.render(matrixStack, vertexConsumer, i, k);
+//        matrixStack.scale(l, l, l);
+//        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
+//        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+
         matrixStack.pop();
         matrixStack.pop();
 //        Vec3d Pos = Entity.getWorld().getPlayers().getFirst().getPos();
