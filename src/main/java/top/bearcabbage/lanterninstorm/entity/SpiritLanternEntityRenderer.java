@@ -20,7 +20,7 @@ import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEntity> {
-    private static final Identifier TEXTURE = Identifier.of("lanterninstorm", "textures/entity/spirit_lantern/spirit_lantern.png");
+    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/end_crystal/end_crystal.png");//Identifier.of("lanterninstorm", "textures/entity/spirit_lantern/spirit_lantern.png");
     private static final RenderLayer END_CRYSTAL;
     private static final float SINE_45_DEGREES;
     private final ModelPart core;
@@ -69,17 +69,17 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         matrixStack.pop();
         matrixStack.pop();
-        BlockPos blockPos = Entity.getBeamTarget();
-        if (blockPos != null) {
-            float m = (float)blockPos.getX() + 0.5F;
-            float n = (float)blockPos.getY() + 0.5F;
-            float o = (float)blockPos.getZ() + 0.5F;
-            float p = (float)((double)m - Entity.getX());
-            float q = (float)((double)n - Entity.getY());
-            float r = (float)((double)o - Entity.getZ());
-            matrixStack.translate(p, q, r);
-            EnderDragonEntityRenderer.renderCrystalBeam(-p, -q + h, -r, g, Entity.Age, matrixStack, vertexConsumerProvider, i);
-        }
+//        BlockPos blockPos = Entity.getBeamTarget();
+//        if (blockPos != null) {
+//            float m = (float)blockPos.getX() + 0.5F;
+//            float n = (float)blockPos.getY() + 0.5F;
+//            float o = (float)blockPos.getZ() + 0.5F;
+//            float p = (float)((double)m - Entity.getX());
+//            float q = (float)((double)n - Entity.getY());
+//            float r = (float)((double)o - Entity.getZ());
+//            matrixStack.translate(p, q, r);
+//            EnderDragonEntityRenderer.renderCrystalBeam(-p, -q + h, -r, g, Entity.Age, matrixStack, vertexConsumerProvider, i);
+//        }
 
         super.render(Entity, f, g, matrixStack, vertexConsumerProvider, i);
     }

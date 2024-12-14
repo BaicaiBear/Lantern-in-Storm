@@ -17,13 +17,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 
-@Environment(EnvType.CLIENT)
-public class ForSpiritLantern implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        public static final EntityType<SpiritLanternEntity> SpiritLanternEntityType = Registry.register(Registries.ENTITY_TYPE,
-                Identifier.of(LanternInStorm.MOD_ID,"entity"),
-                EntityType.Builder.create(SpiritLanternEntity::new,SpawnGroup.MISC).dimensions(1f,1f).build());
 
 
 
@@ -44,6 +37,13 @@ public class ForSpiritLantern implements ClientModInitializer {
 public class SpiritLanternEntity extends Entity {
     public int Age;
 
+    public static final EntityType<SpiritLanternEntity> SPIRIT_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","spirit_lantern"), EntityType.Builder.<SpiritLanternEntity>create(SpiritLanternEntity::new, SpawnGroup.MISC)
+            .makeFireImmune()
+            .dimensions(2.0F, 2.0F)
+            .maxTrackingRange(64)
+            .trackingTickInterval(Integer.MAX_VALUE).build("SpiritLanternEntity"));
+
+
     public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
         this.intersectionChecked = true;
@@ -51,13 +51,13 @@ public class SpiritLanternEntity extends Entity {
     }//参考net.minecraft.client.render.entity.EndCrystalEntity
 
     public SpiritLanternEntity(World world, double x, double y, double z) {
-        this(SpiritLanternEntityType, world);
+        this(SPIRIT_LANTERN, world);
         this.setPosition(x, y, z);
     }
 
-    public SpiritLanternEntity(EntityType<?> type, World world) {
-        super(type, world);
-    }
+//    public SpiritLanternEntity(EntityType<?> type, World world) {
+//        super(type, world);
+//    }
 
     protected Entity.MoveEffect getMoveEffect() {
         return MoveEffect.NONE;

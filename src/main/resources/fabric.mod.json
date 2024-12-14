@@ -18,6 +18,9 @@
 		"main": [
 			"top.bearcabbage.lanterninstorm.LanternInStorm"
 		],
+		"client":[
+			"top.bearcabbage.lanterninstorm.LanternInStormClient"
+		],
 		"fabric-datagen": [
 			"top.bearcabbage.lanterninstorm.LanternInStormDataGenerator"
 		]
