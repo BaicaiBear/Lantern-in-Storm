@@ -48,13 +48,12 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
         float j = ((float)Entity.Age + g) * 3.0F;
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(END_CRYSTAL);
         matrixStack.push();
+        matrixStack.translate(0.0F,  1.0F + h, 0.0F);
         matrixStack.scale(3.0F, 3.0F, 3.0F);
-        matrixStack.translate(0.0F, -0.5F, 0.0F);
         int k = OverlayTexture.DEFAULT_UV;
         float l = 0.875F;
 
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-        matrixStack.translate(0.0F, 1.5F + h / 2.0F, 0.0F);
         matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
 
         for(int r=0;r<6 ;++r) {
