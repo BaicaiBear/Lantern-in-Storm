@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import top.bearcabbage.lanterninstorm.player.SpiritPos;
+import top.bearcabbage.lanterninstorm.player.Spirit;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -70,7 +70,7 @@ public class Config {
         jsonObject.addProperty(key, value);
     }
 
-    public void set(String key, Map<String, SpiritPos> value) {
+    public void set(String key, Map<String, Spirit> value) {
         jsonObject.add(key, gson.toJsonTree(value));
     }
 
@@ -102,9 +102,10 @@ public class Config {
         return jsonObject.get(key).getAsBoolean();
     }
 
-    public Map<String, SpiritPos> getMap(String key) {
+    public Map<String, Spirit> getMap(String key) {
         return gson.fromJson(jsonObject.get(key), Map.class);
     }
+
 
     public List<Object> getList(String key) {
         return gson.fromJson(jsonObject.get(key), List.class);
@@ -120,6 +121,11 @@ public class Config {
 
     public <T> T get(String key, Class<T> clazz) {
         return gson.fromJson(jsonObject.get(key), clazz);
+    }
+
+    //将整个文件内容转换为Map
+    public Map<String, Object> getMap() {
+        return gson.fromJson(jsonObject, Map.class);
     }
 
     public void close() {

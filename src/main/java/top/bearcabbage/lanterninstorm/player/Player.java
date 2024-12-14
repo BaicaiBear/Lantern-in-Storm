@@ -5,11 +5,14 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
+import top.bearcabbage.lanterninstorm.interfaces.PlayerManagerAccessor;
 import top.bearcabbage.lanterninstorm.team.Team;
 
+import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
@@ -19,7 +22,7 @@ public class Player {
     private BlockPos rtpSpawn;
     private boolean isTeamed;
     private Team team;
-    private Spirit spirit;
+    private PlayerSpirit spirit;
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -34,7 +37,7 @@ public class Player {
         this.player = player;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         if(data == null){
-            spirit = new Spirit(player, true);
+            spirit = new PlayerSpirit(player, true);
             isTeamed = false;
             data = new NbtCompound();
             data.putInt("level", 0);data.putIntArray("rtpspawn", new int[]{-1});
@@ -44,7 +47,7 @@ public class Player {
         if (posVec.length == 3) {
             this.rtpSpawn = new BlockPos(posVec[0], posVec[1], posVec[2]);
         }
-        spirit = new Spirit(player, false);
+        spirit = new PlayerSpirit(player, false);
         LSTick = 0;
         tiredTick = 0;
     }
@@ -69,10 +72,13 @@ public class Player {
         }
     }
 
-    public void onUnstableTick() {
+    public void onUnstableTick() {}
+
+    public void onDeath() {
+        LSTick = debuffTick = tiredTick = 0;
     }
 
-    public Spirit getSpirit() {
+    public PlayerSpirit getSpirit() {
         return this.spirit;
     }
 
@@ -135,13 +141,14 @@ public class Player {
         return this.team;
     }
 
-    public void onDeath() {
-        LSTick = debuffTick = tiredTick = 0;
-    }
 
     public int getTiredTick() {
         return tiredTick;
     }
 
+    public static ServerPlayerEntity uuidToPlayer(MinecraftServer server, UUID uuid) {
+        PlayerManagerAccessor playerManager = (PlayerManagerAccessor) server.getPlayerManager();
+        return playerManager.uuid2Player(uuid);
+    }
 
 }
