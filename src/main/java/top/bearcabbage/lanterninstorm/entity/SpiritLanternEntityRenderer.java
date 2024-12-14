@@ -16,6 +16,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
@@ -69,13 +70,13 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         matrixStack.pop();
         matrixStack.pop();
-        BlockPos blockPos = Entity.getBlockPos();
-//        if (blockPos != null) {
-//            float m = (float)blockPos.getX() + 0.5F;
-//            float n = (float)blockPos.getY() + 0.5F;
-//            float o = (float)blockPos.getZ() + 0.5F;
+//        Vec3d Pos = Entity.getWorld().getPlayers().getFirst().getPos();
+//        if (Pos != null) {
+//            float m = (float)Pos.getX() + 0.5F;
+//            float n = (float)Pos.getY() + 0.5F;
+//            float o = (float)Pos.getZ() + 0.5F;
 //            float p = (float)((double)m - Entity.getX());
-//            float q = (float)((double)n - Entity.getY());
+//            float q = (float)((double)n - Entity.getY()+1);
 //            float r = (float)((double)o - Entity.getZ());
 //            matrixStack.translate(p, q, r);
 //            EnderDragonEntityRenderer.renderCrystalBeam(-p, -q + h, -r, g, Entity.Age, matrixStack, vertexConsumerProvider, i);

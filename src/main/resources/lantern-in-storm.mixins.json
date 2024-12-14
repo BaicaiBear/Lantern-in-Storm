@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"ServerPlayerEntityMixin",
-		"SpawnPointCommandMixin"
+		"SpawnPointCommandMixin",
+		"RideCommandMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -2,6 +2,7 @@ package top.bearcabbage.lanterninstorm.player;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -19,18 +20,29 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                 SpiritLanternEntity spiritLanternEntity = (SpiritLanternEntity) player.getPassengerList().stream().filter(entity1 -> entity1 instanceof SpiritLanternEntity).findFirst().get();
                 // 将灯笼放下来的操作
                 player.sendMessage(Text.of("Down"));
+                spiritLanternEntity.stopRiding();
                 return ActionResult.FAIL;
             } else if (entity instanceof SpiritLanternEntity) {
                 if (player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
                     // 将灯笼捡起来的操作
                     player.sendMessage(Text.of("Up"));
-
+                    entity.startRiding(player, true);
                     return ActionResult.FAIL;
                 } else {
                     // 玩家与灯笼右键交互的操作
                     player.sendMessage(Text.of("Right"));
                     return ActionResult.FAIL;
                 }
+            } else return ActionResult.PASS;
+        });
+
+        UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
+            if (player.getPassengerList().stream().anyMatch(entity1 -> entity1 instanceof SpiritLanternEntity) && player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
+                SpiritLanternEntity spiritLanternEntity = (SpiritLanternEntity) player.getPassengerList().stream().filter(entity1 -> entity1 instanceof SpiritLanternEntity).findFirst().get();
+                // 将灯笼放下来的操作
+                player.sendMessage(Text.of("Down"));
+                spiritLanternEntity.stopRiding();
+                return ActionResult.FAIL;
             } else return ActionResult.PASS;
         });
 
