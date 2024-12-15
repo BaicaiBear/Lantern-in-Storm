@@ -5,6 +5,25 @@
 [![GitHub license](https://img.shields.io/badge/license-CC_1.0-blue)](https://creativecommons.org/licenses/by-nc-sa/1.0/)
 
 > Once upon a time, there was a Mirror Tree.
+ 
+## 待办事项（现在只有该条目是有用信息）
+
+TODO List:
+
+- 重构`Spirit`管理用的表
+- 关于水晶的搬运（骑乘）
+- 对于新的`Manager`的实现
+- 对于`lantern`的`level`种类数`（1，2，4，8）/（1，2，3，4/5）`
+- `level`对应的`issafe`和关于`unsafe`区域的区域的迷雾效果（`client`）
+- 在`unsafe`区域加入`unstable`相关的特效：（贴图丢失/闪烁/音效替换/生物与怪物 ai 随机替换）（可选）
+- `commands`关于测试用的命令补充
+- `team`转为`gui`界面并且添加团队`tpa`权限和`home`权限（可选）
+
+DONE List：
+
+- 一个没用的`team`系统和一个测试用的`commands`
+- 一个`player`的`rtpspawn`实现
+- 两种`Lantern`的注册，渲染，事件调用
 
 ## Introduction
 
@@ -17,7 +36,15 @@ A Minecraft mod for the new loop of MirrorTree.
 ### Core File Structure
 
 ```bash
-(say sth here)
+.
+├── gradle
+├── src
+│   ├── main
+│   │   └── java
+│   └── resources
+├── asset          # documentation assets
+├── README.md      # overview intro
+└──  LICENSE
 ```
 
 ### Documentation Norm
@@ -44,19 +71,3 @@ Here we propose a recommended Git message template.
 
 > [!NOTE]
 > Although pull requests are different from commits, they may follow the same format as commit messages.
-
-
-todo list：重构Spirit管理用的表
-关于水晶的搬运（骑乘）
-对于新的Manager的实现
-对于lantern的level种类数（1，2，4，8）/（1，2，3，4/5）
-level对应的issafe和
-关于unsafe区域的区域的迷雾效果（client）
-在unsafe区域加入unstable相关的特效：（贴图丢失/闪烁/音效替换/生物与怪物ai随机替换）（可选）
-commands关于测试用的命令补充
-team转为gui界面并且添加团队tpa权限和home权限（可选）
-
-done list：
-一个没用的team系统和一个测试用的commands
-一个player的rtpspawn实现
-两种Lantern的注册，渲染，事件调用
