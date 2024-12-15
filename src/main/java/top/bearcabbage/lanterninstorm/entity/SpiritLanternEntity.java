@@ -41,16 +41,16 @@ public abstract class SpiritLanternEntity extends Entity {
             .trackingTickInterval(Integer.MAX_VALUE).build("PublicLantern"));
     public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
-//        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
-//        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
-        if(!this.getWorld().isClient) {
-            if (this.getCustomName() == null) {
-                this.LSid = LanternInStormSpiritManager.lanternGenerateLSID();
-                this.setCustomName(Text.of(String.valueOf(this.LSid)));
-            } else {
-                this.LSid = Long.parseLong(this.getCustomName().getLiteralString());
-            }
-        }
+////        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
+////        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
+//        if(!this.getWorld().isClient) {
+//            if (this.getCustomName() == null) {
+//                this.LSid = LanternInStormSpiritManager.lanternGenerateLSID();
+//                this.setCustomName(Text.of(String.valueOf(this.LSid)));
+//            } else {
+//                this.LSid = Long.parseLong(this.getCustomName().getLiteralString());
+//            }
+//        }
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
     }
@@ -68,13 +68,17 @@ public abstract class SpiritLanternEntity extends Entity {
                 this.getWorld().setBlockState(blockPos, AbstractFireBlock.getState(this.getWorld(), blockPos));
             }
         }
-        LanternInStormSpiritManager.lanternPosUpdate(this.getLSid(), GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
+        if (LSid!=-1) LanternInStormSpiritManager.lanternPosUpdate(this.getLSid(), GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
     }
 
     protected void writeCustomDataToNbt(NbtCompound nbt) {
+        nbt.putLong("LSID", this.LSid);
     }
 
     protected void readCustomDataFromNbt(NbtCompound nbt) {
+        if (nbt.contains("LSID", 99)) { // 99 is the NBT type ID for long
+            this.LSid = nbt.getLong("LSID");
+        } else this.LSid = LanternInStormSpiritManager.lanternGenerateLSID();
     }
 
     @Override

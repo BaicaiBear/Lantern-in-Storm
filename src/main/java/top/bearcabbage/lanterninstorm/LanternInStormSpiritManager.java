@@ -100,14 +100,14 @@ public abstract class LanternInStormSpiritManager {
     
     public static void load(Path path) {
         Config data = new Config(path);
-        Map<Long, String> lanternPosStringMap = new HashMap<>();
+        Map<String, String> lanternPosStringMap = new HashMap<>();
         try {
-            playerData.putAll(data.get("playerData", Map.class));
+            playerData.putAll((Map<String, Map<Long, Integer>>)data.get("playerData", Map.class));
             lanternPosStringMap = data.get("lanternPosFromLSID",Map.class);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-        for (Map.Entry<Long, String> entry : lanternPosStringMap.entrySet()) {
+        for (Map.Entry<String, String> entry : lanternPosStringMap.entrySet()) {
             String[] parts = entry.getValue().split("] BlockPos\\{");
             parts[0] = parts[0].replace("ResourceKey[minecraft:dimension / ","").replace("minecraft:","");
             parts[1] = parts[1].replace("}", "").replace("x=","").replace("y=","").replace("z=","");
@@ -121,9 +121,7 @@ public abstract class LanternInStormSpiritManager {
             int y = Integer.parseInt(parts2[1]);
             int z = Integer.parseInt(parts2[2]);
             BlockPos pos = new BlockPos(x,y,z);
-            System.out.println(entry.getKey());
-            long LSID = entry.getKey();
-            lanternPosFromLSID.put(LSID, GlobalPos.create(RegistryKey.of(RegistryKeys.WORLD, dimension), pos));
+            lanternPosFromLSID.put(Long.parseLong(entry.getKey()), GlobalPos.create(RegistryKey.of(RegistryKeys.WORLD, dimension), pos));
         }
         data.close();
     }
