@@ -8,22 +8,30 @@
  
 ## 待办事项（现在只有该条目是有用信息）
 
-TODO List:
+### TODO List:
 
-- 重构`Spirit`管理用的表
-- 关于水晶的搬运（骑乘）
-- 对于新的`Manager`的实现
-- 对于`lantern`的`level`种类数`（1，2，4，8）/（1，2，3，4/5）`
-- `level`对应的`issafe`和关于`unsafe`区域的区域的迷雾效果（`client`）
-- 在`unsafe`区域加入`unstable`相关的特效：（贴图丢失/闪烁/音效替换/生物与怪物 ai 随机替换）（可选）
+- 修复关于水晶的搬运（骑乘）的错误
+- 修复单击灯笼但多次执行代码的错误
+- 玩家获得`Spirits`与成就的绑定
+- 玩家在`unstable`区域的负面效果
+- 对于`lantern`分配灵魂的交互设计
+  - `level`种类数`（1，2，4，8）/（1，2，3，4/5）`
+  - 利用视角连续变化、结合渲染等
+- 氛围渲染
+  - `safe`和`unsafe`边缘和内部区域的迷雾效果（`client`）
+  - 在`unsafe`区域加入`unstable`相关的特效：（贴图丢失/闪烁/音效替换/生物与怪物 ai 随机替换/幽灵粒子效果/脚步声）（可选）
 - `commands`关于测试用的命令补充
 - `team`转为`gui`界面并且添加团队`tpa`权限和`home`权限（可选）
 
-DONE List：
+### DONE List：
 
-- 一个没用的`team`系统和一个测试用的`commands`
-- 一个`player`的`rtpspawn`实现
-- 两种`Lantern`的注册，渲染，事件调用
+- 重构`Spirit`数据结构和业务逻辑 (12.16)
+- 两种`Lantern`的注册，渲染，事件调用 (12.14)
+- 一个`player`的`rtpspawn`实现 (较早)
+- 一个没用的`team`系统和一个测试用的`commands` (较早，弃用)
+
+
+
 
 ## Introduction
 
