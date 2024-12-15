@@ -4,22 +4,11 @@ import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.api.storage.NbtDataStorage;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityManager;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityRenderer;
 import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
 
 public class LanternInStorm implements ModInitializer {
@@ -36,11 +25,11 @@ public class LanternInStorm implements ModInitializer {
 		PlayerEventRegistrator.register();
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			// 读取全局灯笼列表
-			SpiritLanternEntityManager.load(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.ser"));
+			LanternInStormSpiritManager.load(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.ser"));
 		});
 			ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			// 保存全局灯笼列表
-			SpiritLanternEntityManager.save(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.ser"));
+			LanternInStormSpiritManager.save(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/SpiritsData.json"));
 		});
 	}
 }

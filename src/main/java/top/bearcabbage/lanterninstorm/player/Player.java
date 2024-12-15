@@ -20,9 +20,13 @@ import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 public class Player {
     private ServerPlayerEntity player;
     private BlockPos rtpSpawn;
-    private boolean isTeamed;
-    private Team team;
-    private PlayerSpirit spirit;
+    private int spiritsTotal;
+    private int spiritsBanlance;
+    private static final int INIT_SPIRIT = 5;
+//    private Team team;
+//    private boolean isTeamed;
+
+
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -37,17 +41,20 @@ public class Player {
         this.player = player;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         if(data == null){
-            spirit = new PlayerSpirit(player, true);
-            isTeamed = false;
+            spiritsTotal = INIT_SPIRIT;
+            spiritsBanlance = spiritsTotal;
             data = new NbtCompound();
-            data.putInt("level", 0);data.putIntArray("rtpspawn", new int[]{-1});
+            data.putInt("spiritsTotal", INIT_SPIRIT);
+            data.putInt("spiritsBanlance", INIT_SPIRIT);
+            data.putIntArray("rtpspawn", new int[]{-1});
             PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
         }
         int[] posVec = data.getIntArray("rtpspawn");
         if (posVec.length == 3) {
             this.rtpSpawn = new BlockPos(posVec[0], posVec[1], posVec[2]);
         }
-        spirit = new PlayerSpirit(player, false);
+        spiritsTotal = data.getInt("spiritTotal");
+        spiritsBanlance = data.getInt("spiritBanlance");
         LSTick = 0;
         tiredTick = 0;
     }
@@ -78,12 +85,22 @@ public class Player {
         LSTick = debuffTick = tiredTick = 0;
     }
 
-    public PlayerSpirit getSpirit() {
-        return this.spirit;
+
+    public int getTiredTick() {
+        return tiredTick;
+    }
+
+    public int getSpiritsTotal() {
+        return this.spiritsTotal;
+    }
+
+    public int getSpiritsBanlance(){
+        return this.spiritsBanlance;
     }
 
     public void onGrantAdvancement(Advancement advancement) {
-        this.spirit.addMass(1);
+        this.spiritsTotal++;
+        this.spiritsBanlance++;
     }
 
     public BlockPos getRtpSpawn() {
@@ -105,50 +122,42 @@ public class Player {
         return true;
     }
 
-    public boolean isTeamed() {
-        return isTeamed;
-    }
+//    public boolean isTeamed() {
+//        return isTeamed;
+//    }
 
-    public boolean joinTeam(Team newTeam) {
-        lock.lock();
-        try {
-            if(this.isTeamed || newTeam == null) {
-                return false;
-            }
-            isTeamed = true;
-            this.team = newTeam;
-            return true;
-        } finally {
-            lock.unlock();
-        }
-    }
+//    public boolean joinTeam(Team newTeam) {
+//        lock.lock();
+//        try {
+//            if(this.isTeamed || newTeam == null) {
+//                return false;
+//            }
+//            isTeamed = true;
+//            this.team = newTeam;
+//            return true;
+//        } finally {
+//            lock.unlock();
+//        }
+//    }
+//
+//    public boolean quitTeam() {
+//        lock.lock();
+//        try {
+//            if(!this.isTeamed) {
+//                return false;
+//            }
+//            isTeamed = false;
+//            this.team = null;
+//            return true;
+//        } finally {
+//            lock.unlock();
+//        }
+//    }
+//
+//    public Team getTeam(){
+//        return this.team;
+//    }
 
-    public boolean quitTeam() {
-        lock.lock();
-        try {
-            if(!this.isTeamed) {
-                return false;
-            }
-            isTeamed = false;
-            this.team = null;
-            return true;
-        } finally {
-            lock.unlock();
-        }
-    }
 
-    public Team getTeam(){
-        return this.team;
-    }
-
-
-    public int getTiredTick() {
-        return tiredTick;
-    }
-
-    public static ServerPlayerEntity uuidToPlayer(MinecraftServer server, UUID uuid) {
-        PlayerManagerAccessor playerManager = (PlayerManagerAccessor) server.getPlayerManager();
-        return playerManager.uuid2Player(uuid);
-    }
 
 }

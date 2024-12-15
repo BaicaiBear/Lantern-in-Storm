@@ -6,8 +6,7 @@
     "PlayerManagerMixin",
     "RideCommandMixin",
     "ServerPlayerEntityMixin",
-    "SpawnPointCommandMixin",
-    "EntityMixin"
+    "SpawnPointCommandMixin"
   ],
   "injectors": {
     "defaultRequire": 1

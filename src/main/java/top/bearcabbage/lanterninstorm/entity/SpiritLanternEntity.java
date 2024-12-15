@@ -1,80 +1,28 @@
 package top.bearcabbage.lanterninstorm.entity;
 
 import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-import org.jetbrains.annotations.Nullable;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
-import top.bearcabbage.lanterninstorm.interfaces.EntityAccessor;
-import top.bearcabbage.lanterninstorm.player.Spirit;
-import java.util.*;
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
-public abstract class SpiritLanternEntity extends Entity implements EntityAccessor {
+public abstract class SpiritLanternEntity extends Entity {
     //这里是xxbc写的灯笼交互逻辑
-    private final String LSid;
-    private final Map<UUID, Spirit> SPIRIT = new HashMap<>();
+    private final long LSid = -1;
 
-    public String getLSid () {
+    public long getLSid () {
         return this.LSid;
     }// 获取灯笼实体的LSid
 
-    public Spirit getSpirit (UUID uuid) {
-        return SPIRIT.get(uuid);
-    }// 获取灯笼实体的灵魂
-
-    public Object getSpiritMap() {
-        return SPIRIT;
-    }
-
-    public ActionResult onRiding (PlayerEntity player) {
-        if (this.startRiding(player)) {
-            // 对SPIRIT中所有的Spirit调用onRide(ServerPlayerEntity player)
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                SPIRIT.values().forEach(spirit -> spirit.onRide(serverPlayer));
-            }
-            player.sendMessage(Text.of("你骑上了灯笼"+getPos().toString()));
-            return ActionResult.FAIL;
-        }
-        return ActionResult.PASS;
-    }// 玩家搬起灯笼
-
-    public ActionResult onPutting () {
-        this.stopRiding();
-        // 对SPIRIT中所有的Spirit调用onPutdown(SpiritLanternEntity entity)
-        SPIRIT.values().forEach(spirit -> spirit.onPutdown(this));
-        return ActionResult.FAIL;
-    }// 玩家放下灯笼
-
-    public ActionResult onAddSpirit (ServerPlayerEntity player, int spiritMass) {
-
-        // 获取玩家的UUID
-        UUID uuid = player.getUuid();
-
-        return ActionResult.FAIL;
-    }// 玩家向灯笼添加灵魂
 
     //    从这里开始是HHHor写(copy)的实体代码
     public int Age;
@@ -90,8 +38,8 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
             .trackingTickInterval(Integer.MAX_VALUE).build("PublicLantern"));
     public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
-        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
-        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
+//        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
+//        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
     }
@@ -156,8 +104,5 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
         }
     }
 
-    @Override
-    public void preRemoved() {
-        SpiritLanternEntityManager.unloadSpiritLanternEntity(this);
-    }// 使用Mixin处理区块卸载时对Manager对通知
+
 }
