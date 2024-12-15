@@ -1,19 +1,29 @@
 package top.bearcabbage.lanterninstorm.entity;
 
 import net.minecraft.block.AbstractFireBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
@@ -45,6 +55,7 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
             if (player instanceof ServerPlayerEntity serverPlayer) {
                 SPIRIT.values().forEach(spirit -> spirit.onRide(serverPlayer));
             }
+            player.sendMessage(Text.of("你骑上了灯笼"+getPos().toString()));
             return ActionResult.FAIL;
         }
         return ActionResult.PASS;
@@ -109,7 +120,7 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
 
     @Override
     public void move(MovementType movementType, Vec3d movement) {
-        this.LanternExplode(null);
+        this.LanternExplode();
         this.kill();//注释掉此行使爆炸后不消失
     }
 
@@ -119,7 +130,7 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
         super.kill();
     }
 
-    public void LanternExplode(@Nullable Entity entity) {
+    public void LanternExplode() {
         this.getWorld()
                 .createExplosion(
                         this,

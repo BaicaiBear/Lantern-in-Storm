@@ -1,10 +1,14 @@
 package top.bearcabbage.lanterninstorm.entity;
 
 import net.minecraft.server.MinecraftServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.player.Spirit;
 import top.bearcabbage.lanterninstorm.utils.Config;
 import top.bearcabbage.lanterninstorm.utils.SpiritData;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +21,7 @@ public abstract class SpiritLanternEntityManager {
      */
     // List 为 [? extends SpiritLanternEntity, Map<UUID, Spirit>]的结构
     public static final Map<String, List<Object>> LANTERNS = new HashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(SpiritLanternEntityManager.class);
 
     // PlayerSpirit请求给定LSID灯笼中的灵魂
     public static Spirit getSpiritFromPlayer(String LSid, UUID uuid){
@@ -59,58 +64,86 @@ public abstract class SpiritLanternEntityManager {
         敬礼
      */
     // Mod初始化时从配置文件读取全局灯笼列表
-    public static void load(MinecraftServer server, Path path){
-        // 从配置文件读取全局灯笼列表
-        Config config = new Config(path);
-        Map<String, Object> lanternsDataRaw = config.getMap();
-        // 将lanternsDataRaw中的List<SpiritData>转换为Collection<SpiritData>
-        Map<String, Collection<SpiritData>> lanternsData = new HashMap<>();
-        lanternsDataRaw.forEach((k, v) -> {
-            Collection<SpiritData> spirits = ((List<?>)v).stream()
-                    .map(data -> new SpiritData((Spirit) data))
-                    .collect(Collectors.toList());
-            lanternsData.put(k, spirits);
-        });
-        // 用toSpirit方法将SpiritData类型转换为Spirit类型
-        if (lanternsData != null){
-            Map<String, Collection<Spirit>> lanterns = new HashMap<>();
-            lanternsData.forEach((k, v) -> {
-                Collection<Spirit> spirits = v.stream()
-                        .map(data -> data.toSpirit(server))
-                        .collect(Collectors.toList());
-                lanterns.put(k, spirits);
-            });
-            // 通过访问Spirit中的getOwnerUUID()方法将Collection<Spirit>整理为Map<UUID,Spirit>
-            lanterns.forEach((k, v) -> {
-                Map<UUID, Spirit> spirits = new HashMap<>();
-                v.forEach(spirit -> spirits.put(spirit.getOwnerUUID(), spirit));
-                LANTERNS.put(k, Arrays.asList(null, spirits));
-            });
-        } else {
-            LANTERNS.clear();
-        }
-        config.close();
+    public static void load(Path path) {
+//        // 使用ObjectInputStream读取全局灯笼列表
+//        Map<String, Object> lanternsDataRaw = new HashMap<>();
+//        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path.toFile()))){
+//            lanternsDataRaw.clear();
+//            lanternsDataRaw.putAll((Map<String, List<Object>>) ois.readObject());
+//        } catch (Exception e){
+//            lanternsDataRaw.clear();
+//            // 新建文件
+//            try {
+//                if (path.getParent() != null && Files.notExists(path.getParent())) {
+//                    Files.createDirectories(path.getParent());
+//                }
+//                if (Files.notExists(path)) {
+//                    Files.createFile(path);
+//                    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path.toFile()))){
+//                        oos.writeObject(LANTERNS);
+//                    } catch (Exception e1){
+//                        log.error("e1: ", e1);
+//                    }
+//                }
+//            } catch (Exception e1){
+//                log.error("e1: ", e1);
+//            }
+//        }
+//        // 将lanternsDataRaw中的List<SpiritData>转换为Collection<SpiritData>
+//        Map<String, Collection<SpiritData>> lanternsData = new HashMap<>();
+//        lanternsDataRaw.forEach((k, v) -> {
+//            Collection<SpiritData> spirits = ((List<?>)v).stream()
+//                    .map(data -> new SpiritData((Spirit) data))
+//                    .collect(Collectors.toList());
+//            lanternsData.put(k, spirits);
+//        });
+//        // 用toSpirit方法将SpiritData类型转换为Spirit类型
+//        if (lanternsData != null){
+//            Map<String, Collection<Spirit>> lanterns = new HashMap<>();
+//            lanternsData.forEach((k, v) -> {
+//                Collection<Spirit> spirits = v.stream()
+//                        .map(data -> data.toSpirit(server))
+//                        .collect(Collectors.toList());
+//                lanterns.put(k, spirits);
+//            });
+//            // 通过访问Spirit中的getOwnerUUID()方法将Collection<Spirit>整理为Map<UUID,Spirit>
+//            lanterns.forEach((k, v) -> {
+//                Map<UUID, Spirit> spirits = new HashMap<>();
+//                v.forEach(spirit -> spirits.put(spirit.getOwnerUUID(), spirit));
+//                LANTERNS.put(k, Arrays.asList(null, spirits));
+//            });
+//        } else {
+//            LANTERNS.clear();
+//        }
+//        config.close();
     }
 
     // Mod关闭时保存全局灯笼列表到配置文件
-    public static void save(Path path){
-        // 保存全局灯笼列表到配置文件
-        Config config = new Config(path);
-        // 取出LANTERNS中String和List<Spirit>的键值对
-        Map<String, Collection<Spirit>> lanterns = new HashMap<>();
-        LANTERNS.forEach((k, v) -> {
-            lanterns.put(k, ((Map<UUID,Spirit>)v.get(1)).values());
-        });
-        // 将lantern中Collection<Spirit>List<SpiritData>类型
-        Map<String, List<SpiritData>> lanternsData = new HashMap<>();
-        lanterns.forEach((k, v) -> {
-            List<SpiritData> spirits = v.stream()
-                    .map(SpiritData::new)
-                    .collect(Collectors.toList());
-            lanternsData.put(k, spirits);
-            config.set(k, spirits);
-        });
-        config.save();
-        config.close();
+    public static void save (Path path) {
+//        // 使用ObjectOutputStream保存全局灯笼列表到配置文件
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path.toFile()))){
+//            oos.writeObject(LANTERNS);
+//        } catch (Exception e){
+//            log.error("e: ", e);
+//        }
+//        // 保存全局灯笼列表到配置文件
+//        Config config = new Config(path);
+//        // 取出LANTERNS中String和List<Spirit>的键值对
+//        Map<String, Collection<Spirit>> lanterns = new HashMap<>();
+//        LANTERNS.forEach((k, v) -> {
+//            lanterns.put(k, ((Map<UUID,Spirit>)v.get(1)).values());
+//        });
+//        // 将lantern中Collection<Spirit>List<SpiritData>类型
+//        Map<String, List<SpiritData>> lanternsData = new HashMap<>();
+//        lanterns.forEach((k, v) -> {
+//            List<SpiritData> spirits = v.stream()
+//                    .map(SpiritData::new)
+//                    .collect(Collectors.toList());
+//            lanternsData.put(k, spirits);
+//            config.set(k, spirits);
+//        });
+//        config.save();
+//        config.close();
+
     }
 }
