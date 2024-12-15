@@ -25,7 +25,7 @@ public class LanternInStorm implements ModInitializer {
 		PlayerEventRegistrator.register();
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			// 读取全局灯笼列表
-			LanternInStormSpiritManager.load(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.ser"));
+			//LanternInStormSpiritManager.load(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/SpiritsData.json"));
 		});
 			ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			// 保存全局灯笼列表

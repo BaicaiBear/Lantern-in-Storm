@@ -7,17 +7,20 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
 public abstract class SpiritLanternEntity extends Entity {
     //这里是xxbc写的灯笼交互逻辑
-    private final long LSid = -1;
+    private long LSid = -1;
 
     public long getLSid () {
         return this.LSid;
@@ -40,6 +43,14 @@ public abstract class SpiritLanternEntity extends Entity {
         super(entityType, world);
 //        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
 //        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
+        if(!this.getWorld().isClient) {
+            if (this.getCustomName() == null) {
+                this.LSid = LanternInStormSpiritManager.lanternGenerateLSID();
+                this.setCustomName(Text.of(String.valueOf(this.LSid)));
+            } else {
+                this.LSid = Long.parseLong(this.getCustomName().getLiteralString());
+            }
+        }
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
     }
@@ -57,7 +68,7 @@ public abstract class SpiritLanternEntity extends Entity {
                 this.getWorld().setBlockState(blockPos, AbstractFireBlock.getState(this.getWorld(), blockPos));
             }
         }
-
+        LanternInStormSpiritManager.lanternPosUpdate(this.getLSid(), GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
     }
 
     protected void writeCustomDataToNbt(NbtCompound nbt) {

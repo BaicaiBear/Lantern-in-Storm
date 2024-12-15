@@ -2,15 +2,19 @@ package top.bearcabbage.lanterninstorm.player;
 
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
-import top.bearcabbage.lanterninstorm.interfaces.PlayerManagerAccessor;
-import top.bearcabbage.lanterninstorm.team.Team;
+import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
+import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -57,6 +61,8 @@ public class Player {
         spiritsBanlance = data.getInt("spiritBanlance");
         LSTick = 0;
         tiredTick = 0;
+        spiritsBanlance = 100;
+        System.out.println(this.spiritsBanlance);
     }
 
     public boolean onTick() {
@@ -64,12 +70,12 @@ public class Player {
     }
 
     public void onTiredTick() {
-        this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 3*TICK_INTERVAL, 0, false, true));
-        if(++tiredTick >GRACE_TICK){
-            if(debuffTick++%DAMAGE_INTERVAL==0){
-                this.player.damage(player.getDamageSources().genericKill(),DAMAGE);
-            }
-        }
+//        this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 3*TICK_INTERVAL, 0, false, true));
+//        if(++tiredTick >GRACE_TICK){
+//            if(debuffTick++%DAMAGE_INTERVAL==0){
+//                this.player.damage(player.getDamageSources().genericKill(),DAMAGE);
+//            }
+//        }
     }
 
     public void onRestTick() {
@@ -103,6 +109,10 @@ public class Player {
         this.spiritsBanlance++;
     }
 
+    public boolean isSafe(){
+        return LanternInStormSpiritManager.playerIsSafe(this.player);
+    }
+
     public BlockPos getRtpSpawn() {
         if(this.rtpSpawn == null) {
             return player.getSpawnPointPosition();
@@ -120,6 +130,20 @@ public class Player {
         data.putIntArray("spawnpoint", new int[]{pos.getX(), pos.getY(), pos.getZ()});
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
         return true;
+    }
+
+    public ActionResult distributeSpirits(SpiritLanternEntity entity, int spirits) {
+        GlobalPos pos = GlobalPos.create(entity.getWorld().getRegistryKey(),entity.getBlockPos());
+        if(spirits > spiritsBanlance){
+            this.player.sendMessage(Text.of("灵魂不够了～～～"));
+            return ActionResult.FAIL;
+        }
+        if(LanternInStormSpiritManager.playerDistributeSpirits(player, pos, spirits)){
+            spiritsBanlance -= spirits;
+            this.player.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
+            return ActionResult.FAIL;
+        }
+        return ActionResult.FAIL;
     }
 
 //    public boolean isTeamed() {

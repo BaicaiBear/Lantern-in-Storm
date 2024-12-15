@@ -8,7 +8,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
-import top.bearcabbage.lanterninstorm.team.TeamManager;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -49,7 +48,7 @@ public class LanternInStormCommands {
                                 if (targetPlayer.getUuid().equals(player.getUuid())) {
                                     return sendErrorFeedback(source, "不能向自己发送队伍邀请");
                                 }//检测自己
-                                if (TeamManager.sendInvitation(player, targetPlayer)) {
+                                if (true) {
                                     return sendSuccessFeedback(source, "已向 " + targetPlayer.getName().getLiteralString() + " 发送队伍邀请");
                                 } else {
                                     return sendErrorFeedback(source, "无法发送邀请: 目标玩家已有未处理的邀请或已达队伍人数限制");
@@ -66,7 +65,7 @@ public class LanternInStormCommands {
                             ServerPlayerEntity player = source.getPlayer();
                             ServerPlayerEntity sender = context.getArgument("sender", ServerPlayerEntity.class);
 
-                            if (TeamManager.acceptInvitation(player, sender)) {
+                            if (true) {
                                 return sendSuccessFeedback(source, "成功接受来自 " + sender.getName().getString() + " 的邀请并加入队伍");
                             } else {
                                 return sendErrorFeedback(source, "没有来自 " + sender.getName().getString() + " 的未处理邀请或接受邀请失败");
@@ -77,13 +76,9 @@ public class LanternInStormCommands {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
                         // 检查是否存在多个邀请
-                        long multipleInvitationsCount = TeamManager.pendingInvitations.values().stream()
-                                .filter(inv -> inv.recipient().equals(player))
-                                .count();
-                        if (multipleInvitationsCount > 1) {
-                            return sendErrorFeedback(source, "您有多个未处理的邀请，请先使用 /cet list invite 来查看并管理它们。");
-                        }
-                        if (TeamManager.acceptInvitation(player)) {
+
+
+                        if (true) {
                             return sendSuccessFeedback(source, "成功接受邀请并加入队伍");
                         } else {
                             return sendErrorFeedback(source, "没有未处理的邀请或接受邀请失败");
@@ -98,7 +93,7 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        if (TeamManager.denyInvitation(player)) {
+                        if (true) {
                             return sendSuccessFeedback(source, "成功清空邀请");
                         } else {
                             return sendErrorFeedback(source, "没有未处理的邀请");
@@ -113,7 +108,7 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        if (TeamManager.LeaveTeam(player)) {
+                        if (true) {
                             return sendSuccessFeedback(source, "成功退出队伍");
                         } else {
                             return sendErrorFeedback(source, "无法退出队伍: 您没有在任何队伍中");
@@ -133,7 +128,7 @@ public class LanternInStormCommands {
                                 if (player.getUuid().equals(targetPlayer.getUuid())) {
                                     return sendErrorFeedback(source, "您不能移除自己");
                                 }//检测自己
-                                if (TeamManager.removeMember(targetPlayer, player)) {
+                                if (true) {
                                     return sendSuccessFeedback(source, "成功移除队员: " + targetPlayer.getName().getLiteralString());
                                 } else {
                                     return sendErrorFeedback(source, "无法移除队员: 玩家不在队伍中或您不是队伍的发起者");
@@ -148,7 +143,7 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        if (TeamManager.disbandTeam(player)) {
+                        if (true) {
                             return sendSuccessFeedback(source, "成功解散队伍");
                         } else {
                             return sendErrorFeedback(source, "无法解散队伍: 您不是队伍的发起者");
@@ -163,12 +158,12 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        String myTeamInfo = TeamManager.listMyTeam(player);
-                        if (myTeamInfo.isEmpty()) {
-                            sendErrorFeedback(source, "您当前没有在任何队伍中");
-                        } else {
-                            sendSuccessFeedback(source, myTeamInfo);
-                        }
+                        //String myTeamInfo = TeamManager.listMyTeam(player);
+//                        if (myTeamInfo.isEmpty()) {
+//                            sendErrorFeedback(source, "您当前没有在任何队伍中");
+//                        } else {
+//                            sendSuccessFeedback(source, myTeamInfo);
+//                        }
                     } else {
                         sendErrorFeedback(source, "该命令只能由玩家执行");
                     }
@@ -191,15 +186,15 @@ public class LanternInStormCommands {
                     if (targetPlayer == null) {
                         return sendErrorFeedback(source, "该命令只能由玩家执行");
                     }
-                    int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
-                    return sendSuccessFeedback(source, "您的灵魂质量为: " + mass + "g");
+                   // int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                    return sendSuccessFeedback(source, "您的灵魂质量为: " + 0 + "g");
                 })
                 .then(argument("targetPlayer", EntityArgumentType.player())
                         .executes(context -> {
                             // 如果提供了targetPlayer参数，使用参数指定的玩家
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
-                            int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                            int mass = 0;//(targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
                             return sendSuccessFeedback(source, targetPlayer.getName().getLiteralString() + " 的灵魂质量为: " + mass + "g");
                         })
                 ));
@@ -207,12 +202,12 @@ public class LanternInStormCommands {
         ceRoot.then(literal("list")
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
-                    String allTeamsInfo = TeamManager.listAllTeams();
-                    if (allTeamsInfo.equals("当前所有队伍列表:")) {
-                        sendErrorFeedback(source, "当前没有队伍存在");
-                    } else {
-                        sendSuccessFeedback(source, allTeamsInfo);
-                    }
+                    //String allTeamsInfo = TeamManager.listAllTeams();
+//                    if (allTeamsInfo.equals("当前所有队伍列表:")) {
+//                        sendErrorFeedback(source, "当前没有队伍存在");
+//                    } else {
+//                        sendSuccessFeedback(source, allTeamsInfo);
+//                    }
                     return 1;
                 })
         );
@@ -226,7 +221,7 @@ public class LanternInStormCommands {
                                     ServerCommandSource source = context.getSource();
                                     ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "targetPlayer");
                                     int mass = IntegerArgumentType.getInteger(context, "mass");
-                                    if (targetPlayer instanceof PlayerAccessor cePlayerAccessor && cePlayerAccessor.getLS().getSpirit().addMass(mass)) {
+                                    if (targetPlayer instanceof PlayerAccessor cePlayerAccessor && true) {
                                         return sendSuccessFeedback(source, "成功增重 " + targetPlayer.getName().getLiteralString() + " 的灵魂 " + mass + "g");
                                     } else {
                                         return sendErrorFeedback(source, "失败了呜呜呜");
@@ -238,7 +233,7 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        int mass = (player instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                        int mass = 0;//(player instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
                         sendSuccessFeedback(source, "您的灵魂质量为: " + mass + "g");
                         return mass; // 返回等级信息
                     }

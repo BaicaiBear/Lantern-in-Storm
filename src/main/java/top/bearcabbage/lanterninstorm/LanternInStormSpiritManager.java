@@ -50,8 +50,10 @@ public abstract class LanternInStormSpiritManager {
         long LSID = posToLSID(pos);
         if (LSID == -1) return false;
         Map<Long, Integer> validLantern = playerData.computeIfAbsent(player.getUuidAsString(), k -> new HashMap<>());
+        Integer v = validLantern.get(LSID);
+        if (v == null) v = 0;
         // 如果要加灯笼内的灵魂上限，可以在这里加条件判断
-        validLantern.put(LSID, spirits);
+        validLantern.put(LSID, v+spirits);
         return true; // 返回true后由玩家自己调用方法，减少spiritsBanlance
     }
 
@@ -106,23 +108,22 @@ public abstract class LanternInStormSpiritManager {
             System.out.println(e.toString());
         }
         for (Map.Entry<Long, String> entry : lanternPosStringMap.entrySet()) {
-            String[] parts = entry.getValue().split(" ");
+            String[] parts = entry.getValue().split("] BlockPos\\{");
+            parts[0] = parts[0].replace("ResourceKey[minecraft:dimension / ","").replace("minecraft:","");
+            parts[1] = parts[1].replace("}", "").replace("x=","").replace("y=","").replace("z=","");
+
             if (parts.length != 2) {
                 throw new IllegalArgumentException("Invalid string format");
             }
             Identifier dimension = Identifier.ofVanilla(parts[0]);
-
-            parts[1] = parts[1].replace("(", "").replace(")", "");
             String[] parts2 = parts[1].split(", ");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException("Invalid string format");
-            }
-            int x = Integer.parseInt(parts[0]);
-            int y = Integer.parseInt(parts[1]);
-            int z = Integer.parseInt(parts[2]);
+            int x = Integer.parseInt(parts2[0]);
+            int y = Integer.parseInt(parts2[1]);
+            int z = Integer.parseInt(parts2[2]);
             BlockPos pos = new BlockPos(x,y,z);
-
-            lanternPosFromLSID.put(entry.getKey(), GlobalPos.create(RegistryKey.of(RegistryKeys.WORLD, dimension), pos));
+            System.out.println(entry.getKey());
+            long LSID = entry.getKey();
+            lanternPosFromLSID.put(LSID, GlobalPos.create(RegistryKey.of(RegistryKeys.WORLD, dimension), pos));
         }
         data.close();
     }
