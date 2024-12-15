@@ -6,6 +6,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -13,7 +14,7 @@ import java.util.UUID;
     专门用于描述Spirit的类
     之前的玩家属性Spirit类被重命名为PlayerSpirit
  */
-public class Spirit {
+public class Spirit implements Serializable {
     UUID ownerUUID;
     Vec3d pos;
     int spiritMass;
