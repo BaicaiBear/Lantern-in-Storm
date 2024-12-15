@@ -2,7 +2,8 @@
 
 # Lantern-in-Storm
 
-[![GitHub license](https://img.shields.io/badge/license-CC_1.0-blue)](https://creativecommons.org/licenses/by-nc-sa/1.0/)
+[![GitHub license](https://img.shields.io/github/license/BaicaiBear/Lantern-in-Storm
+)](https://img.shields.io/github/license/BaicaiBear/Lantern-in-Storm)
 
 > Once upon a time, there was a Mirror Tree.
  
