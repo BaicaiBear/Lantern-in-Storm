@@ -11,7 +11,4 @@ public class PrivateLantern extends SpiritLanternEntity {
     public PrivateLantern(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
     }
-
-
-
 }

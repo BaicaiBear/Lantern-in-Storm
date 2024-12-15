@@ -2,10 +2,7 @@ package top.bearcabbage.lanterninstorm.entity;
 
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.*;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -15,10 +12,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import org.jetbrains.annotations.Nullable;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
 import top.bearcabbage.lanterninstorm.interfaces.EntityAccessor;
@@ -28,7 +24,7 @@ import java.util.*;
 //参考net.minecraft.entity.decoration.EndCrystalEntity
 public abstract class SpiritLanternEntity extends Entity implements EntityAccessor {
     //这里是xxbc写的灯笼交互逻辑
-    private String LSid;
+    private final String LSid;
     private final Map<UUID, Spirit> SPIRIT = new HashMap<>();
 
     public String getLSid () {
@@ -81,30 +77,12 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
             .dimensions(5.0F, 5.0F)
             .maxTrackingRange(64)
             .trackingTickInterval(Integer.MAX_VALUE).build("PublicLantern"));
-    public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world, double[] pistonMovementDelta) {
+    public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
         this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
         SpiritLanternEntityManager.loadSpiritLanternEntity(this);
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
-    }
-
-    @Override
-    public void move(MovementType movementType, Vec3d movement) {
-        this.kill();
-    }
-
-    @Override
-    public void kill() {
-        this.LanternDestroyed(this.getDamageSources().generic());
-        super.kill();
-    }
-
-    public void LanternDestroyed(EndCrystalEntity enderCrystal, DamageSource source) {
-    }
-
-    protected Entity.MoveEffect getMoveEffect() {
-        return MoveEffect.NONE;
     }
 
     protected void initDataTracker(DataTracker.Builder builder) {
@@ -127,6 +105,32 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
     }
 
     protected void readCustomDataFromNbt(NbtCompound nbt) {
+    }
+
+    @Override
+    public void move(MovementType movementType, Vec3d movement) {
+        this.LanternExplode(null);
+        this.kill();//注释掉此行使爆炸后不消失
+    }
+
+    @Override
+    public void kill() {
+        //add new events here
+        super.kill();
+    }
+
+    public void LanternExplode(@Nullable Entity entity) {
+        this.getWorld()
+                .createExplosion(
+                        this,
+                        getDamageSources().generic(),
+                        null,
+                        this.getX(),
+                        this.getY()+1,
+                        this.getZ(),
+                        2F,
+                        false,
+                        World.ExplosionSourceType.BLOCK);
     }
 
     public boolean canHit() {
