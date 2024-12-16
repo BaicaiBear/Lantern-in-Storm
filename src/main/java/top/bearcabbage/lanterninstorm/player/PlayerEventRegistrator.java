@@ -1,15 +1,16 @@
 package top.bearcabbage.lanterninstorm.player;
 
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import org.lwjgl.glfw.GLFW;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
@@ -58,4 +59,18 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
             } else return ActionResult.PASS;
         });
     }
+    //注册了滚轮事件绑定 但不知道怎么调用
+        KeyBinding scrollUpBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.lanterninstorm.scroll.up",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_KP_ADD, // 假设使用小键盘的加号键模拟向上滚动
+                "category.lanterninstorm.keys"
+        ));
+
+        KeyBinding scrollDownBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.lanterninstorm.scroll.down",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_KP_SUBTRACT, // 假设使用小键盘的减号键模拟向下滚动
+                "category.lanterninstorm.keys"
+        ));
 }
