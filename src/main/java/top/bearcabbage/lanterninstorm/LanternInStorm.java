@@ -18,9 +18,10 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityManager;
+//import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityManager;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityRenderer;
 import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
+import top.bearcabbage.lanterninstorm.player.SpiritManager;
 
 public class LanternInStorm implements ModInitializer {
 	public static final String MOD_ID = "lantern-in-storm";
@@ -36,11 +37,11 @@ public class LanternInStorm implements ModInitializer {
 		PlayerEventRegistrator.register();
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			// 读取全局灯笼列表
-			SpiritLanternEntityManager.load(server,FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.json"));
+			SpiritManager.load(server,FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.json"));
 		});
 			ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			// 保存全局灯笼列表
-			SpiritLanternEntityManager.save(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.json"));
+			SpiritManager.save(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Strom/lanterns.json"));
 		});
 	}
 }

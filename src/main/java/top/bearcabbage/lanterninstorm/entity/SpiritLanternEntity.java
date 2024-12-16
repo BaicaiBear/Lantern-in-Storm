@@ -18,32 +18,17 @@ import org.jetbrains.annotations.Nullable;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
 import top.bearcabbage.lanterninstorm.interfaces.EntityAccessor;
-import top.bearcabbage.lanterninstorm.player.Spirit;
+//import top.bearcabbage.lanterninstorm.player.Spirit;
 import java.util.*;
 
-//参考net.minecraft.entity.decoration.EndCrystalEntity
+
 public abstract class SpiritLanternEntity extends Entity implements EntityAccessor {
-    //这里是xxbc写的灯笼交互逻辑
-    private final String LSid;
-    private final Map<UUID, Spirit> SPIRIT = new HashMap<>();
-
-    public String getLSid () {
-        return this.LSid;
-    }// 获取灯笼实体的LSid
-
-    public Spirit getSpirit (UUID uuid) {
-        return SPIRIT.get(uuid);
-    }// 获取灯笼实体的灵魂
-
-    public Object getSpiritMap() {
-        return SPIRIT;
-    }
 
     public ActionResult onRiding (PlayerEntity player) {
         if (this.startRiding(player)) {
             // 对SPIRIT中所有的Spirit调用onRide(ServerPlayerEntity player)
             if (player instanceof ServerPlayerEntity serverPlayer) {
-                SPIRIT.values().forEach(spirit -> spirit.onRide(serverPlayer));
+//                SPIRIT.values().forEach(spirit -> spirit.onRide(serverPlayer));
             }
             return ActionResult.FAIL;
         }
@@ -53,7 +38,7 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
     public ActionResult onPutting () {
         this.stopRiding();
         // 对SPIRIT中所有的Spirit调用onPutdown(SpiritLanternEntity entity)
-        SPIRIT.values().forEach(spirit -> spirit.onPutdown(this));
+//        SPIRIT.values().forEach(spirit -> spirit.onPutdown(this));
         return ActionResult.FAIL;
     }// 玩家放下灯笼
 
@@ -79,8 +64,8 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
             .trackingTickInterval(Integer.MAX_VALUE).build("PublicLantern"));
     public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
-        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
-        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
+//        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
+//        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
     }
@@ -147,6 +132,6 @@ public abstract class SpiritLanternEntity extends Entity implements EntityAccess
 
     @Override
     public void preRemoved() {
-        SpiritLanternEntityManager.unloadSpiritLanternEntity(this);
+//        SpiritLanternEntityManager.unloadSpiritLanternEntity(this);
     }// 使用Mixin处理区块卸载时对Manager对通知
 }

@@ -2,6 +2,7 @@ package top.bearcabbage.lanterninstorm.player;
 
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
@@ -37,7 +38,7 @@ public class Player {
         this.player = player;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         if(data == null){
-            spirit = new PlayerSpirit(player, true);
+//            spirit = new PlayerSpirit(player, true);
             isTeamed = false;
             data = new NbtCompound();
             data.putInt("level", 0);data.putIntArray("rtpspawn", new int[]{-1});
@@ -72,7 +73,10 @@ public class Player {
         }
     }
 
-    public void onUnstableTick() {}
+    public void onUnstableTick() {
+//        this.player.damage(null, 1);
+        this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 100));
+    }
 
     public void onDeath() {
         LSTick = debuffTick = tiredTick = 0;
@@ -83,7 +87,7 @@ public class Player {
     }
 
     public void onGrantAdvancement(Advancement advancement) {
-        this.spirit.addMass(1);
+        SpiritManager.increase_left(player.getUuid(), 1);
     }
 
     public BlockPos getRtpSpawn() {
