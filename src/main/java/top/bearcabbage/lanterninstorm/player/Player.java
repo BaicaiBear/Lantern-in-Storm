@@ -2,19 +2,16 @@ package top.bearcabbage.lanterninstorm.player;
 
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.advancement.Advancement;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.GlobalPos;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
-import top.bearcabbage.lanterninstorm.player.SpiritManager;
+import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 import java.util.Map;
@@ -42,7 +39,7 @@ public class Player {
         this.player = player;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         if(data == null){
-            SpiritManager.set_left(this.player.getUuid(), INIT_SPIRIT);
+            LanternInStormSpiritManager.set_left(this.player.getUuid(), INIT_SPIRIT);
             data = new NbtCompound();
             data.putIntArray("rtpspawn", new int[]{-1});
             PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
@@ -88,7 +85,7 @@ public class Player {
     }
 
     public void onGrantAdvancement(Advancement advancement) {
-        SpiritManager.increase_left(player.getUuid(), 1);
+        LanternInStormSpiritManager.increase_left(player.getUuid(), 1);
     }
 
     public BlockPos getRtpSpawn() {
@@ -113,8 +110,8 @@ public class Player {
     public ActionResult distributeSpirits(SpiritLanternEntity lanternEntity, int spirits) {
         UUID player = this.player.getUuid();
         UUID lantern = lanternEntity.getUuid();
-        int player_left = SpiritManager.get_left(player);
-        int lantern_left = SpiritManager.get(player, lantern);
+        int player_left = LanternInStormSpiritManager.get_left(player);
+        int lantern_left = LanternInStormSpiritManager.get(player, lantern);
         if(spirits > player_left){
             this.player.sendMessage(Text.of("灵魂不够了～～～"));
             return ActionResult.FAIL;
@@ -123,24 +120,24 @@ public class Player {
             this.player.sendMessage(Text.of("灯笼空了…………"));
             return ActionResult.FAIL;
         }
-        SpiritManager.increase_left(player, -spirits);
-        SpiritManager.increase(player, lantern, spirits);
+        LanternInStormSpiritManager.increase_left(player, -spirits);
+        LanternInStormSpiritManager.increase(player, lantern, spirits);
         this.player.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
         return ActionResult.SUCCESS;
 
     }
 
     public int getLeftMass(){
-        return SpiritManager.get_left(player.getUuid());
+        return LanternInStormSpiritManager.get_left(player.getUuid());
     }
 
     public int getTotalMass(){
-        return SpiritManager.get_sum(player.getUuid());
+        return LanternInStormSpiritManager.get_sum(player.getUuid());
     }
 
     // 检查玩家是否在安全区内
     public boolean isSafe() {
-        Map<UUID, Integer> lanterns_and_spirits = SpiritManager.spirit_mass.getOrDefault(player.getUuid(), null);
+        Map<UUID, Integer> lanterns_and_spirits = LanternInStormSpiritManager.spirit_mass.getOrDefault(player.getUuid(), null);
         if (lanterns_and_spirits == null) {
             return false;
         }
@@ -148,7 +145,7 @@ public class Player {
             if(lantern==null) continue;
             int spirit_num = lanterns_and_spirits.get(lantern);
             if (spirit_num == 0) continue;
-            GlobalPos pos = SpiritManager.lantern_pos.get(lantern);
+            GlobalPos pos = LanternInStormSpiritManager.lantern_pos.get(lantern);
             if (player.getEntityWorld().getRegistryKey()!=pos.dimension()) continue;
             if (HorizontalDistance(player.getPos(), pos.pos().toCenterPos()) < spirit_num * DISTANCE_PER_SPIRIT) return true;
 

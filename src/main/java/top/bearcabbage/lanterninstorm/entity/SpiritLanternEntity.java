@@ -8,18 +8,13 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
-import top.bearcabbage.lanterninstorm.player.SpiritManager;
-
-import java.util.Map;
-import java.util.UUID;
 
 import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 
@@ -70,7 +65,7 @@ public abstract class SpiritLanternEntity extends Entity {
                 this.getWorld().setBlockState(blockPos, AbstractFireBlock.getState(this.getWorld(), blockPos));
             }
         }
-        SpiritManager.lanternPosUpdate(this);
+        LanternInStormSpiritManager.lanternPosUpdate(this);
     }
 
     protected void writeCustomDataToNbt(NbtCompound nbt) {
@@ -88,7 +83,7 @@ public abstract class SpiritLanternEntity extends Entity {
     @Override
     public void kill() {
         //add new events here
-        SpiritManager.remove_lantern_records(super.uuid);
+        LanternInStormSpiritManager.remove_lantern_records(super.uuid);
         super.kill();
     }
 

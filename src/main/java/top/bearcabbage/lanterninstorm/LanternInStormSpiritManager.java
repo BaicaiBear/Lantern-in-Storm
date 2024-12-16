@@ -1,6 +1,5 @@
-package top.bearcabbage.lanterninstorm.player;
+package top.bearcabbage.lanterninstorm;
 
-import com.google.gson.JsonSyntaxException;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
@@ -13,10 +12,8 @@ import top.bearcabbage.lanterninstorm.utils.Config;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
-public abstract class SpiritManager {
+public abstract class LanternInStormSpiritManager {
 
     /*
     无向图。两个uuid分别对应玩家和灯笼，没有顺序，因此每个spirit被存储两次。

@@ -10,7 +10,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
-import top.bearcabbage.lanterninstorm.player.SpiritManager;
 
 public class LanternInStorm implements ModInitializer {
 	public static final String MOD_ID = "lantern-in-storm";
@@ -26,11 +25,11 @@ public class LanternInStorm implements ModInitializer {
 		PlayerEventRegistrator.register();
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			// 读取全局灯笼列表
-			SpiritManager.load(server,FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Storm/SpiritsData.json"));
+			LanternInStormSpiritManager.load(server,FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Storm/SpiritsData.json"));
 		});
 			ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			// 保存全局灯笼列表
-			SpiritManager.save(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Storm/SpiritsData.json"));
+			LanternInStormSpiritManager.save(FabricLoader.getInstance().getConfigDir().resolve("Lantern-in-Storm/SpiritsData.json"));
 		});
 	}
 }
