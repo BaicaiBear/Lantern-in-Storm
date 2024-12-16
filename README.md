@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/BaicaiBear/Lantern-in-Storm
 )](https://img.shields.io/github/license/BaicaiBear/Lantern-in-Storm)
 
-> Once upon a time, there was a Mirror Tree.
+> Once upon a time, there was a Mirror Tree, yet merely the shadow of a dream.
 
 为了便于使用，在 12.30 之前，`README.md` 将会以中文为主要工作语言。
 
