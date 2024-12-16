@@ -1,9 +1,14 @@
 package top.bearcabbage.lanterninstorm.player;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Items;
@@ -14,8 +19,23 @@ import org.lwjgl.glfw.GLFW;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayload;
+import top.bearcabbage.lanterninstorm.network.NetworkingConstants;
 
 public abstract class PlayerEventRegistrator extends LanternInStorm {
+
+    @Environment(EnvType.CLIENT)
+    public static void registerClient() {
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if ((!(player.getPassengerList().stream().anyMatch(entity1 -> entity1 instanceof SpiritLanternEntity) || player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT))) && entity instanceof SpiritLanternEntity lantern) {
+                // 玩家与灯笼右键交互的操作
+                player.sendMessage(Text.of("Client_Right"));
+                ClientPlayNetworking.send(new DistributingSpiritsPayload(lantern.getUuid(), 1));
+                return ActionResult.SUCCESS;
+            }
+            return ActionResult.PASS;
+        });
+    }
 
     public static void register() {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
@@ -33,8 +53,9 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                     return ActionResult.PASS;
                 } else if (player instanceof ServerPlayerEntity serverPlayer) {
                     // 玩家与灯笼右键交互的操作
-                    player.sendMessage(Text.of("Right"));
-                    return ((PlayerAccessor)serverPlayer).getLS().distributeSpirits(lantern, 1);
+                    return ActionResult.PASS;
+//                    player.sendMessage(Text.of("Right"));
+//                    return ((PlayerAccessor)serverPlayer).getLS().distributeSpirits(lantern, 1);
                 }
             }
             return ActionResult.PASS;
