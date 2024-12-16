@@ -102,7 +102,15 @@ public abstract class LanternInStormSpiritManager {
         Config data = new Config(path);
         Map<String, String> lanternPosStringMap = new HashMap<>();
         try {
-            playerData.putAll((Map<String, Map<Long, Integer>>)data.get("playerData", Map.class));
+            Map<String, Object> playerdata1 = data.get("playerData", Map.class);
+            // 分步将playerdata转换为Map<String, Map<Long, Integer>>的正确格式，然后写入playerData
+            for (Map.Entry<String, Object> entry : playerdata1.entrySet()) {
+                Map<Long, Integer> playerdata2 = new HashMap<>();
+                for(Map.Entry<String, String> entry2 : ((Map<String, String>)entry.getValue()).entrySet()) {
+                    playerdata2.put(Long.parseLong(entry2.getKey()), Integer.parseInt(entry2.getValue()));
+                }
+                playerData.put(entry.getKey(), playerdata2);
+            }
             lanternPosStringMap = data.get("lanternPosFromLSID",Map.class);
         } catch (Exception e) {
             System.out.println(e.toString());
