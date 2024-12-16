@@ -11,11 +11,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.GlobalPos;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
-import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
+import top.bearcabbage.lanterninstorm.player.SpiritManager;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,13 +26,8 @@ import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 public class Player {
     private ServerPlayerEntity player;
     private BlockPos rtpSpawn;
-    private int spiritsTotal;
-    private int spiritsBanlance;
     private static final int INIT_SPIRIT = 5;
-//    private Team team;
-//    private boolean isTeamed;
-
-
+    private static final int DISTANCE_PER_SPIRIT = 10;
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -45,11 +42,8 @@ public class Player {
         this.player = player;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         if(data == null){
-            spiritsTotal = INIT_SPIRIT;
-            spiritsBanlance = spiritsTotal;
+            SpiritManager.set_left(this.player.getUuid(), INIT_SPIRIT);
             data = new NbtCompound();
-            data.putInt("spiritsTotal", INIT_SPIRIT);
-            data.putInt("spiritsBanlance", INIT_SPIRIT);
             data.putIntArray("rtpspawn", new int[]{-1});
             PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
         }
@@ -57,12 +51,8 @@ public class Player {
         if (posVec.length == 3) {
             this.rtpSpawn = new BlockPos(posVec[0], posVec[1], posVec[2]);
         }
-        spiritsTotal = data.getInt("spiritTotal");
-        spiritsBanlance = data.getInt("spiritBanlance");
         LSTick = 0;
         tiredTick = 0;
-        spiritsBanlance = 100;
-        System.out.println(this.spiritsBanlance);
     }
 
     public boolean onTick() {
@@ -78,39 +68,27 @@ public class Player {
 //        }
     }
 
+    public int getTiredTick() {
+        return tiredTick;
+    }
+
     public void onRestTick() {
         if(--tiredTick ==0){
-            this.player.removeStatusEffect(StatusEffects.BLINDNESS);
+            this.player.removeStatusEffect(StatusEffects.WITHER);
             debuffTick = 0;
         }
     }
 
-    public void onUnstableTick() {}
+    public void onUnstableTick() {
+        this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 200));
+    }
 
     public void onDeath() {
         LSTick = debuffTick = tiredTick = 0;
     }
 
-
-    public int getTiredTick() {
-        return tiredTick;
-    }
-
-    public int getSpiritsTotal() {
-        return this.spiritsTotal;
-    }
-
-    public int getSpiritsBanlance(){
-        return this.spiritsBanlance;
-    }
-
     public void onGrantAdvancement(Advancement advancement) {
-        this.spiritsTotal++;
-        this.spiritsBanlance++;
-    }
-
-    public boolean isSafe(){
-        return LanternInStormSpiritManager.playerIsSafe(this.player);
+        SpiritManager.increase_left(player.getUuid(), 1);
     }
 
     public BlockPos getRtpSpawn() {
@@ -132,56 +110,57 @@ public class Player {
         return true;
     }
 
-    public ActionResult distributeSpirits(SpiritLanternEntity entity, int spirits) {
-        GlobalPos pos = GlobalPos.create(entity.getWorld().getRegistryKey(),entity.getBlockPos());
-        if(spirits > spiritsBanlance){
+    public ActionResult distributeSpirits(SpiritLanternEntity lanternEntity, int spirits) {
+        UUID player = this.player.getUuid();
+        UUID lantern = lanternEntity.getUuid();
+        int player_left = SpiritManager.get_left(player);
+        int lantern_left = SpiritManager.get(player, lantern);
+        if(spirits > player_left){
             this.player.sendMessage(Text.of("灵魂不够了～～～"));
             return ActionResult.FAIL;
         }
-        if(LanternInStormSpiritManager.playerDistributeSpirits(player, pos, spirits)){
-            spiritsBanlance -= spirits;
-            this.player.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
+        if(spirits + lantern_left < 0){
+            this.player.sendMessage(Text.of("灯笼空了…………"));
             return ActionResult.FAIL;
         }
-        return ActionResult.FAIL;
+        SpiritManager.increase_left(player, -spirits);
+        SpiritManager.increase(player, lantern, spirits);
+        this.player.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
+        return ActionResult.SUCCESS;
+
     }
 
-//    public boolean isTeamed() {
-//        return isTeamed;
-//    }
+    public int getLeftMass(){
+        return SpiritManager.get_left(player.getUuid());
+    }
 
-//    public boolean joinTeam(Team newTeam) {
-//        lock.lock();
-//        try {
-//            if(this.isTeamed || newTeam == null) {
-//                return false;
-//            }
-//            isTeamed = true;
-//            this.team = newTeam;
-//            return true;
-//        } finally {
-//            lock.unlock();
-//        }
-//    }
+    public int getTotalMass(){
+        return SpiritManager.get_sum(player.getUuid());
+    }
+
+    // 检查玩家是否在安全区内
+    public boolean isSafe() {
+        Map<UUID, Integer> lanterns_and_spirits = SpiritManager.spirit_mass.getOrDefault(player.getUuid(), null);
+        if (lanterns_and_spirits == null) {
+            return false;
+        }
+        for(UUID lantern: lanterns_and_spirits.keySet()){
+            if(lantern==null) continue;
+            int spirit_num = lanterns_and_spirits.get(lantern);
+            if (spirit_num == 0) continue;
+            GlobalPos pos = SpiritManager.lantern_pos.get(lantern);
+            if (player.getEntityWorld().getRegistryKey()!=pos.dimension()) continue;
+            if (HorizontalDistance(player.getPos(), pos.pos().toCenterPos()) < spirit_num * DISTANCE_PER_SPIRIT) return true;
+
+        }
 //
-//    public boolean quitTeam() {
-//        lock.lock();
-//        try {
-//            if(!this.isTeamed) {
-//                return false;
-//            }
-//            isTeamed = false;
-//            this.team = null;
-//            return true;
-//        } finally {
-//            lock.unlock();
+//        for (SpiritLanternEntity lantern : player.getEntityWorld().getNonSpectatingEntities(SpiritLanternEntity.class,
+//                Box.of(player.getPos(), MAX_SPIRIT_RADIUS * 2, MAX_SPIRIT_RADIUS * 2, MAX_SPIRIT_RADIUS * 2))) {
+//            int spirit_mass = SpiritManager.get(player.getUuid(), lantern.getUuid());
+//            if (spirit_mass == 0) continue;
+//            if (HorizontalDistance(player.getPos(), lantern.getPos()) < spirit_mass * SPIRIT_RADIUS) return true;
 //        }
-//    }
-//
-//    public Team getTeam(){
-//        return this.team;
-//    }
-
-
+        return false;
+    }
 
 }

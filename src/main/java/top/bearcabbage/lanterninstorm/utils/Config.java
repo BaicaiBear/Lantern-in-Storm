@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -110,12 +111,16 @@ public class Config {
         return gson.fromJson(jsonObject.get(key), String.class);
     }
 
+    public Map<?, ?> getMap(String key) {
+        return gson.fromJson(jsonObject.get(key), Map.class);
+    }
+
     public <T> T get(String key, Class<T> clazz) {
         return gson.fromJson(jsonObject.get(key), clazz);
     }
 
     //将整个文件内容转换为Map
-    public Map<String, Object> getMap() {
+    public Map<String, Object> getFullMap() {
         return gson.fromJson(jsonObject, Map.class);
     }
 

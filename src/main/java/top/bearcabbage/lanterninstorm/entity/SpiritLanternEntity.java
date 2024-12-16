@@ -13,18 +13,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
+import top.bearcabbage.lanterninstorm.player.SpiritManager;
+
+import java.util.Map;
+import java.util.UUID;
+
+import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
 public abstract class SpiritLanternEntity extends Entity {
     //这里是xxbc写的灯笼交互逻辑
-    private long LSid = -1;
 
-    public long getLSid () {
-        return this.LSid;
-    }// 获取灯笼实体的LSid
 
 
     //    从这里开始是HHHor写(copy)的实体代码
@@ -68,17 +69,13 @@ public abstract class SpiritLanternEntity extends Entity {
                 this.getWorld().setBlockState(blockPos, AbstractFireBlock.getState(this.getWorld(), blockPos));
             }
         }
-        if (LSid!=-1) LanternInStormSpiritManager.lanternPosUpdate(this.getLSid(), GlobalPos.create(this.getWorld().getRegistryKey(), this.getBlockPos()));
+        SpiritManager.lanternPosUpdate(this);
     }
 
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.putLong("LSID", this.LSid);
     }
 
     protected void readCustomDataFromNbt(NbtCompound nbt) {
-        if (nbt.contains("LSID", 99)) { // 99 is the NBT type ID for long
-            this.LSid = nbt.getLong("LSID");
-        } else this.LSid = LanternInStormSpiritManager.lanternGenerateLSID();
     }
 
     @Override
@@ -90,6 +87,7 @@ public abstract class SpiritLanternEntity extends Entity {
     @Override
     public void kill() {
         //add new events here
+        SpiritManager.remove_lantern_records(super.uuid);
         super.kill();
     }
 
@@ -118,6 +116,5 @@ public abstract class SpiritLanternEntity extends Entity {
             this.getVehicle().updatePassengerPosition(this);
         }
     }
-
 
 }

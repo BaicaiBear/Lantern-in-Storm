@@ -186,8 +186,9 @@ public class LanternInStormCommands {
                     if (targetPlayer == null) {
                         return sendErrorFeedback(source, "该命令只能由玩家执行");
                     }
+                    int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getTotalMass() : -1;;
                    // int mass = (targetPlayer instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
-                    return sendSuccessFeedback(source, "您的灵魂质量为: " + 0 + "g");
+                    return sendSuccessFeedback(source, "您的灵魂质量为: " + mass + "g");
                 })
                 .then(argument("targetPlayer", EntityArgumentType.player())
                         .executes(context -> {
@@ -233,7 +234,7 @@ public class LanternInStormCommands {
                 .executes(context -> {
                     ServerCommandSource source = context.getSource();
                     if (source.getEntity() instanceof ServerPlayerEntity player) {
-                        int mass = 0;//(player instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getSpirit().getMass() : -1;
+                        int mass = (player instanceof PlayerAccessor cePlayerAccessor) ? cePlayerAccessor.getLS().getTotalMass() : -1;
                         sendSuccessFeedback(source, "您的灵魂质量为: " + mass + "g");
                         return mass; // 返回等级信息
                     }
