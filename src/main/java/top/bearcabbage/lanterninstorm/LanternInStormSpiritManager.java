@@ -112,7 +112,6 @@ public abstract class LanternInStormSpiritManager {
         config.set("spirit_mass", spirit_mass);
         config.set("lantern_pos", lantern_pos);
         config.save();
-        config.close();
     }
     public static void load(MinecraftServer server, Path path){
         // 从配置文件读取全局灯笼列表
@@ -158,7 +157,7 @@ public abstract class LanternInStormSpiritManager {
                 spirit_mass = new HashMap<>();
                 lantern_pos = new HashMap<>();
             }
-            config.close();
+            config.save();
         } catch(Exception e){
             System.out.println(e.toString());
             spirit_mass = new HashMap<>();

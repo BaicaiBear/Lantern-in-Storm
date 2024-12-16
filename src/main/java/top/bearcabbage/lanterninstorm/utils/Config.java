@@ -58,57 +58,8 @@ public class Config {
         }
     }
 
-    public void set(String key, int value) {
-        jsonObject.addProperty(key, value);
-    }
-
-    public void set(String key, double value) {
-        jsonObject.addProperty(key, value);
-    }
-
-    public void set(String key, boolean value) {
-        jsonObject.addProperty(key, value);
-    }
-
-    public void set(String key, List<Object> value) {
-        jsonObject.add(key, gson.toJsonTree(value));
-    }
-
-    public void set(String key, Vector<Object> value) {
-        jsonObject.add(key, gson.toJsonTree(value));
-    }
-
     public void set(String key, Object value) {
         jsonObject.add(key, gson.toJsonTree(value));
-    }
-
-    public void set(String key, String value) {
-        jsonObject.addProperty(key, value);
-    }
-
-    public int getInt(String key) {
-        return jsonObject.get(key).getAsInt();
-    }
-
-    public double getDouble(String key) {
-        return jsonObject.get(key).getAsDouble();
-    }
-
-    public boolean getBoolean(String key) {
-        return jsonObject.get(key).getAsBoolean();
-    }
-
-
-    public List<Object> getList(String key) {
-        return gson.fromJson(jsonObject.get(key), List.class);
-    }
-
-    public Vector<Object> getVector(String key) {
-        return gson.fromJson(jsonObject.get(key), Vector.class);
-    }
-
-    public String getString(String key) {
-        return gson.fromJson(jsonObject.get(key), String.class);
     }
 
     public Map<?, ?> getMap(String key) {
@@ -118,13 +69,5 @@ public class Config {
     public <T> T get(String key, Class<T> clazz) {
         return gson.fromJson(jsonObject.get(key), clazz);
     }
-
-    //将整个文件内容转换为Map
-    public Map<String, Object> getFullMap() {
-        return gson.fromJson(jsonObject, Map.class);
-    }
-
-    public void close() {
-        save();
-    }
+    
 }

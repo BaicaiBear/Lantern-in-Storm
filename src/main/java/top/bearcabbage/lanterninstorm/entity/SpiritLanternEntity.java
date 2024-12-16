@@ -16,7 +16,6 @@ import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
 import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
 
-import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
 public abstract class SpiritLanternEntity extends Entity {

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static top.bearcabbage.lanterninstorm.utils.Math.HorizontalDistance;
 
 public class Player {
     private ServerPlayerEntity player;
@@ -147,7 +146,7 @@ public class Player {
             if (spirit_num == 0) continue;
             GlobalPos pos = LanternInStormSpiritManager.lantern_pos.get(lantern);
             if (player.getEntityWorld().getRegistryKey()!=pos.dimension()) continue;
-            if (HorizontalDistance(player.getPos(), pos.pos().toCenterPos()) < spirit_num * DISTANCE_PER_SPIRIT) return true;
+            if (player.getPos().distanceTo(pos.pos().toCenterPos()) < spirit_num * DISTANCE_PER_SPIRIT) return true;
 
         }
 //
