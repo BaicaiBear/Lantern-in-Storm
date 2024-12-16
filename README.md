@@ -1,4 +1,4 @@
-<a title="MirrorTree Wiki" href="https://wiki.mirror.bearcabbage.top/"><img align="right" alt="MirrorTree logo" width="120" height="120" src="/asset/images/logo.svg"></a>
+<a title="MirrorTree Wiki" href="https://wiki.mirror.bearcabbage.top/"><img alt="MirrorTree logo" align="right" height="168" src="/asset/images/logo.svg" width="168"/></a>
 
 # Lantern-in-Storm
 
@@ -6,36 +6,37 @@
 )](https://img.shields.io/github/license/BaicaiBear/Lantern-in-Storm)
 
 > Once upon a time, there was a Mirror Tree.
- 
+
+为了便于使用，在 12.30 之前，`README.md` 将会以中文为主要工作语言。
+
 ## 待办事项（现在只有该条目是有用信息）
 
-### TODO List:
+我们建议在添加新待办事项时依照`markdownlint`的规则（但是不遵守也无所谓，会有人工自动格式化 XD）。
+
+### TODO List
 
 - ~~修复单击灯笼但多次执行代码的错误~~
 - 玩家获得`Spirits`与成就的绑定
 - 玩家在`unstable`区域的负面效果
 - 对于`lantern`分配灵魂的交互设计
-  - `lanternlevel`种类对应灵魂数`（1，2，4，8）/（1，2，3，4，5）`
+  - `lanternlevel`种类对应灵魂数`(1, 2, 4, 8) / (1, 2, 3, 4, 5)`
   - 利用视角连续变化、结合渲染等
   - 为灯笼增加id序号标识（可选）
-  - 添加/locatelantern [id]或者[player] 查找相关lantern的pos和world信息（可选）
-  - 添加使用成就数和玩家灯笼内所存的灵魂数进行检查的/ce check [player]对于玩家的灵魂数做检查并且重置为正确的灵魂数（可选）
+  - 添加`/locatelantern [id]`或者`[player]`查找相关`lantern`的`pos`和`world`信息（可选）
+  - 添加使用成就数和玩家灯笼内所存的灵魂数进行检查的`/ce check [player]`对于玩家的灵魂数做检查并且重置为正确的灵魂数（可选）
 - 氛围渲染
-  - `safe`和`unsafe`边缘和内部区域的迷雾效果（`client`）
-     - 通过全局灯笼加载来实现对于未加载区块的迷雾+灯笼驱散效果（可选）
+  - `safe`和`unsafe`边缘和内部区域的迷雾效果(`client`)
+    - 通过全局灯笼加载来实现对于未加载区块的迷雾 + 灯笼驱散效果（可选）
   - 在`unsafe`区域加入`unstable`相关的特效：（贴图丢失/闪烁/音效替换/生物与怪物 ai 随机替换/幽灵粒子效果/脚步声）（可选）
 - `team`转为`gui`界面并且添加团队`tpa`权限和`home`权限（可选）
 
-### DONE List：
+### DONE List
 
 - 修复了关于水晶的搬运（骑乘）的错误 (12.16)
 - 重构`Spirit`数据结构和业务逻辑 (12.16)
 - 两种`Lantern`的注册，渲染，事件调用 (12.14)
 - 一个`player`的`rtpspawn`实现 (较早)
 - 一个没用的`team`系统和一个测试用的`commands` (较早，弃用)
-
-
-
 
 ## Introduction
 
