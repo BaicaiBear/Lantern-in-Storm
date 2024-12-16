@@ -23,12 +23,12 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                 // 将灯笼放下来的操作
                 player.sendMessage(Text.of("Down"));
                 lantern.stopRiding();
-                return ActionResult.FAIL;
+                return ActionResult.SUCCESS;
             } else if (entity instanceof SpiritLanternEntity lantern) {
                 if (player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
                     // 将灯笼捡起来的操作
                     player.sendMessage(Text.of("Up"));
-                    if (lantern.startRiding(player)) return ActionResult.FAIL;
+                    if (lantern.startRiding(player,true)) return ActionResult.SUCCESS;
                     return ActionResult.PASS;
                 } else if (player instanceof ServerPlayerEntity serverPlayer) {
                     // 玩家与灯笼右键交互的操作
@@ -45,7 +45,7 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                 // 将灯笼放下来的操作
                 player.sendMessage(Text.of("Down"));
                 spiritLanternEntity.stopRiding();
-                return ActionResult.FAIL;
+                return ActionResult.SUCCESS;
             } else return ActionResult.PASS;
         });
 

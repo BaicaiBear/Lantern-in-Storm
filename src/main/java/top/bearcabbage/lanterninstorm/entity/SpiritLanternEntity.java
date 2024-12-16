@@ -6,6 +6,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -116,8 +117,29 @@ public abstract class SpiritLanternEntity extends Entity {
         this.tick();
         if (this.hasVehicle()) {
             this.getVehicle().updatePassengerPosition(this);
+            if (!this.getWorld().isClient) System.out.println(this.getPos().toString());
         }
     }
 
+    @Override
+    public void stopRiding() {
+        Entity entity = this.getVehicle();
+        super.stopRiding();
+        if (entity != null && entity != this.getVehicle() && !this.getWorld().isClient) {
+            this.onDismounted(entity);
+        }
+    }
 
+    private void onDismounted(Entity vehicle) {
+        Vec3d vec3d;
+        if (this.isRemoved()) {
+            vec3d = this.getPos();
+        } else if (!vehicle.isRemoved() && !this.getWorld().getBlockState(vehicle.getBlockPos()).isIn(BlockTags.PORTALS)) {
+            vec3d = new Vec3d(vehicle.getX(), vehicle.getBoundingBox().maxY, vehicle.getZ());
+        } else {
+            double d = Math.max(this.getY(), vehicle.getY());
+            vec3d = new Vec3d(this.getX(), d, this.getZ());
+        }
+        this.requestTeleportAndDismount(vec3d.x, vec3d.y, vec3d.z);
+    }
 }
