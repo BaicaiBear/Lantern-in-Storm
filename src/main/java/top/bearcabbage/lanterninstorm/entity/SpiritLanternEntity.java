@@ -52,8 +52,11 @@ public abstract class SpiritLanternEntity extends Entity {
         this.Age = this.random.nextInt(100000);
     }
 
+    protected void initDataTracker(DataTracker.Builder builder) {
+    }
+
     // 用于在服务端初始化灯笼实体
-    public static void init(){}
+    public static void init(){ return; }
 
     public void tick() {
         ++this.Age;
@@ -110,7 +113,6 @@ public abstract class SpiritLanternEntity extends Entity {
         this.tick();
         if (this.hasVehicle()) {
             this.getVehicle().updatePassengerPosition(this);
-            if (!this.getWorld().isClient) System.out.println(this.getPos().toString());
         }
     }
 

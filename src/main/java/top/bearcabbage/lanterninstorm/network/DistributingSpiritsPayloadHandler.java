@@ -18,7 +18,8 @@ public class DistributingSpiritsPayloadHandler {
 
     // 收到加减灵魂的包
     public static void onDistributingSpiritsPayload(DistributingSpiritsPayload payload, ServerPlayNetworking.Context context)  {
-            LanternInStormSpiritManager.set(context.player().getUuid(), payload.lantern(), payload.spirits());
+
+        LanternInStormSpiritManager.increase(context.player().getUuid(), payload.lantern(), payload.spirits());
     }
 
 }
