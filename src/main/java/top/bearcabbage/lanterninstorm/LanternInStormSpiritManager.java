@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
+import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
 import top.bearcabbage.lanterninstorm.utils.Config;
 
@@ -27,17 +28,17 @@ public abstract class LanternInStormSpiritManager {
     private static final Map<String, Map<Long, Integer>> playerData = new HashMap<>();
     private static final Map<Long, GlobalPos> lanternPosFromLSID = new HashMap<>();
     private static final int DISTANCE_PER_SPIRIT = 10; // 每Spirit可稳定的半径
-    /*
-    [Option 2] 如果玩家加减灵魂时卡顿，就启用双向Map
-    private static final Map<GlobalPos, Long> lanternLSIDFromPos = new java.util.HashMap<>();
-    */
+
     public static boolean playerIsSafe (@NotNull ServerPlayerEntity player) {
         Map<Long, Integer> validLantern = playerData.get(player.getUuidAsString());
         if (validLantern == null) return false;
         for (Map.Entry<Long, Integer> entry : validLantern.entrySet()) {
             GlobalPos lanternPos = lanternPosFromLSID.get(entry.getKey());
-            if (lanternPos != null &&
-                    lanternPos.dimension() == player.getServerWorld().getRegistryKey() &&
+            if (lanternPos == null) {
+                // 可以在这里加入灯笼不存在时，玩家Spirit的处理
+                continue;
+            }
+            if (lanternPos.dimension() == player.getServerWorld().getRegistryKey() &&
                     HorizontalDistance(lanternPos.pos(), player.getBlockPos()) < entry.getValue() * DISTANCE_PER_SPIRIT) {
                 return true;
             }
@@ -45,13 +46,14 @@ public abstract class LanternInStormSpiritManager {
         return false;
     }
 
-    public static boolean playerDistributeSpirits (ServerPlayerEntity player, GlobalPos pos, int spirits) {
+    public static boolean playerDistributeSpirits (ServerPlayerEntity player, SpiritLanternEntity lantern, int spirits) {
         if (((PlayerAccessor) player).getLS().getSpiritsBanlance() < spirits) return false;
-        long LSID = posToLSID(pos);
+        long LSID = lantern.getLSid();
         if (LSID == -1) return false;
         Map<Long, Integer> validLantern = playerData.computeIfAbsent(player.getUuidAsString(), k -> new HashMap<>());
         Integer v = validLantern.get(LSID);
         if (v == null) v = 0;
+        if (v+spirits < 0) return false;
         // 如果要加灯笼内的灵魂上限，可以在这里加条件判断
         validLantern.put(LSID, v+spirits);
         return true; // 返回true后由玩家自己调用方法，减少spiritsBanlance
@@ -59,31 +61,9 @@ public abstract class LanternInStormSpiritManager {
 
     public static long lanternGenerateLSID () { return System.currentTimeMillis(); }
 
-    public static void lanternPosUpdate (long LSID, GlobalPos pos) {
-        lanternPosFromLSID.put(LSID, pos);
-        /*
-        [Option 2]
-        if (lanternPosFromLSID.get(LSID) != null) {
-            lanternLSIDFromPos.remove(lanternPosFromLSID.get(LSID));
-        }
-        lanternLSIDFromPos.put(pos, LSID);
-        lanternPosFromLSID.put(LSID, pos);
-        */
-    }
+    public static void lanternPosUpdate (long LSID, GlobalPos pos) { lanternPosFromLSID.put(LSID, pos); }
 
-    private static long posToLSID(GlobalPos pos){
-        for (Map.Entry<Long, GlobalPos> entry : lanternPosFromLSID.entrySet()) {
-            if (entry.getValue().equals(pos)) {
-                return entry.getKey();
-            }
-        }
-        return -1;
-
-        /*
-        [Option 2]
-        return lanternLSIDFromPos.get(pos);
-        */
-    }
+    public static void lanternRemove (long LSID) { lanternPosFromLSID.remove(LSID); } // 破坏后玩家的灵魂不会归还玩家，上限会减少
 
     public static void save(Path path) {
         Config data = new Config(path);

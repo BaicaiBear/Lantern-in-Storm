@@ -91,6 +91,7 @@ public abstract class SpiritLanternEntity extends Entity {
     @Override
     public void kill() {
         //add new events here
+        LanternInStormSpiritManager.lanternRemove(this.getLSid());
         super.kill();
     }
 

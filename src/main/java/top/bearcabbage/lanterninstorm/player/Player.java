@@ -138,7 +138,7 @@ public class Player {
             this.player.sendMessage(Text.of("灵魂不够了～～～"));
             return ActionResult.SUCCESS;
         }
-        if(LanternInStormSpiritManager.playerDistributeSpirits(player, pos, spirits)){
+        if(LanternInStormSpiritManager.playerDistributeSpirits(player, entity, spirits)){
             spiritsBanlance -= spirits;
             this.player.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
             return ActionResult.SUCCESS;
