@@ -48,6 +48,7 @@ public abstract class LanternInStormSpiritManager {
     }
 
     public static void set(UUID player, UUID lantern, int mass){
+        System.out.println("set " + player + " " + lantern + " " + mass);
         confirm_existence(player);
         confirm_existence(lantern);
         if (mass==0) {
