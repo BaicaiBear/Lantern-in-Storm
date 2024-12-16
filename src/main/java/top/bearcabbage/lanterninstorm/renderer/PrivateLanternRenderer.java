@@ -1,15 +1,13 @@
-package top.bearcabbage.lanterninstorm.entity.renderers;
+package top.bearcabbage.lanterninstorm.renderer;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
-import org.joml.Quaternionf;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntityRenderer;
 
+@Environment(EnvType.CLIENT)
 public class PrivateLanternRenderer extends SpiritLanternEntityRenderer {
     private final static float SIZE = 1.0f;
 

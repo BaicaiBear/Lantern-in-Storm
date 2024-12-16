@@ -1,4 +1,4 @@
-package top.bearcabbage.lanterninstorm.entity;
+package top.bearcabbage.lanterninstorm.renderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
+import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 @Environment(EnvType.CLIENT)
 public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEntity> {

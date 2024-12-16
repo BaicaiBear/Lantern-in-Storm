@@ -1,8 +1,7 @@
-package top.bearcabbage.lanterninstorm.entity.entities;
+package top.bearcabbage.lanterninstorm.entity;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 /*
     公共灯笼

@@ -13,8 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
-import top.bearcabbage.lanterninstorm.entity.entities.PrivateLantern;
-import top.bearcabbage.lanterninstorm.entity.entities.PublicLantern;
 
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
