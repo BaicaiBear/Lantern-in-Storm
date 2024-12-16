@@ -35,6 +35,15 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
             }
             return ActionResult.PASS;
         });
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (entity instanceof SpiritLanternEntity lantern && (!player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT))) {
+                // 玩家与灯笼左键交互的操作
+                player.sendMessage(Text.of("Client_Left"));
+                ClientPlayNetworking.send(new DistributingSpiritsPayload(lantern.getUuid(), -1));
+                return ActionResult.SUCCESS;
+            }
+            return ActionResult.PASS;
+        });
     }
 
     public static void register() {
@@ -61,6 +70,7 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
             return ActionResult.PASS;
         });
 
+
         UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
             if (player.getPassengerList().stream().anyMatch(entity1 -> entity1 instanceof SpiritLanternEntity) && player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
                 SpiritLanternEntity spiritLanternEntity = (SpiritLanternEntity) player.getPassengerList().stream().filter(entity1 -> entity1 instanceof SpiritLanternEntity).findFirst().get();
@@ -72,13 +82,6 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
         });
 
 
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (entity instanceof SpiritLanternEntity lantern && player instanceof ServerPlayerEntity serverPlayer && (!player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT))) {
-                    // 玩家与灯笼左键交互的操作
-                player.sendMessage(Text.of("Left"));
-                return ((PlayerAccessor)serverPlayer).getLS().distributeSpirits(lantern, -1);
-            } else return ActionResult.PASS;
-        });
     }
     //注册了滚轮事件绑定 但不知道怎么调用
         KeyBinding scrollUpBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
