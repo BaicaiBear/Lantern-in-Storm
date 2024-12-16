@@ -133,7 +133,6 @@ public class Player {
     }
 
     public ActionResult distributeSpirits(SpiritLanternEntity entity, int spirits) {
-        GlobalPos pos = GlobalPos.create(entity.getWorld().getRegistryKey(),entity.getBlockPos());
         if(spirits > spiritsBanlance){
             this.player.sendMessage(Text.of("灵魂不够了～～～"));
             return ActionResult.SUCCESS;
