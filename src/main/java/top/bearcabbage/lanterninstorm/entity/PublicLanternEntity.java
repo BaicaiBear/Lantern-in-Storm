@@ -6,8 +6,8 @@ import net.minecraft.world.World;
 /*
     公共灯笼
 */
-public class PublicLantern extends SpiritLanternEntity {
-    public PublicLantern(EntityType<? extends SpiritLanternEntity> entityType, World world) {
+public class PublicLanternEntity extends SpiritLanternEntity {
+    public PublicLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
     }
 }

@@ -23,12 +23,12 @@ public abstract class SpiritLanternEntity extends Entity {
 
     //    从这里开始是HHHor写(copy)的实体代码
     public int Age;
-    public static final EntityType<PrivateLantern> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLantern>create(PrivateLantern::new, SpawnGroup.MISC)
+    public static final EntityType<PrivateLanternEntity> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLanternEntity>create(PrivateLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
             .dimensions(2.0F, 2.0F)
             .maxTrackingRange(64)
             .trackingTickInterval(Integer.MAX_VALUE).build("PrivateLantern"));
-    public static final EntityType<PublicLantern> PUBLIC_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","public_lantern"), EntityType.Builder.<PublicLantern>create(PublicLantern::new, SpawnGroup.MISC)
+    public static final EntityType<PublicLanternEntity> PUBLIC_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","public_lantern"), EntityType.Builder.<PublicLanternEntity>create(PublicLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
             .dimensions(5.0F, 5.0F)
             .maxTrackingRange(64)
@@ -56,6 +56,9 @@ public abstract class SpiritLanternEntity extends Entity {
     public static void init(){ return; }
 
     public void tick() {
+        if (this.getY() < this.getWorld().getBottomY()) {
+            this.discard();
+        }
         ++this.Age;
         this.checkBlockCollision();
         this.tickPortalTeleportation();

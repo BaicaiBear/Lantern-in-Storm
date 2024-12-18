@@ -8,7 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 @Environment(EnvType.CLIENT)
-public class PublicLanternRenderer extends SpiritLanternEntityRenderer {
+public class PublicLanternRenderer extends SpiritLanternRenderer {
     private final static float SIZE = 5.0F;
 
     public PublicLanternRenderer(EntityRendererFactory.Context context) {

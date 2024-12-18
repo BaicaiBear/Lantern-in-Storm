@@ -17,7 +17,7 @@ import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 @Environment(EnvType.CLIENT)
-public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEntity> {
+public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
     protected static final Identifier TEXTURE = Identifier.of(LanternInStorm.MOD_ID, "textures/entity/lantern_ring.png");
     protected static final RenderLayer END_CRYSTAL;
     protected static final float SINE_45_DEGREES;
@@ -25,7 +25,7 @@ public class SpiritLanternEntityRenderer extends EntityRenderer<SpiritLanternEnt
     protected final ModelPart dark_ring;
     protected final ModelPart bottom;
 
-    public SpiritLanternEntityRenderer(EntityRendererFactory.Context context) {
+    public SpiritLanternRenderer(EntityRendererFactory.Context context) {
         super(context);
         this.shadowRadius = 0.5F;
         ModelPart modelPart = context.getPart(EntityModelLayers.END_CRYSTAL);
