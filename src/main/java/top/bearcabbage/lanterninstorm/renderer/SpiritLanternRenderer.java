@@ -14,11 +14,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
+import top.bearcabbage.lanterninstorm.LanternInStormClient;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 @Environment(EnvType.CLIENT)
 public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
-    protected static final Identifier TEXTURE = Identifier.of(LanternInStorm.MOD_ID, "textures/entity/lantern_ring.png");
+    protected static final Identifier TEXTURE = Identifier.of(LanternInStormClient.MOD_NAMESPACE, "textures/entity/lantern_ring.png");
     protected static final RenderLayer END_CRYSTAL;
     protected static final float SINE_45_DEGREES;
     protected final ModelPart light_ring;

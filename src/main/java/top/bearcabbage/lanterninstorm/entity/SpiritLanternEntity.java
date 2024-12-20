@@ -11,18 +11,19 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
+
+import static top.bearcabbage.lanterninstorm.entity.LanternBoundaryEntity.LANTERN_BOUNDARY;
 
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
 public abstract class SpiritLanternEntity extends Entity {
-    //这里是xxbc写的灯笼交互逻辑
 
-
-
-    //    从这里开始是HHHor写(copy)的实体代码
     public int Age;
+    public LanternBoundaryEntity boundary;
+
     public static final EntityType<PrivateLanternEntity> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLanternEntity>create(PrivateLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
             .dimensions(2.0F, 2.0F)
@@ -35,16 +36,6 @@ public abstract class SpiritLanternEntity extends Entity {
             .trackingTickInterval(Integer.MAX_VALUE).build("PublicLantern"));
     public SpiritLanternEntity(EntityType<? extends SpiritLanternEntity> entityType, World world) {
         super(entityType, world);
-////        this.LSid = this.getUuidAsString(); //测试用 在这之前要完成LSid和SPIRIT的初始化
-////        SpiritLanternEntityManager.loadSpiritLanternEntity(this);
-//        if(!this.getWorld().isClient) {
-//            if (this.getCustomName() == null) {
-//                this.LSid = LanternInStormSpiritManager.lanternGenerateLSID();
-//                this.setCustomName(Text.of(String.valueOf(this.LSid)));
-//            } else {
-//                this.LSid = Long.parseLong(this.getCustomName().getLiteralString());
-//            }
-//        }
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
     }
@@ -67,6 +58,15 @@ public abstract class SpiritLanternEntity extends Entity {
             if (((ServerWorld) this.getWorld()).getEnderDragonFight() != null && this.getWorld().getBlockState(blockPos).isAir()) {
                 this.getWorld().setBlockState(blockPos, AbstractFireBlock.getState(this.getWorld(), blockPos));
             }
+        }
+        if (boundary == null || boundary.isRemoved()) {
+            boundary = LANTERN_BOUNDARY.create(this.getWorld());
+            boundary.setLantern(this);
+            boundary.refreshPositionAfterTeleport(this.getPos());
+            boundary.setAngles(0, 0);
+            boundary.setVelocity(this.getVelocity());
+            this.getWorld().spawnEntity(boundary);
+            boundary.startRiding(this);
         }
         LanternInStormSpiritManager.lanternPosUpdate(this);
     }

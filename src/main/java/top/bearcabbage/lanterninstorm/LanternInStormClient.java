@@ -1,6 +1,5 @@
 package top.bearcabbage.lanterninstorm;
 
-import dev.onyxstudios.foml.obj.OBJLoader;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
@@ -32,7 +31,5 @@ public class LanternInStormClient implements ClientModInitializer {
         EntityRendererRegistry.INSTANCE.register(LANTERN_BOUNDARY, LanternBoundaryRenderer::new);
         // 注册玩家事件
         PlayerEventRegistrator.registerClient();
-        // 注册模型加载器
-        ModelLoadingPlugin.register(OBJLoader.INSTANCE);
     }
 }
