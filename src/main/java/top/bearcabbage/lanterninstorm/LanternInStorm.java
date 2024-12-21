@@ -15,8 +15,7 @@ import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayload;
 import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayloadHandler;
-import top.bearcabbage.lanterninstorm.network.LanternPosPayload;
-import top.bearcabbage.lanterninstorm.network.SpiritMassPayload;
+import top.bearcabbage.lanterninstorm.network.LanternBoundaryPayload;
 import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
 
 
@@ -48,15 +47,12 @@ public class LanternInStorm implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(SpiritMassPayload.ID, SpiritMassPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(LanternPosPayload.ID, LanternPosPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(DistributingSpiritsPayload.ID, DistributingSpiritsPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(LanternBoundaryPayload.ID, LanternBoundaryPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(DistributingSpiritsPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
 				// 处理接收到的数据
 				DistributingSpiritsPayloadHandler.onDistributingSpiritsPayload(payload, context);
 			});
-		});
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			// 发送灯笼列表
-			LanternInStormSpiritManager.sendAll(handler.player);
 		});
 	}
 }
