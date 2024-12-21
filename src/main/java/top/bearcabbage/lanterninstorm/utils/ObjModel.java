@@ -55,7 +55,7 @@ public class ObjModel {
             FloatTuple normals = obj.getNormal(normalIndex);
 
             consumer.vertex(matrices.peek().getPositionMatrix(), pos.getX(), pos.getY(), pos.getZ());
-            consumer.color(0,100,100,120);
+            consumer.color(0,0,0,255);
             consumer.texture(uv.getX(), 1 - uv.getY());
             consumer.overlay(overlay);
             consumer.light(light);

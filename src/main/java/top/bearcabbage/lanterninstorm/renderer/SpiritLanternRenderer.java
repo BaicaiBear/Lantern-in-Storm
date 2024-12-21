@@ -19,6 +19,8 @@ import top.bearcabbage.lanterninstorm.entity.PublicLanternEntity;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.utils.ObjModel;
 
+import java.awt.*;
+
 import static net.minecraft.client.render.LightmapTextureManager.pack;
 import static top.bearcabbage.lanterninstorm.LanternInStormClient.MOD_NAMESPACE;
 
@@ -43,15 +45,15 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
         this.light_ring = modelPart.getChild(EntityModelPartNames.CUBE);
         this.bottom = modelPart.getChild("base");
     }
-
-    public static TexturedModelData getTexturedModelData() {
-        ModelData modelData = new ModelData();
-        ModelPartData modelPartData = modelData.getRoot();
-        modelPartData.addChild("glass", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), ModelTransform.NONE);
-        modelPartData.addChild("cube", ModelPartBuilder.create().uv(32, 0).cuboid(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), ModelTransform.NONE);
-        modelPartData.addChild("base", ModelPartBuilder.create().uv(0, 16).cuboid(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F), ModelTransform.NONE);
-        return TexturedModelData.of(modelData, 64, 32);
-    }
+//
+//    public static TexturedModelData getTexturedModelData() {
+//        ModelData modelData = new ModelData();
+//        ModelPartData modelPartData = modelData.getRoot();
+//        modelPartData.addChild("glass", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), ModelTransform.NONE);
+//        modelPartData.addChild("cube", ModelPartBuilder.create().uv(32, 0).cuboid(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), ModelTransform.NONE);
+//        modelPartData.addChild("base", ModelPartBuilder.create().uv(0, 16).cuboid(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F), ModelTransform.NONE);
+//        return TexturedModelData.of(modelData, 64, 32);
+//    }
 
     public void render(SpiritLanternEntity Entity, float Size, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         float h = getYOffset(Entity, g);
