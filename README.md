@@ -15,7 +15,6 @@
 
 ### TODO List
 
-- [计划：12.17(xxbc)] 参考 [TeamGalacticraft/Galacticraft](https://github.com/TeamGalacticraft/Galacticraft/)中氧气泡的实现方式实现灯笼区域边界渲染
 - [计划：12.17(xxbc)] 在`unstable`区域的的迷雾效果
 - [计划：12.17] 玩家在`unstable`区域的负面效果
 - [计划：12.17] 对于`lantern`分配灵魂的交互设计
@@ -33,6 +32,7 @@
 
 ### DONE List
 
+- 参考 [TeamGalacticraft/Galacticraft](https://github.com/TeamGalacticraft/Galacticraft/)中氧气泡的实现方式实现灯笼区域边界渲染 (12.21)
 - 修复了关于水晶的搬运（骑乘）的错误 (12.16)
 - 重构`Spirit`数据结构和业务逻辑 (12.16)
 - 两种`Lantern`的注册，渲染，事件调用 (12.14)
