@@ -41,18 +41,10 @@ public class LanternInStormClient implements ClientModInitializer {
         // 注册玩家事件
         PlayerEventRegistrator.registerClient();
         // 注册网络数据包
-        PayloadTypeRegistry.playS2C().register(SpiritMassPayload.ID, SpiritMassPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(LanternPosPayload.ID, LanternPosPayload.CODEC);
-        ClientPlayNetworking.registerGlobalReceiver(SpiritMassPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(LanternBoundaryPayload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 // 处理接收到的数据
-                SpiritMassPayloadHandler.onSpiritMassPayload(payload, context);
-            });
-        });
-        ClientPlayNetworking.registerGlobalReceiver(LanternPosPayload.ID, (payload, context) -> {
-            context.client().execute(() -> {
-                // 处理接收到的数据
-                LanternPosPayloadHandler.onLanternPosPayload(payload, context);
+                LanternBoundaryPayloadHandler.onLanternBoundaryPayload(payload, context);
             });
         });
     }

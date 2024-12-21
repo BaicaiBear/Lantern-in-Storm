@@ -1,5 +1,6 @@
 package top.bearcabbage.lanterninstorm.entity;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
@@ -11,22 +12,24 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
+import top.bearcabbage.lanterninstorm.network.LanternBoundaryPayload;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
-
-import static top.bearcabbage.lanterninstorm.entity.LanternBoundaryEntity.LANTERN_BOUNDARY;
 
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
 public abstract class SpiritLanternEntity extends Entity {
 
     public int Age;
+    public int radius;
     public static Map<UUID, SpiritLanternEntity> lantern_list = new HashMap<>();
+
+    public static final int DISTANCE_PER_SPIRIT = 10;
 
     public static final EntityType<PrivateLanternEntity> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLanternEntity>create(PrivateLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
@@ -65,7 +68,10 @@ public abstract class SpiritLanternEntity extends Entity {
         }
         if(!this.getWorld().isClient){
             LanternInStormSpiritManager.lanternPosUpdate(this);
-
+            radius = LanternInStormSpiritManager.get_sum(this.getUuid()) * DISTANCE_PER_SPIRIT;
+            Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList().forEach(player -> {
+                ServerPlayNetworking.send(player, new LanternBoundaryPayload(this.getUuid(), radius));
+            });
         } else if(SpiritLanternEntity.lantern_list.getOrDefault(this.getUuid(), null) == null){
             SpiritLanternEntity.lantern_list.put(this.getUuid(), this);
         }
@@ -139,6 +145,10 @@ public abstract class SpiritLanternEntity extends Entity {
     }
 
     public float getRadius() {
-        return LanternInStormSpiritManager.get_sum(this.getUuid());
+        return this.radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 }

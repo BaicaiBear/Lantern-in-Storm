@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static top.bearcabbage.lanterninstorm.player.Player.DISTANCE_PER_SPIRIT;
 @Environment(EnvType.CLIENT)
 public class LanternBoundaryEntity extends Entity {
 

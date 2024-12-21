@@ -11,15 +11,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
-import top.bearcabbage.lanterninstorm.network.LanternPosPayload;
-import top.bearcabbage.lanterninstorm.network.NetworkingConstants;
-import top.bearcabbage.lanterninstorm.network.SpiritMassPayload;
 import top.bearcabbage.lanterninstorm.utils.Config;
 //import top.bearcabbage.lanterninstorm.utils.SpiritData;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class LanternInStormSpiritManager {
 
@@ -180,21 +176,4 @@ public abstract class LanternInStormSpiritManager {
         }
     }
 
-    @Environment(EnvType.SERVER)
-    public static void sendAll(ServerPlayerEntity player) {
-        ServerPlayNetworking.send(player, new SpiritMassPayload(spirit_mass));
-        ServerPlayNetworking.send(player, new LanternPosPayload(lantern_pos));
-    }
-
-
-    @Environment(EnvType.CLIENT)
-    public static void loadMass(Map<UUID, Map<UUID, Integer>> spirit_mass) {
-        LanternInStormSpiritManager.spirit_mass = new HashMap<>(spirit_mass);
-
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static void loadPos(Map<UUID, GlobalPos> lantern_pos) {
-        LanternInStormSpiritManager.lantern_pos = new HashMap<>(lantern_pos);
-    }
 }

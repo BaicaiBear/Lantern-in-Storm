@@ -78,10 +78,11 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
             j /= l;
         }
         super.render(Entity, f, g, matrixStack, vertexConsumerProvider, i);
+        matrixStack.pop();
         if (model == null) {
             model = new ObjModel(MOD_NAMESPACE, "entity/lantern_boundary");
         }
-        float size = Entity.getRadius();
+        float size = 5;//Entity.getRadius();
         matrixStack.push();
         matrixStack.translate(0.5F, 1.0F, 0.5F);
         matrixStack.scale(size, size, size);
