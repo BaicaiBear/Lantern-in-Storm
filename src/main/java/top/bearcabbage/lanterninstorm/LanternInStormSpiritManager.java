@@ -23,9 +23,11 @@ import java.util.stream.Collectors;
 
 public abstract class LanternInStormSpiritManager {
 
+    public static final UUID NULL_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final int DISTANCE_PER_SPIRIT = 10;
     /*
     无向图。两个uuid分别对应玩家和灯笼，没有顺序，因此每个spirit被存储两次。
-    如果第一个uuid是玩家，第二个uuid是null，那么代表玩家的leftmass。
+    如果第一个uuid是玩家，第二个uuid是NULL_UUID，那么代表玩家的leftmass。
      */
     public static Map<UUID, Map<UUID, Integer>> spirit_mass = new HashMap<>();
     public static Map<UUID, GlobalPos> lantern_pos = new HashMap<>();
@@ -80,16 +82,12 @@ public abstract class LanternInStormSpiritManager {
 
     public static int get_left(UUID player) {
         confirm_existence(player);
-        return spirit_mass.get(player).getOrDefault(null, 0);
+        return spirit_mass.get(player).getOrDefault(NULL_UUID, 0);
     }
 
     public static void set_left(UUID player, int mass) {
         confirm_existence(player);
-        if (mass == 0) {
-            spirit_mass.get(player).remove(null);
-        } else {
-            spirit_mass.get(player).put(null, mass);
-        }
+        spirit_mass.get(player).put(NULL_UUID, mass);
     }
 
     public static void increase_left(UUID player, int mass) {
@@ -118,7 +116,6 @@ public abstract class LanternInStormSpiritManager {
         lantern_pos.remove(lantern);
     }
 
-    @Environment(EnvType.SERVER)
     public static void save(Path path) {
         // 保存全局灯笼列表到配置文件
         Config config = new Config(path);
@@ -127,7 +124,7 @@ public abstract class LanternInStormSpiritManager {
         config.save();
     }
 
-    @Environment(EnvType.SERVER)
+
     public static void load(MinecraftServer server, Path path) {
         // 从配置文件读取全局灯笼列表
         try {
@@ -143,7 +140,7 @@ public abstract class LanternInStormSpiritManager {
                     for (String key2 : value1.keySet()) {
                         Integer value2 = value1.get(key2).intValue();
                         if (Objects.equals(key2, "null")) {
-                            hashMap.put(null, value2);
+                            hashMap.put(NULL_UUID, value2);
                             continue;
                         }
                         UUID uuid2 = UUID.fromString(key2);
@@ -180,7 +177,6 @@ public abstract class LanternInStormSpiritManager {
         }
     }
 
-    @Environment(EnvType.SERVER)
     public static void sendAll(ServerPlayerEntity player) {
         ServerPlayNetworking.send(player, new SpiritMassPayload(spirit_mass));
         ServerPlayNetworking.send(player, new LanternPosPayload(lantern_pos));

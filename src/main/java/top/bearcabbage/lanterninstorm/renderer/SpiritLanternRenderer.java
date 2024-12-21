@@ -15,6 +15,7 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.LanternInStormClient;
+import top.bearcabbage.lanterninstorm.entity.PublicLanternEntity;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.utils.ObjModel;
 
@@ -52,14 +53,37 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
         return TexturedModelData.of(modelData, 64, 32);
     }
 
-    public void render(SpiritLanternEntity Entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        matrixStack.push();
+    public void render(SpiritLanternEntity Entity, float Size, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         float h = getYOffset(Entity, g);
         float j = ((float)Entity.Age + g) * 3.0F;
+
+        if (model == null) {
+            model = new ObjModel(MOD_NAMESPACE, "entity/lantern_boundary");
+        }
+        float size = Entity.getRadius();
+        matrixStack.push();
+        matrixStack.translate(0.0F,  1.0F + h, 0.0F);
+        matrixStack.scale(size, size, size);
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
+        RenderLayer.MultiPhaseParameters compositeState = RenderLayer.MultiPhaseParameters.builder()
+                .program(RenderPhase.TRANSLUCENT_PROGRAM)
+                .transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY)
+                .texture(new RenderPhase.Texture(TEXTURE_ON, false, false))
+                .cull(RenderPhase.DISABLE_CULLING)
+                .overlay(RenderPhase.ENABLE_OVERLAY_COLOR)
+                .writeMaskState(RenderPhase.COLOR_MASK)
+                .build(true);RenderLayer renderLayer = RenderLayer.of("Boundary",VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.TRIANGLES, 1536, true, true, compositeState);
+        VertexConsumer consumer = vertexConsumerProvider.getBuffer(renderLayer);
+        model.render(matrixStack, consumer, i, pack(0, 10));
+        matrixStack.pop();
+
+
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(END_CRYSTAL);
         matrixStack.push();
         matrixStack.translate(0.0F,  1.0F + h, 0.0F);
         matrixStack.scale(3.0F, 3.0F, 3.0F);
+        matrixStack.scale(Size, Size, Size);
         int k = OverlayTexture.DEFAULT_UV;
         float l = 0.875F;
 
@@ -78,23 +102,6 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
             j /= l;
         }
         super.render(Entity, f, g, matrixStack, vertexConsumerProvider, i);
-        if (model == null) {
-            model = new ObjModel(MOD_NAMESPACE, "entity/lantern_boundary");
-        }
-        float size = Entity.getRadius();
-        matrixStack.push();
-        matrixStack.translate(0.5F, 1.0F, 0.5F);
-        matrixStack.scale(size, size, size);
-        RenderLayer.MultiPhaseParameters compositeState = RenderLayer.MultiPhaseParameters.builder()
-                .program(RenderPhase.TRANSLUCENT_PROGRAM)
-                .transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY)
-                .texture(new RenderPhase.Texture(TEXTURE_ON, false, false))
-                .cull(RenderPhase.DISABLE_CULLING)
-                .overlay(RenderPhase.ENABLE_OVERLAY_COLOR)
-                .writeMaskState(RenderPhase.COLOR_MASK)
-                .build(true);RenderLayer renderLayer = RenderLayer.of("Boundary",VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.TRIANGLES, 1536, true, true, compositeState);
-        VertexConsumer consumer = vertexConsumerProvider.getBuffer(renderLayer);
-        model.render(matrixStack, consumer, i, pack(0, 10));
         matrixStack.pop();
     }
 

@@ -32,6 +32,7 @@ public class DistributingSpiritsPayloadHandler {
         LanternInStormSpiritManager.increase_left(player, -spirits);
         LanternInStormSpiritManager.increase(player, lantern, spirits);
         serverPlayer.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
+        serverPlayer.getServer().getPlayerManager().getPlayerList().forEach(LanternInStormSpiritManager::sendAll);
     }
 
 }

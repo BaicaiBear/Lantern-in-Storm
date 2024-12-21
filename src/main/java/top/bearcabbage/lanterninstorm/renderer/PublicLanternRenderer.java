@@ -17,7 +17,6 @@ public class PublicLanternRenderer extends SpiritLanternRenderer {
 
     @Override
     public void render(SpiritLanternEntity Entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        matrixStack.scale(SIZE,SIZE,SIZE);
-        super.render(Entity, f, g, matrixStack, vertexConsumerProvider, i);
+        super.render(Entity, SIZE, f, g, matrixStack, vertexConsumerProvider, i);
     }
 }

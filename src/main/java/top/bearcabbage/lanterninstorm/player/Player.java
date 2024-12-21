@@ -18,12 +18,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static top.bearcabbage.lanterninstorm.LanternInStormSpiritManager.DISTANCE_PER_SPIRIT;
+
 
 public class Player {
     private ServerPlayerEntity player;
     private BlockPos rtpSpawn;
     private static final int INIT_SPIRIT = 5;
-    public static final int DISTANCE_PER_SPIRIT = 10;
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -143,6 +144,7 @@ public class Player {
         for(UUID lantern: lanterns_and_spirits.keySet()){
             int total_num = LanternInStormSpiritManager.get_sum(lantern);
             GlobalPos pos = LanternInStormSpiritManager.lantern_pos.get(lantern);
+            if (pos==null) continue;
             if (player.getEntityWorld().getRegistryKey()!=pos.dimension()) continue;
             if (player.getPos().distanceTo(pos.pos().toCenterPos()) < total_num * DISTANCE_PER_SPIRIT) return true;
 

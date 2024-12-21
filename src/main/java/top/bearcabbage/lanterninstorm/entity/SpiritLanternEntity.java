@@ -11,15 +11,13 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static top.bearcabbage.lanterninstorm.entity.LanternBoundaryEntity.LANTERN_BOUNDARY;
+import static top.bearcabbage.lanterninstorm.LanternInStormSpiritManager.DISTANCE_PER_SPIRIT;
 
 
 //参考net.minecraft.entity.decoration.EndCrystalEntity
@@ -65,6 +63,7 @@ public abstract class SpiritLanternEntity extends Entity {
         }
         if(!this.getWorld().isClient){
             LanternInStormSpiritManager.lanternPosUpdate(this);
+            this.getServer().getPlayerManager().getPlayerList().forEach(LanternInStormSpiritManager::sendAll);
 
         } else if(SpiritLanternEntity.lantern_list.getOrDefault(this.getUuid(), null) == null){
             SpiritLanternEntity.lantern_list.put(this.getUuid(), this);
@@ -114,6 +113,7 @@ public abstract class SpiritLanternEntity extends Entity {
         if (this.hasVehicle()) {
             this.getVehicle().updatePassengerPosition(this);
         }
+        if(!this.getWorld().isClient) this.getServer().getPlayerManager().getPlayerList().forEach(LanternInStormSpiritManager::sendAll);
     }
 
     @Override
@@ -139,6 +139,6 @@ public abstract class SpiritLanternEntity extends Entity {
     }
 
     public float getRadius() {
-        return LanternInStormSpiritManager.get_sum(this.getUuid());
+        return LanternInStormSpiritManager.get_sum(this.getUuid()) * DISTANCE_PER_SPIRIT;
     }
 }

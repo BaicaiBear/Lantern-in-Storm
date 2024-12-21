@@ -15,18 +15,7 @@ public class SpiritMassPayloadHandler {
 
     // 收到Manager_Mass的包
     public static void onSpiritMassPayload(SpiritMassPayload payload, ClientPlayNetworking.Context context)  {
-        Map<String, Map<String, Integer>> var = payload.spirit_mass();
-        // 将var转换成Map<UUID, Map<UUID, Integer>>
-        Map<UUID, Map<UUID, Integer>> spirit_mass = var.entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> UUID.fromString(entry.getKey()),
-                        entry -> entry.getValue().entrySet().stream()
-                                .collect(Collectors.toMap(
-                                        e -> UUID.fromString(e.getKey()),
-                                        Map.Entry::getValue
-                                ))
-                ));
-        LanternInStormSpiritManager.loadMass(spirit_mass);
+        LanternInStormSpiritManager.loadMass(payload.spirit_mass());
     }
 
 }
