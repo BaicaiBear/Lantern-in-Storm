@@ -28,7 +28,7 @@ public class LanternBoundaryRenderer extends EntityRenderer<LanternBoundaryEntit
         if (model == null) {
             model = new ObjModel(MOD_NAMESPACE, "entity/lantern_boundary");
         }
-        float size = 5;
+        float size = Entity.getRadius();
         matrixStack.push();
         matrixStack.translate(0.5F, 1.0F, 0.5F);
         matrixStack.scale(size, size, size);

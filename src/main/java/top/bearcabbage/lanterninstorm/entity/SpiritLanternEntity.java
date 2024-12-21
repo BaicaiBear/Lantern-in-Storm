@@ -15,6 +15,10 @@ import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import static top.bearcabbage.lanterninstorm.entity.LanternBoundaryEntity.LANTERN_BOUNDARY;
 
 
@@ -22,7 +26,7 @@ import static top.bearcabbage.lanterninstorm.entity.LanternBoundaryEntity.LANTER
 public abstract class SpiritLanternEntity extends Entity {
 
     public int Age;
-    public LanternBoundaryEntity boundary;
+    public static Map<UUID, SpiritLanternEntity> lantern_list = new HashMap<>();
 
     public static final EntityType<PrivateLanternEntity> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLanternEntity>create(PrivateLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
@@ -47,7 +51,7 @@ public abstract class SpiritLanternEntity extends Entity {
     public static void init(){ return; }
 
     public void tick() {
-        if (this.getY() < this.getWorld().getBottomY()) {
+        if (this.getY() < this.getWorld().getBottomY() && !this.getWorld().isClient) {
             this.discard();
         }
         ++this.Age;
@@ -59,16 +63,12 @@ public abstract class SpiritLanternEntity extends Entity {
                 this.getWorld().setBlockState(blockPos, AbstractFireBlock.getState(this.getWorld(), blockPos));
             }
         }
-        if (boundary == null || boundary.isRemoved()) {
-            boundary = LANTERN_BOUNDARY.create(this.getWorld());
-            boundary.setLantern(this);
-            boundary.refreshPositionAfterTeleport(this.getPos());
-            boundary.setAngles(0, 0);
-            boundary.setVelocity(this.getVelocity());
-            this.getWorld().spawnEntity(boundary);
-            boundary.startRiding(this);
+        if(!this.getWorld().isClient){
+            LanternInStormSpiritManager.lanternPosUpdate(this);
+
+        } else if(SpiritLanternEntity.lantern_list.getOrDefault(this.getUuid(), null) == null){
+            SpiritLanternEntity.lantern_list.put(this.getUuid(), this);
         }
-        LanternInStormSpiritManager.lanternPosUpdate(this);
     }
 
     protected void writeCustomDataToNbt(NbtCompound nbt) {
@@ -136,5 +136,9 @@ public abstract class SpiritLanternEntity extends Entity {
             vec3d = new Vec3d(this.getX(), d, this.getZ());
         }
         this.requestTeleportAndDismount(vec3d.x, vec3d.y, vec3d.z);
+    }
+
+    public float getRadius() {
+        return LanternInStormSpiritManager.get_sum(this.getUuid());
     }
 }

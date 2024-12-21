@@ -23,7 +23,7 @@ public class Player {
     private ServerPlayerEntity player;
     private BlockPos rtpSpawn;
     private static final int INIT_SPIRIT = 5;
-    private static final int DISTANCE_PER_SPIRIT = 10;
+    public static final int DISTANCE_PER_SPIRIT = 10;
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -141,21 +141,12 @@ public class Player {
             return false;
         }
         for(UUID lantern: lanterns_and_spirits.keySet()){
-            if(lantern==null) continue;
-            int spirit_num = lanterns_and_spirits.get(lantern);
-            if (spirit_num == 0) continue;
+            int total_num = LanternInStormSpiritManager.get_sum(lantern);
             GlobalPos pos = LanternInStormSpiritManager.lantern_pos.get(lantern);
             if (player.getEntityWorld().getRegistryKey()!=pos.dimension()) continue;
-            if (player.getPos().distanceTo(pos.pos().toCenterPos()) < spirit_num * DISTANCE_PER_SPIRIT) return true;
+            if (player.getPos().distanceTo(pos.pos().toCenterPos()) < total_num * DISTANCE_PER_SPIRIT) return true;
 
         }
-//
-//        for (SpiritLanternEntity lantern : player.getEntityWorld().getNonSpectatingEntities(SpiritLanternEntity.class,
-//                Box.of(player.getPos(), MAX_SPIRIT_RADIUS * 2, MAX_SPIRIT_RADIUS * 2, MAX_SPIRIT_RADIUS * 2))) {
-//            int spirit_mass = SpiritManager.get(player.getUuid(), lantern.getUuid());
-//            if (spirit_mass == 0) continue;
-//            if (HorizontalDistance(player.getPos(), lantern.getPos()) < spirit_mass * SPIRIT_RADIUS) return true;
-//        }
         return false;
     }
 

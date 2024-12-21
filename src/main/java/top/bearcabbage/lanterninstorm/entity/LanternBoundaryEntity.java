@@ -1,11 +1,14 @@
 package top.bearcabbage.lanterninstorm.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -16,12 +19,21 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import static top.bearcabbage.lanterninstorm.player.Player.DISTANCE_PER_SPIRIT;
+@Environment(EnvType.CLIENT)
 public class LanternBoundaryEntity extends Entity {
 
+    public static final Map<UUID, LanternBoundaryEntity> LANTERN_BOUNDARY_MAP = new HashMap<>();
     private SpiritLanternEntity lantern;
+    private int radius = 0;
+    private boolean own = false;
 
     public static final EntityType<LanternBoundaryEntity> LANTERN_BOUNDARY = Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","lantern_boundary"), EntityType.Builder.<LanternBoundaryEntity>create(LanternBoundaryEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
@@ -34,7 +46,6 @@ public class LanternBoundaryEntity extends Entity {
         super(type, world);
     }
 
-    public static void init(){}
 
     void setLantern(SpiritLanternEntity lantern) {
         this.lantern = lantern;
@@ -43,13 +54,14 @@ public class LanternBoundaryEntity extends Entity {
     @Override
     public void baseTick() {
         this.setOnFire(false);
-//        if (this.getLantern() == null) {
-//            this.discard();
-//            return;
-//        }
-//        if(this.getWorld()!=this.getLantern().getWorld()) this.setWorld(this.getLantern().getWorld());
-//        this.setVelocity(this.getLantern().getVelocity());
-//        this.refreshPositionAfterTeleport(this.getLantern().getX(), this.getLantern().getY(), this.getLantern().getZ());
+        if (this.getLantern() == null) {
+            this.discard();
+            return;
+        } else {
+            if (this.getWorld() != this.getLantern().getWorld()) this.setWorld(this.getLantern().getWorld());
+            this.setVelocity(this.getLantern().getVelocity());
+            this.refreshPositionAfterTeleport(this.getLantern().getX(), this.getLantern().getY(), this.getLantern().getZ());
+        }
         if (this.hasVehicle()) {
             this.stopRiding();
         }
@@ -70,7 +82,24 @@ public class LanternBoundaryEntity extends Entity {
     }
 
     public SpiritLanternEntity getLantern() {
-        return (lantern == null || lantern.isRemoved()) ? null : lantern;
+        return lantern;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public int getRadius() {
+        return radius;
+        //return LanternInStormSpiritManager.get_sum(this.getLantern().getUuid())*DISTANCE_PER_SPIRIT;
+    }
+
+    public void setOwn(boolean own) {
+        this.own = own;
+    }
+
+    public boolean isOwn() {
+        return own;
     }
 
     @Override
@@ -138,7 +167,6 @@ public class LanternBoundaryEntity extends Entity {
 
     @Override
     public void tickRiding() {
-        this.setVelocity(Vec3d.ZERO);
         this.tick();
         if (this.hasVehicle()) {
             this.getVehicle().updatePassengerPosition(this);

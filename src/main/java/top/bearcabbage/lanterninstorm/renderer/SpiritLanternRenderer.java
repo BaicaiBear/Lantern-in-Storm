@@ -16,6 +16,10 @@ import org.joml.Quaternionf;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.LanternInStormClient;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
+import top.bearcabbage.lanterninstorm.utils.ObjModel;
+
+import static net.minecraft.client.render.LightmapTextureManager.pack;
+import static top.bearcabbage.lanterninstorm.LanternInStormClient.MOD_NAMESPACE;
 
 @Environment(EnvType.CLIENT)
 public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
@@ -25,6 +29,10 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
     protected final ModelPart light_ring;
     protected final ModelPart dark_ring;
     protected final ModelPart bottom;
+    public static final Identifier TEXTURE_ON = Identifier.of("lanterninstorm", "textures/entity/lantern_boundary_on.png");
+    public static final Identifier TEXTURE_OFF = Identifier.of("lanterninstorm", "textures/entity/lantern_boundary_off.png");
+
+    public static ObjModel model;
 
     public SpiritLanternRenderer(EntityRendererFactory.Context context) {
         super(context);
@@ -69,34 +77,25 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
             matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
             j /= l;
         }
-//        this.frame.render(matrixStack, vertexConsumer, i, k);
-//        matrixStack.scale(l, l, l);
-//        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
-//        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-//        this.frame.render(matrixStack, vertexConsumer, i, k);
-//        matrixStack.scale(l, l, l);
-//        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
-//        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-//        this.frame.render(matrixStack, vertexConsumer, i, k);
-//        matrixStack.scale(l, l, l);
-//        matrixStack.multiply((new Quaternionf()).setAngleAxis(((float)Math.PI / 3F), SINE_45_DEGREES, 0.0F, SINE_45_DEGREES));
-//        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-
-        matrixStack.pop();
-        matrixStack.pop();
-//        Vec3d Pos = Entity.getWorld().getPlayers().getFirst().getPos();
-//        if (Pos != null) {
-//            float m = (float)Pos.getX() + 0.5F;
-//            float n = (float)Pos.getY() + 0.5F;
-//            float o = (float)Pos.getZ() + 0.5F;
-//            float p = (float)((double)m - Entity.getX());
-//            float q = (float)((double)n - Entity.getY()+1);
-//            float r = (float)((double)o - Entity.getZ());
-//            matrixStack.translate(p, q, r);
-//            EnderDragonEntityRenderer.renderCrystalBeam(-p, -q + h, -r, g, Entity.Age, matrixStack, vertexConsumerProvider, i);
-//        }
-
         super.render(Entity, f, g, matrixStack, vertexConsumerProvider, i);
+        if (model == null) {
+            model = new ObjModel(MOD_NAMESPACE, "entity/lantern_boundary");
+        }
+        float size = Entity.getRadius();
+        matrixStack.push();
+        matrixStack.translate(0.5F, 1.0F, 0.5F);
+        matrixStack.scale(size, size, size);
+        RenderLayer.MultiPhaseParameters compositeState = RenderLayer.MultiPhaseParameters.builder()
+                .program(RenderPhase.TRANSLUCENT_PROGRAM)
+                .transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY)
+                .texture(new RenderPhase.Texture(TEXTURE_ON, false, false))
+                .cull(RenderPhase.DISABLE_CULLING)
+                .overlay(RenderPhase.ENABLE_OVERLAY_COLOR)
+                .writeMaskState(RenderPhase.COLOR_MASK)
+                .build(true);RenderLayer renderLayer = RenderLayer.of("Boundary",VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.TRIANGLES, 1536, true, true, compositeState);
+        VertexConsumer consumer = vertexConsumerProvider.getBuffer(renderLayer);
+        model.render(matrixStack, consumer, i, pack(0, 10));
+        matrixStack.pop();
     }
 
     public static float getYOffset(SpiritLanternEntity crystal, float tickDelta) {/*

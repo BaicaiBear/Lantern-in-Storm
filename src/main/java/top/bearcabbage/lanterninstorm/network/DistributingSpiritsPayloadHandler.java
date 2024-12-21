@@ -1,12 +1,13 @@
 package top.bearcabbage.lanterninstorm.network;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
 
 import java.util.UUID;
-
 
 
 public class DistributingSpiritsPayloadHandler {

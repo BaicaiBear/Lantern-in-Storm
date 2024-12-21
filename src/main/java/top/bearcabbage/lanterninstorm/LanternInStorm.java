@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import top.bearcabbage.lanterninstorm.entity.LanternBoundaryEntity;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayload;
 import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayloadHandler;
+import top.bearcabbage.lanterninstorm.network.LanternPosPayload;
+import top.bearcabbage.lanterninstorm.network.SpiritMassPayload;
 import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
 
 
@@ -28,11 +31,11 @@ public class LanternInStorm implements ModInitializer {
 		PlayerDataApi.register(LSData);
 		// 注册实体
 		SpiritLanternEntity.init();
-		LanternBoundaryEntity.init();
 		// 注册命令
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment)->LanternInStormCommands.registerCommands(dispatcher)); // 调用静态方法注册命令
 		// 注册事件
 		PlayerEventRegistrator.register();
+
 		// 读写灯笼列表
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			// 读取全局灯笼列表
@@ -49,6 +52,10 @@ public class LanternInStorm implements ModInitializer {
 				// 处理接收到的数据
 				DistributingSpiritsPayloadHandler.onDistributingSpiritsPayload(payload, context);
 			});
+		});
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			// 发送灯笼列表
+			LanternInStormSpiritManager.sendAll(handler.player);
 		});
 	}
 }
