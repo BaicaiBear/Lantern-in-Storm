@@ -33,7 +33,6 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                 if (lantern instanceof PrivateLanternEntity privateLantern && !privateLantern.getOwner().equals(player.getUuid())) {
                     return ActionResult.FAIL;
                 }
-                player.sendMessage(Text.of("Client_Right"));
                 ClientPlayNetworking.send(new DistributingSpiritsPayload(lantern.getUuid(), 1));
                 return ActionResult.SUCCESS;
             }
@@ -45,7 +44,6 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                 if (lantern instanceof PrivateLanternEntity privateLantern && !privateLantern.getOwner().equals(player.getUuid())) {
                     return ActionResult.FAIL;
                 }
-                player.sendMessage(Text.of("Client_Left"));
                 ClientPlayNetworking.send(new DistributingSpiritsPayload(lantern.getUuid(), -1));
                 return ActionResult.SUCCESS;
             }
@@ -58,7 +56,6 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
             if (player.getPassengerList().stream().anyMatch(entity1 -> entity1 instanceof SpiritLanternEntity) && player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
                 SpiritLanternEntity lantern = (SpiritLanternEntity) player.getPassengerList().stream().filter(entity1 -> entity1 instanceof SpiritLanternEntity).findFirst().get();
                 // 将灯笼放下来的操作
-                player.sendMessage(Text.of("Down"));
                 lantern.stopRiding();
                 return ActionResult.SUCCESS;
             } else if (entity instanceof SpiritLanternEntity lantern
@@ -67,7 +64,6 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                     if (lantern instanceof PrivateLanternEntity privateLantern && !privateLantern.getOwner().equals(player.getUuid())) {
                         return ActionResult.FAIL;
                     }
-                    player.sendMessage(Text.of("Up"));
                     if (lantern.startRiding(player,true)) return ActionResult.SUCCESS;
                     return ActionResult.PASS;
                 }
@@ -79,7 +75,6 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
             if (player.getPassengerList().stream().anyMatch(entity1 -> entity1 instanceof SpiritLanternEntity) && player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
                 SpiritLanternEntity spiritLanternEntity = (SpiritLanternEntity) player.getPassengerList().stream().filter(entity1 -> entity1 instanceof SpiritLanternEntity).findFirst().get();
                 // 将灯笼放下来的操作
-                player.sendMessage(Text.of("Down"));
                 spiritLanternEntity.stopRiding();
                 return ActionResult.SUCCESS;
             } else return ActionResult.PASS;

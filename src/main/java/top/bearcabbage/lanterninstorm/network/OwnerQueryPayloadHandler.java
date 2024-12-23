@@ -17,17 +17,13 @@ public class OwnerQueryPayloadHandler {
 
     // 服务端收到查询的包
     public static void onOwnerQueryPayload_SERVER(OwnerQueryPayload payload, ServerPlayNetworking.Context context) {
-        System.out.println("Send");
         if (!(lantern_list.getOrDefault(payload.lantern(),null) instanceof PrivateLanternEntity) || !payload.owner().equals(NULL_UUID)) return;
-        System.out.println("Sendddd");
         ServerPlayNetworking.send(context.player(), new OwnerQueryPayload(payload.lantern(), ((PrivateLanternEntity) lantern_list.get(payload.lantern())).getOwner()));
     }
 
     // 客户端收到返回的包
     public static void onOwnerQueryPayload_CLIENT(OwnerQueryPayload payload, ClientPlayNetworking.Context context) {
-        System.out.println("Receive");
         if (!(lantern_list.getOrDefault(payload.lantern(),null) instanceof PrivateLanternEntity) || payload.owner().equals(NULL_UUID)) return;
-        System.out.println("Receiveeee");
         ((PrivateLanternEntity) lantern_list.get(payload.lantern())).setOwner(payload.owner());
     }
 

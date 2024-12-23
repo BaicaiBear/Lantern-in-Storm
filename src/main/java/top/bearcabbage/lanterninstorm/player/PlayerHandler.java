@@ -21,7 +21,6 @@ public abstract class PlayerHandler {
             // 不在灵魂灯笼范围内
             else if (!lsPlayer.getLS().isSafe()){
                 lsPlayer.getLS().onUnstableTick();
-                player.sendMessage(Text.of("OUT!!!!!"));
             }
         }
     }

@@ -9,8 +9,12 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
@@ -21,8 +25,10 @@ import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 import static top.bearcabbage.lanterninstorm.LanternInStormSpiritManager.DISTANCE_PER_SPIRIT;
+import static top.bearcabbage.lanterninstorm.effect.LostEffect.LOST_EFFECT_ENTRY;
 
 
 public class Player {
@@ -81,12 +87,13 @@ public class Player {
     }
 
     public void onUnstableTick() {
-        this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 200));
-        if (this.player.getWorld().isClient) {
-            RenderSystem.setShaderFogStart(0.0F);
-            RenderSystem.setShaderFogEnd(1.0F);
+        this.player.addStatusEffect(new StatusEffectInstance(LOST_EFFECT_ENTRY, 200));
+        //this.player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("OUT!!!").withColor(0x996600)));
+//        if (this.player.getWorld().isClient) {
+//            RenderSystem.setShaderFogStart(0.0F);
+//            RenderSystem.setShaderFogEnd(1.0F);
 //            BackgroundRenderer.applyFog(MinecraftClient.getInstance().gameRenderer.getCamera(), BackgroundRenderer.FogType.FOG_TERRAIN, 5,true, 1);
-        }
+//        }
     }
 
     public void onDeath() {
@@ -114,26 +121,6 @@ public class Player {
         data.putIntArray("spawnpoint", new int[]{pos.getX(), pos.getY(), pos.getZ()});
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
         return true;
-    }
-
-    public ActionResult distributeSpirits(SpiritLanternEntity lanternEntity, int spirits) {
-        UUID player = this.player.getUuid();
-        UUID lantern = lanternEntity.getUuid();
-        int player_left = LanternInStormSpiritManager.get_left(player);
-        int lantern_left = LanternInStormSpiritManager.get(player, lantern);
-        if(spirits > player_left){
-            this.player.sendMessage(Text.of("灵魂不够了～～～"));
-            return ActionResult.FAIL;
-        }
-        if(spirits + lantern_left < 0){
-            this.player.sendMessage(Text.of("灯笼空了…………"));
-            return ActionResult.FAIL;
-        }
-        LanternInStormSpiritManager.increase_left(player, -spirits);
-        LanternInStormSpiritManager.increase(player, lantern, spirits);
-        this.player.sendMessage(Text.of("成功分配了"+spirits+"个灵魂"));
-        return ActionResult.SUCCESS;
-
     }
 
     public int getLeftMass(){

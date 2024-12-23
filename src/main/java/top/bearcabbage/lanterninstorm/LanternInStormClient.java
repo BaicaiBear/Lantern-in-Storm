@@ -1,7 +1,6 @@
 package top.bearcabbage.lanterninstorm;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -45,5 +44,6 @@ public class LanternInStormClient implements ClientModInitializer {
         });
         // 注册实体事件
         SpiritLanternEntity.register_CLIENT();
+
     }
 }
