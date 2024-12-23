@@ -1,7 +1,11 @@
 package top.bearcabbage.lanterninstorm.player;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
@@ -78,6 +82,11 @@ public class Player {
 
     public void onUnstableTick() {
         this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 200));
+        if (this.player.getWorld().isClient) {
+            RenderSystem.setShaderFogStart(0.0F);
+            RenderSystem.setShaderFogEnd(1.0F);
+//            BackgroundRenderer.applyFog(MinecraftClient.getInstance().gameRenderer.getCamera(), BackgroundRenderer.FogType.FOG_TERRAIN, 5,true, 1);
+        }
     }
 
     public void onDeath() {

@@ -13,10 +13,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
-import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayload;
-import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayloadHandler;
-import top.bearcabbage.lanterninstorm.network.LanternPosPayload;
-import top.bearcabbage.lanterninstorm.network.SpiritMassPayload;
+import top.bearcabbage.lanterninstorm.network.*;
 import top.bearcabbage.lanterninstorm.player.PlayerEventRegistrator;
 
 
@@ -29,7 +26,7 @@ public class LanternInStorm implements ModInitializer {
 		// 获取配置文件
 		PlayerDataApi.register(LSData);
 		// 注册实体
-		SpiritLanternEntity.init();
+		SpiritLanternEntity.register_SERVER();
 		// 注册命令
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment)->LanternInStormCommands.registerCommands(dispatcher)); // 调用静态方法注册命令
 		// 注册事件
@@ -47,6 +44,8 @@ public class LanternInStorm implements ModInitializer {
 		// 注册网络数据包
 		PayloadTypeRegistry.playS2C().register(SpiritMassPayload.ID, SpiritMassPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(LanternPosPayload.ID, LanternPosPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(OwnerQueryPayload.ID, OwnerQueryPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(OwnerQueryPayload.ID, OwnerQueryPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(DistributingSpiritsPayload.ID, DistributingSpiritsPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(DistributingSpiritsPayload.ID, (payload, context) -> {
 			context.server().execute(() -> {
@@ -54,9 +53,16 @@ public class LanternInStorm implements ModInitializer {
 				DistributingSpiritsPayloadHandler.onDistributingSpiritsPayload(payload, context);
 			});
 		});
+		ServerPlayNetworking.registerGlobalReceiver(OwnerQueryPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				// 处理接收到的数据
+				OwnerQueryPayloadHandler.onOwnerQueryPayload_SERVER(payload, context);
+			});
+		});
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			// 发送灯笼列表
 			LanternInStormSpiritManager.sendAll(handler.player);
 		});
+
 	}
 }

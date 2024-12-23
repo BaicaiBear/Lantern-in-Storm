@@ -17,6 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.lwjgl.glfw.GLFW;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
+import top.bearcabbage.lanterninstorm.entity.PrivateLanternEntity;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
 import top.bearcabbage.lanterninstorm.network.DistributingSpiritsPayload;
@@ -29,6 +30,9 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if ((!(player.getPassengerList().stream().anyMatch(entity1 -> entity1 instanceof SpiritLanternEntity) || player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT))) && entity instanceof SpiritLanternEntity lantern) {
                 // 玩家与灯笼右键交互的操作
+                if (lantern instanceof PrivateLanternEntity privateLantern && !privateLantern.getOwner().equals(player.getUuid())) {
+                    return ActionResult.FAIL;
+                }
                 player.sendMessage(Text.of("Client_Right"));
                 ClientPlayNetworking.send(new DistributingSpiritsPayload(lantern.getUuid(), 1));
                 return ActionResult.SUCCESS;
@@ -38,6 +42,9 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof SpiritLanternEntity lantern && (!player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT))) {
                 // 玩家与灯笼左键交互的操作
+                if (lantern instanceof PrivateLanternEntity privateLantern && !privateLantern.getOwner().equals(player.getUuid())) {
+                    return ActionResult.FAIL;
+                }
                 player.sendMessage(Text.of("Client_Left"));
                 ClientPlayNetworking.send(new DistributingSpiritsPayload(lantern.getUuid(), -1));
                 return ActionResult.SUCCESS;
@@ -54,19 +61,16 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
                 player.sendMessage(Text.of("Down"));
                 lantern.stopRiding();
                 return ActionResult.SUCCESS;
-            } else if (entity instanceof SpiritLanternEntity lantern) {
-                if (player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
+            } else if (entity instanceof SpiritLanternEntity lantern
+                && player.getMainHandStack().isOf(Items.POPPED_CHORUS_FRUIT)) {
                     // 将灯笼捡起来的操作
+                    if (lantern instanceof PrivateLanternEntity privateLantern && !privateLantern.getOwner().equals(player.getUuid())) {
+                        return ActionResult.FAIL;
+                    }
                     player.sendMessage(Text.of("Up"));
                     if (lantern.startRiding(player,true)) return ActionResult.SUCCESS;
                     return ActionResult.PASS;
-                } else if (player instanceof ServerPlayerEntity serverPlayer) {
-                    // 玩家与灯笼右键交互的操作
-                    return ActionResult.PASS;
-//                    player.sendMessage(Text.of("Right"));
-//                    return ((PlayerAccessor)serverPlayer).getLS().distributeSpirits(lantern, 1);
                 }
-            }
             return ActionResult.PASS;
         });
 
@@ -84,17 +88,17 @@ public abstract class PlayerEventRegistrator extends LanternInStorm {
 
     }
     //注册了滚轮事件绑定 但不知道怎么调用
-        KeyBinding scrollUpBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.lanterninstorm.scroll.up",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_KP_ADD, // 假设使用小键盘的加号键模拟向上滚动
-                "category.lanterninstorm.keys"
-        ));
+    KeyBinding scrollUpBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.lanterninstorm.scroll.up",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_KP_ADD, // 假设使用小键盘的加号键模拟向上滚动
+            "category.lanterninstorm.keys"
+    ));
 
-        KeyBinding scrollDownBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.lanterninstorm.scroll.down",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_KP_SUBTRACT, // 假设使用小键盘的减号键模拟向下滚动
-                "category.lanterninstorm.keys"
-        ));
+    KeyBinding scrollDownBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.lanterninstorm.scroll.down",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_KP_SUBTRACT, // 假设使用小键盘的减号键模拟向下滚动
+            "category.lanterninstorm.keys"
+    ));
 }

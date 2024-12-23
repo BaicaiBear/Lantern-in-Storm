@@ -22,7 +22,6 @@
 - 玩家获得`Spirits`与成就的绑定
   - `lanternlevel`种类对应灵魂数`(1, 2, 4, 8) / (1, 2, 3, 4, 5)`
   - 利用视角连续变化、结合渲染等
-  - 为灯笼增加id序号标识（可选）
   - 添加`/locatelantern [id]`或者`[player]`查找相关`lantern`的`pos`和`world`信息（可选）
   - 添加使用成就数和玩家灯笼内所存的灵魂数进行检查的`/ce check [player]`对于玩家的灵魂数做检查并且重置为正确的灵魂数（可选）
 - 氛围渲染
@@ -32,6 +31,7 @@
 
 ### DONE List
 
+- 完善了PrivateLantern的特性
 - 参考 [TeamGalacticraft/Galacticraft](https://github.com/TeamGalacticraft/Galacticraft/)中氧气泡的实现方式实现灯笼区域边界渲染 (12.21)
 - 修复了关于水晶的搬运（骑乘）的错误 (12.16)
 - 重构`Spirit`数据结构和业务逻辑 (12.16)

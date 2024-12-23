@@ -1,5 +1,9 @@
 package top.bearcabbage.lanterninstorm.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.data.DataTracker;
@@ -25,6 +29,7 @@ public abstract class SpiritLanternEntity extends Entity {
 
     public int Age;
     public static Map<UUID, SpiritLanternEntity> lantern_list = new HashMap<>();
+    public final boolean isPrivate;
 
     public static final EntityType<PrivateLanternEntity> PRIVATE_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","private_lantern"), EntityType.Builder.<PrivateLanternEntity>create(PrivateLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
@@ -40,13 +45,40 @@ public abstract class SpiritLanternEntity extends Entity {
         super(entityType, world);
         this.intersectionChecked = true;
         this.Age = this.random.nextInt(100000);
+        this.isPrivate = this instanceof PrivateLanternEntity;
     }
 
     protected void initDataTracker(DataTracker.Builder builder) {
     }
 
-    // 用于在服务端初始化灯笼实体
-    public static void init(){ return; }
+    // 在服务端注册灯笼
+    public static void register_SERVER(){
+        ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity instanceof SpiritLanternEntity lantern) {
+                lantern_list.put(lantern.getUuid(), lantern);
+            }
+        });
+        ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            if (entity instanceof SpiritLanternEntity lantern) {
+                lantern_list.remove(lantern.getUuid());
+            }
+        });
+    }
+
+    // 在客户端注册灯笼
+    @Environment(EnvType.CLIENT)
+    public static void register_CLIENT(){
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity instanceof SpiritLanternEntity lantern) {
+                lantern_list.put(lantern.getUuid(), lantern);
+            }
+        });
+        ClientEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            if (entity instanceof SpiritLanternEntity lantern) {
+                lantern_list.remove(lantern.getUuid());
+            }
+        });
+    }
 
     public void tick() {
         if (this.getY() < this.getWorld().getBottomY() && !this.getWorld().isClient) {
@@ -64,9 +96,6 @@ public abstract class SpiritLanternEntity extends Entity {
         if(!this.getWorld().isClient){
             LanternInStormSpiritManager.lanternPosUpdate(this);
             this.getServer().getPlayerManager().getPlayerList().forEach(LanternInStormSpiritManager::sendAll);
-
-        } else if(SpiritLanternEntity.lantern_list.getOrDefault(this.getUuid(), null) == null){
-            SpiritLanternEntity.lantern_list.put(this.getUuid(), this);
         }
     }
 

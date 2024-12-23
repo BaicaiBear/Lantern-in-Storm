@@ -1,0 +1,10 @@
+ {
+       "criteria": {
+         "trigger": {
+           "trigger": "minecraft:tick"
+         }
+       },
+       "rewards": {
+         "function": "mirrortree:first_join"
+       }
+}

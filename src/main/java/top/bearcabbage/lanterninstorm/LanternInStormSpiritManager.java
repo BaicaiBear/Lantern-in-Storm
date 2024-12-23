@@ -21,9 +21,10 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static top.bearcabbage.lanterninstorm.network.NetworkingConstants.NULL_UUID;
+
 public abstract class LanternInStormSpiritManager {
 
-    public static final UUID NULL_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
     public static final int DISTANCE_PER_SPIRIT = 10;
     /*
     无向图。两个uuid分别对应玩家和灯笼，没有顺序，因此每个spirit被存储两次。
