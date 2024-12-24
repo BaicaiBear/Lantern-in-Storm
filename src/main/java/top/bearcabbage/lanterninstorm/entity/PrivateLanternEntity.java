@@ -1,6 +1,7 @@
 package top.bearcabbage.lanterninstorm.entity;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -58,5 +59,22 @@ public class PrivateLanternEntity extends SpiritLanternEntity {
         if (this.getWorld().isClient && (this.getOwner() == null || this.getOwner().equals(NULL_UUID))) {
             ClientPlayNetworking.send(new OwnerQueryPayload(this.getUuid(), NULL_UUID));
         }
+    }
+
+
+    @Override
+    public boolean shouldRender(double distance) {
+        // Private lanterns should only render for their owner
+        if (MinecraftClient.getInstance().player != null && (this.getOwner() == null || this.getOwner().equals(NULL_UUID) || !this.getOwner().equals(MinecraftClient.getInstance().player.getUuid()))) {
+            return false;
+        }
+
+        double d = this.getBoundingBox().getAverageSideLength();
+        if (Double.isNaN(d)) {
+            d = 1.0;
+        }
+
+        d *= 64.0;
+        return distance < d * d;
     }
 }

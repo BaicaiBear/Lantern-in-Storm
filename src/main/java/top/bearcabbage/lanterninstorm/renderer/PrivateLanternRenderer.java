@@ -19,4 +19,5 @@ public class PrivateLanternRenderer extends SpiritLanternRenderer {
     public void render(SpiritLanternEntity Entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         super.render(Entity, SIZE, f, g, matrixStack, vertexConsumerProvider, i);
     }
+
 }

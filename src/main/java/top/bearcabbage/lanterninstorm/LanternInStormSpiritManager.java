@@ -12,14 +12,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.network.LanternPosPayload;
-import top.bearcabbage.lanterninstorm.network.NetworkingConstants;
 import top.bearcabbage.lanterninstorm.network.SpiritMassPayload;
 import top.bearcabbage.lanterninstorm.utils.Config;
 //import top.bearcabbage.lanterninstorm.utils.SpiritData;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static top.bearcabbage.lanterninstorm.network.NetworkingConstants.NULL_UUID;
 
@@ -48,9 +46,9 @@ public abstract class LanternInStormSpiritManager {
         }
     }
 
-    public static Map get_player_spirits(UUID player) {
-        confirm_existence(player);
-        return spirit_mass.get(player);
+    public static Map get_spirits(UUID playerOrLantern) {
+        confirm_existence(playerOrLantern);
+        return spirit_mass.get(playerOrLantern);
     }
 
 
