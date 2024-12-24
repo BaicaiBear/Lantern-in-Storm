@@ -35,6 +35,7 @@ public class Player {
     private ServerPlayerEntity player;
     private BlockPos rtpSpawn;
     private static final int INIT_SPIRIT = 5;
+    private static final int UPGRADE_FRAG = 2;
     private final ReentrantLock lock = new ReentrantLock();
 
     private static final int TICK_INTERVAL = 20;
@@ -148,4 +149,11 @@ public class Player {
         return false;
     }
 
+    public int getSpiritUpgradeCount() {
+        return UPGRADE_FRAG;
+    }
+
+    public void upgradeSpirit() {
+        LanternInStormSpiritManager.increase_left(this.player.getUuid(), 1);
+    }
 }
