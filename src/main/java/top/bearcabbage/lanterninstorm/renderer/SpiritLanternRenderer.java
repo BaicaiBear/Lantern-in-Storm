@@ -10,7 +10,10 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.client.util.math.MatrixStack;
 //import net.minecraft.entity.decoration.EndCrystalEntity;
+import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
@@ -55,6 +58,9 @@ public class SpiritLanternRenderer extends EntityRenderer<SpiritLanternEntity> {
 //        modelPartData.addChild("base", ModelPartBuilder.create().uv(0, 16).cuboid(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F), ModelTransform.NONE);
 //        return TexturedModelData.of(modelData, 64, 32);
 //    }
+    protected int getBlockLight(SpiritLanternEntity glowSquidEntity, BlockPos blockPos) {
+        return 15;
+    }
 
     public void render(SpiritLanternEntity Entity, float Size, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         float h = getYOffset(Entity, g);

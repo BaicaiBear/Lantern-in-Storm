@@ -7,10 +7,12 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
@@ -56,7 +58,7 @@ public class PublicLanternItem {
             if (entityType.spawnFromItemStack((ServerWorld) world, itemStack, player, blockPos2, SpawnReason.SPAWN_EGG, true, !Objects.equals(blockPos, blockPos2) && direction == Direction.UP) != null) {
                 itemStack.decrement(1);
                 world.emitGameEvent(player, GameEvent.ENTITY_PLACE, blockPos);
-            }
+            } else player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("地方太窄，放不下公共灯笼了……")));
             return ActionResult.CONSUME;
         }
     }

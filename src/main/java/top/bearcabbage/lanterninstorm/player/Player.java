@@ -44,7 +44,8 @@ public class Player {
     private static final float DAMAGE = 2.0F;
     private int LSTick;
     private int tiredTick;
-    private int debuffTick;
+    private int invincibleTick = 0;
+    private boolean safety;
 
     public Player(ServerPlayerEntity player) {
         this.player = player;
@@ -64,6 +65,9 @@ public class Player {
     }
 
     public boolean onTick() {
+        if (invincibleTick > 0) {
+            invincibleTick--;
+        }
         return ++LSTick % TICK_INTERVAL == 0;
     }
 
@@ -83,12 +87,17 @@ public class Player {
     public void onRestTick() {
         if(--tiredTick ==0){
             this.player.removeStatusEffect(StatusEffects.WITHER);
-            debuffTick = 0;
         }
     }
 
     public void onUnstableTick() {
         this.player.addStatusEffect(new StatusEffectInstance(LOST_EFFECT_ENTRY, 200));
+        if (safety) {
+            safety = false;
+            if (player instanceof ServerPlayerEntity serverPlayer) {
+                serverPlayer.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("大鹏的噩梦正在吞噬你……!").withColor(0xAAAAAA)));
+            }
+        }
         //this.player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("OUT!!!").withColor(0x996600)));
 //        if (this.player.getWorld().isClient) {
 //            RenderSystem.setShaderFogStart(0.0F);
@@ -98,7 +107,7 @@ public class Player {
     }
 
     public void onDeath() {
-        LSTick = debuffTick = tiredTick = 0;
+        LSTick = invincibleTick = tiredTick = 0;
     }
 
     public void onGrantAdvancement(Advancement advancement) {
@@ -134,6 +143,9 @@ public class Player {
 
     // 检查玩家是否在安全区内
     public boolean isSafe() {
+        if (invincibleTick > 0) {
+            return true;
+        }
         Map<UUID, Integer> lanterns_and_spirits = LanternInStormSpiritManager.spirit_mass.getOrDefault(player.getUuid(), null);
         if (lanterns_and_spirits == null) {
             return false;
@@ -155,5 +167,17 @@ public class Player {
 
     public void upgradeSpirit() {
         LanternInStormSpiritManager.increase_left(this.player.getUuid(), 1);
+    }
+
+    public void setSafe() {
+        this.safety = true;
+    }
+
+    public boolean getSafety() {
+        return safety;
+    }
+
+    public void setInvincibleTick(int invincibleTick) {
+        this.invincibleTick = invincibleTick;
     }
 }

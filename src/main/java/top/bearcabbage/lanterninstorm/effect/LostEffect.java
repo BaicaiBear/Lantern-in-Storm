@@ -28,9 +28,6 @@ public class LostEffect extends StatusEffect {
     public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity.getHealth() > 1.0F) {
             entity.damage(entity.getDamageSources().magic(), 1.0F);
-            if (entity instanceof ServerPlayerEntity player) {
-                player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("You are lost!").withColor(0x996600)));
-            }
         }
 
         return true;

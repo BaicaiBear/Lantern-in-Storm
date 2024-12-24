@@ -25,6 +25,7 @@ public class SpawnPointCommandMixin {
         while (iterator.hasNext()) {
             ServerPlayerEntity serverPlayerEntity = iterator.next();
             if(serverPlayerEntity instanceof PlayerAccessor playerAccessor){
+                playerAccessor.getLS().setInvincibleTick(80);
                 playerAccessor.getLS().setRtpSpawn(pos);
                 PrivateLanternEntity.create(serverPlayerEntity.getServerWorld(), serverPlayerEntity);
             }

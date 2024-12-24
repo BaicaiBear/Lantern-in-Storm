@@ -5,7 +5,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.network.OwnerQueryPayload;
 
@@ -29,6 +32,8 @@ public class PrivateLanternEntity extends SpiritLanternEntity {
         lantern.setOwner(player.getUuid());
         lantern.setPos(player.getX(), player.getY(), player.getZ());
         world.spawnEntity(lantern);
+        player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("大鹏的梦").withColor(0x525288)));
+        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("你在颤抖，右键面前的「灯笼」试试吧").withColor(0xFFFFFF)));
     }
 
     public void setOwner(UUID owner) {

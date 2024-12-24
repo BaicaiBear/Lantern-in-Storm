@@ -22,6 +22,9 @@ public abstract class PlayerHandler {
             else if (!lsPlayer.getLS().isSafe()){
                 lsPlayer.getLS().onUnstableTick();
             }
+            else if (!lsPlayer.getLS().getSafety()){
+                lsPlayer.getLS().setSafe();
+            }
         }
     }
 }
