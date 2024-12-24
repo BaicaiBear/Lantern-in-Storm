@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "lanterninstorm:item/public_lantern_item"
+  }
+}
