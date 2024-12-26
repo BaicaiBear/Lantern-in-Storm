@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.effect.LostEffect;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
+import top.bearcabbage.lanterninstorm.item.FoxTailItem;
 import top.bearcabbage.lanterninstorm.item.PublicLanternItem;
 import top.bearcabbage.lanterninstorm.item.SpirirtFragItem;
 import top.bearcabbage.lanterninstorm.network.*;
@@ -35,6 +36,7 @@ public class LanternInStorm implements ModInitializer {
 		// 注册物品
 		PublicLanternItem.initialize();
 		SpirirtFragItem.initialize();
+		FoxTailItem.initialize();
 		// 注册命令
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment)->LanternInStormCommands.registerCommands(dispatcher)); // 调用静态方法注册命令
 		// 注册事件
