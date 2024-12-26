@@ -1,34 +1,24 @@
 package top.bearcabbage.lanterninstorm.player;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.advancement.Advancement;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BackgroundRenderer;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.LanternInStormSpiritManager;
-import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
 
 import static top.bearcabbage.lanterninstorm.LanternInStormSpiritManager.DISTANCE_PER_SPIRIT;
-import static top.bearcabbage.lanterninstorm.effect.LostEffect.LOST_EFFECT_ENTRY;
+import static top.bearcabbage.lanterninstorm.effect.NightmareEffect.NIGHTMARE_EFFECT_ENTRY;
 
 
 public class Player {
@@ -91,7 +81,7 @@ public class Player {
     }
 
     public void onUnstableTick() {
-        this.player.addStatusEffect(new StatusEffectInstance(LOST_EFFECT_ENTRY, 200));
+        this.player.addStatusEffect(new StatusEffectInstance(NIGHTMARE_EFFECT_ENTRY, 200));
         if (safety) {
             safety = false;
             if (player instanceof ServerPlayerEntity serverPlayer) {

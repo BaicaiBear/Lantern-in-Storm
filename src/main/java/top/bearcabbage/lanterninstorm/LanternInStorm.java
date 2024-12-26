@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.bearcabbage.lanterninstorm.effect.LostEffect;
+import top.bearcabbage.lanterninstorm.effect.NightmareEffect;
 import top.bearcabbage.lanterninstorm.entity.SpiritLanternEntity;
 import top.bearcabbage.lanterninstorm.item.FoxTailItem;
 import top.bearcabbage.lanterninstorm.item.PublicLanternItem;
@@ -32,7 +32,7 @@ public class LanternInStorm implements ModInitializer {
 		// 注册实体
 		SpiritLanternEntity.register_SERVER();
 		// 注册效果
-		LostEffect.register();
+		NightmareEffect.register();
 		// 注册物品
 		PublicLanternItem.initialize();
 		SpirirtFragItem.initialize();
