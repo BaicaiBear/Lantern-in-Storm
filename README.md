@@ -16,7 +16,6 @@
 ### TODO List
 
 - [计划：12.17(xxbc)] 在`unstable`区域的的迷雾效果
-- [计划：12.17] 玩家在`unstable`区域的负面效果
 - [计划：12.17] 对于`lantern`分配灵魂的交互设计
 - 稳定区域内是否要限制刷怪，或者提供其他安全保障？
 - 玩家获得`Spirits`与成就的绑定
@@ -31,6 +30,7 @@
 
 ### DONE List
 
+- 接入了[AnnoyingEffects](https://github.com/AC-Mnky/AnnoyingEffects)提供的负面效果 (1.2)
 - 完善了PrivateLantern的特性
 - 参考 [TeamGalacticraft/Galacticraft](https://github.com/TeamGalacticraft/Galacticraft/)中氧气泡的实现方式实现灯笼区域边界渲染 (12.21)
 - 修复了关于水晶的搬运（骑乘）的错误 (12.16)
