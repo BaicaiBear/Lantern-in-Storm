@@ -15,22 +15,15 @@
 
 ### TODO List
 
-- [计划：12.17(xxbc)] 在`unstable`区域的的迷雾效果
-- [计划：12.17] 对于`lantern`分配灵魂的交互设计
-- 稳定区域内是否要限制刷怪，或者提供其他安全保障？
-- 玩家获得`Spirits`与成就的绑定
-  - `lanternlevel`种类对应灵魂数`(1, 2, 4, 8) / (1, 2, 3, 4, 5)`
-  - 利用视角连续变化、结合渲染等
-  - 添加`/locatelantern [id]`或者`[player]`查找相关`lantern`的`pos`和`world`信息（可选）
-  - 添加使用成就数和玩家灯笼内所存的灵魂数进行检查的`/ce check [player]`对于玩家的灵魂数做检查并且重置为正确的灵魂数（可选）
-- 氛围渲染
-  - 通过全局灯笼加载来实现对于未加载区块的迷雾 + 灯笼驱散效果（可选）
-  - 在`unsafe`区域加入`unstable`相关的特效：（贴图丢失/闪烁/音效替换/生物与怪物 ai 随机替换/幽灵粒子效果/脚步声）（可选）
-- `team`转为`gui`界面并且添加团队`tpa`权限和`home`权限（可选）
+- 灯笼的模型优化
+- 灯笼的怪物仇恨机制（讨论中）
+- 搬运灯笼的方法和机制（讨论中）
 
 ### DONE List
 
 - 接入了[AnnoyingEffects](https://github.com/AC-Mnky/AnnoyingEffects)提供的负面效果 (1.2)
+- 添加了公共灯笼和灵魂碎片item，成就碎片计划通过FTBQ任务有限发放
+- `lantern`分配灵魂的简易左右键交互设计
 - 完善了PrivateLantern的特性
 - 参考 [TeamGalacticraft/Galacticraft](https://github.com/TeamGalacticraft/Galacticraft/)中氧气泡的实现方式实现灯笼区域边界渲染 (12.21)
 - 修复了关于水晶的搬运（骑乘）的错误 (12.16)
