@@ -1,5 +1,9 @@
 package top.bearcabbage.lanterninstorm.player;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
@@ -17,11 +21,17 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
-import top.bearcabbage.lanterninstorm.utils.Config;
+import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
-import static top.bearcabbage.lanterninstorm.block.SpiritLanternBlock.STARTUP;
+import static top.bearcabbage.lanterninstorm.LanternInStorm.LOGGER;
+import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 
 
 public class Player {
@@ -94,7 +104,7 @@ public class Player {
             for (Chunk chunk : chunkCheckList) {
                 safety = false;
                 chunk.forEachBlockMatchingPredicate(
-                        blockState -> blockState.getBlock().equals(LanternInStorm.WHITE_PAPER_LANTERN) && blockState.get(STARTUP),
+                        blockState -> blockState.getBlock().equals(SpiritLanternBlocks.WHITE_PAPER_LANTERN) && blockState.get(STARTUP),
                         (blockPos, blockState) -> {
                             if (player.getPos().distanceTo(blockPos.toCenterPos()) < RADIUS) {
                                 safety = true;
@@ -206,5 +216,56 @@ public class Player {
         player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("你感受到噩梦的迫近...").withColor(0xBBBBBB)));
         player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
+    }
+
+    public static class Config {
+        private final Path filePath;
+        private JsonObject jsonObject;
+        private final Gson gson;
+
+        public Config(Path filePath) {
+            this.filePath = filePath;
+            this.gson = new GsonBuilder().setPrettyPrinting().create();
+            try {
+                if (Files.notExists(filePath.getParent())) {
+                    Files.createDirectories(filePath.getParent());
+                }
+                if (Files.notExists(filePath)) {
+                    Files.createFile(filePath);
+                    try (FileWriter writer = new FileWriter(filePath.toFile())) {
+                        writer.write("{}");
+                    }
+                }
+
+            } catch (IOException e) {
+                LOGGER.error(e.toString());
+            }
+            load();
+        }
+
+        public void load() {
+            try (FileReader reader = new FileReader(filePath.toFile())) {
+                this.jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+            } catch (IOException e) {
+                this.jsonObject = new JsonObject();
+            }
+        }
+
+        public void save() {
+            try (FileWriter writer = new FileWriter(filePath.toFile())) {
+                gson.toJson(jsonObject, writer);
+            } catch (IOException e) {
+                LOGGER.error(e.toString());
+            }
+        }
+
+        public void set(String key, Object value) {
+            jsonObject.add(key, gson.toJsonTree(value));
+        }
+
+        public <T> T get(String key, Class<T> clazz) {
+            return gson.fromJson(jsonObject.get(key), clazz);
+        }
+
     }
 }

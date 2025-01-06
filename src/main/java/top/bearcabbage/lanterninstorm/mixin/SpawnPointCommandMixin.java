@@ -2,15 +2,14 @@ package top.bearcabbage.lanterninstorm.mixin;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.SpawnPointCommand;
-import net.minecraft.server.command.SummonCommand;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.bearcabbage.lanterninstorm.entity.PrivateLanternEntity;
-import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.lantern.BeginningLanternEntity;
+import top.bearcabbage.lanterninstorm.player.PlayerAccessor;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ public class SpawnPointCommandMixin {
             if(serverPlayerEntity instanceof PlayerAccessor playerAccessor){
                 playerAccessor.getLS().setInvincibleTick(80);
                 playerAccessor.getLS().setRtpSpawn(pos);
-                PrivateLanternEntity.create(serverPlayerEntity.getServerWorld(), serverPlayerEntity);
+                BeginningLanternEntity.create(serverPlayerEntity.getServerWorld(), serverPlayerEntity);
             }
         }
     }

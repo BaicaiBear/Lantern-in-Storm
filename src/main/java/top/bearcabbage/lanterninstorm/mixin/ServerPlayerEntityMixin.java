@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.bearcabbage.lanterninstorm.interfaces.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.player.PlayerAccessor;
 import top.bearcabbage.lanterninstorm.player.Player;
-import top.bearcabbage.lanterninstorm.player.PlayerHandler;
+import top.bearcabbage.lanterninstorm.player.PlayerEventHandler;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerAccessor {
@@ -55,9 +55,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         player.getLS().onDeath();
     }
 
-    //CEPlayer日常任务
+    //LSPlayer Tick Task
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(CallbackInfo ci) {
-        PlayerHandler.onTick((ServerPlayerEntity) (Object) this);
+        PlayerEventHandler.onTick((ServerPlayerEntity) (Object) this);
     }
 }
