@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "hanging=false,startup=false": {
+      "model": "lanterninstorm:block/white_paper_lantern"
+    },
+    "hanging=true,startup=false": {
+      "model": "lanterninstorm:block/white_hanging_paper_lantern"
+    },
+    "hanging=false,startup=true": {
+      "model": "lanterninstorm:block/white_paper_lantern_startup"
+    },
+    "hanging=true,startup=true": {
+      "model": "lanterninstorm:block/white_hanging_paper_lantern_startup"
+    }
+  }
+}

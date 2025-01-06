@@ -13,13 +13,10 @@
 
 我们建议在添加新待办事项时依照`markdownlint`的规则（但是不遵守也无所谓，会有人工自动格式化 XD）。
 
-### TODO List
 
-- 灯笼的模型优化
-- 灯笼的怪物仇恨机制（讨论中）
-- 搬运灯笼的方法和机制（讨论中）
 
-### DONE List
+
+#### DONE List
 
 - 接入了[AnnoyingEffects](https://github.com/AC-Mnky/AnnoyingEffects)提供的负面效果 (1.2)
 - 添加了公共灯笼和灵魂碎片item，成就碎片计划通过FTBQ任务有限发放

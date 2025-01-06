@@ -11,19 +11,8 @@ public abstract class PlayerHandler {
     public static void onTick(ServerPlayerEntity player) {
         if (player instanceof PlayerAccessor lsPlayer  && lsPlayer.getLS().onTick()){
             // 疲惫的状态：扛灵魂灯笼
-            if (player.getPassengerList().stream().anyMatch(entity -> entity instanceof SpiritLanternEntity)) {
-                lsPlayer.getLS().onTiredTick();
-            }
-            // 休息的状态：刚刚放下灵魂灯笼
-            else if (lsPlayer.getLS().getTiredTick() > 0){
-                lsPlayer.getLS().onRestTick();
-            }
-            // 不在灵魂灯笼范围内
-            else if (!lsPlayer.getLS().isSafe()){
+            if (!lsPlayer.getLS().getSafety()){
                 lsPlayer.getLS().onUnstableTick();
-            }
-            else if (!lsPlayer.getLS().getSafety()){
-                lsPlayer.getLS().setSafe();
             }
         }
     }

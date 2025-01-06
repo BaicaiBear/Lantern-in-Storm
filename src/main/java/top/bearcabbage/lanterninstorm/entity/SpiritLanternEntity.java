@@ -95,7 +95,7 @@ public abstract class SpiritLanternEntity extends Entity {
         }
         if(!this.getWorld().isClient){
             LanternInStormSpiritManager.lanternPosUpdate(this);
-            this.getServer().getPlayerManager().getPlayerList().forEach(LanternInStormSpiritManager::sendAll);
+//            this.getServer().getPlayerManager().getPlayerList().forEach(LanternInStormSpiritManager::sendAll);
         }
     }
 

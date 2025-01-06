@@ -124,7 +124,7 @@ public abstract class LanternInStormSpiritManager {
     }
 
 
-    public static void load(MinecraftServer server, Path path) {
+    public static void load(Path path) {
         // 从配置文件读取全局灯笼列表
         try {
             Config config = new Config(path);

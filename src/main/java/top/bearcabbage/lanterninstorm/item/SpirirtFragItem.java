@@ -31,7 +31,7 @@ public class SpirirtFragItem {
         int requiredCount = ((PlayerAccessor)player).getLS().getSpiritUpgradeCount();
         if (itemStack.getCount() >= requiredCount){
             itemStack.decrementUnlessCreative(requiredCount,player);
-            ((PlayerAccessor)player).getLS().upgradeSpirit();
+            ((PlayerAccessor)player).getLS().addSpirit(1);
             ((ServerPlayerEntity) player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("增加了1点灵魂，现有剩余灵魂量为："+ LanternInStormSpiritManager.get_left(player.getUuid()))));
             return TypedActionResult.consume(itemStack);
         }
