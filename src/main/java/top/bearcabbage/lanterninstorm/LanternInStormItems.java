@@ -22,6 +22,7 @@ public class LanternInStormItems {
     public static final Item WHITE_PAPER_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"white_paper_lantern"), new BlockItem(WHITE_PAPER_LANTERN, new Item.Settings()));
     public static final Item OAK_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"oak_wooden_lantern"), new BlockItem(OAK_WOODEN_LANTERN, new Item.Settings()));
 
+    public static final Item LANTERN_CORE = register("lantern_core", new Item(new Item.Settings()));
     public static final Item FOX_TAIL_ITEM = register("fox_tail_item", new Item(new Item.Settings().maxCount(99)));
     public static final Item SPIRIT_FRAG_ITEM = register("spirit_frag_item", new Item(new Item.Settings().maxCount(99)));
 

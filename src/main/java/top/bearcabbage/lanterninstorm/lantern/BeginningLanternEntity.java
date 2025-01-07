@@ -26,7 +26,7 @@ public class BeginningLanternEntity extends Entity {
             .makeFireImmune()
             .dimensions(2.0F, 2.0F)
             .maxTrackingRange(64)
-            .trackingTickInterval(Integer.MAX_VALUE).build("PrivateLantern"));
+            .trackingTickInterval(Integer.MAX_VALUE).build("beginning_lantern"));
 
     public static void create(World world, ServerPlayerEntity player) {
         BeginningLanternEntity lantern = new BeginningLanternEntity(BEGINNING_LANTERN, world);

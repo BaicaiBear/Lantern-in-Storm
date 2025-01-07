@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:oak_wood"
+    },
+    "b": {
+      "item": "lanterninstorm:lantern_core"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "count": 1,
+    "id": "lanterninstorm:oak_wooden_lantern"
+  }
+}
