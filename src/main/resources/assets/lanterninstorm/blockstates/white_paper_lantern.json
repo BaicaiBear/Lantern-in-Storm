@@ -4,13 +4,13 @@
       "model": "lanterninstorm:block/white_paper_lantern"
     },
     "hanging=true,startup=false": {
-      "model": "lanterninstorm:block/white_hanging_paper_lantern"
+      "model": "lanterninstorm:block/white_paper_lantern_hanging"
     },
     "hanging=false,startup=true": {
       "model": "lanterninstorm:block/white_paper_lantern_startup"
     },
     "hanging=true,startup=true": {
-      "model": "lanterninstorm:block/white_hanging_paper_lantern_startup"
+      "model": "lanterninstorm:block/white_paper_lantern_hanging_startup"
     }
   }
 }

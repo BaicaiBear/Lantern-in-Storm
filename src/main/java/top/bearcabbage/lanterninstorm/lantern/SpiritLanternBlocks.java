@@ -16,6 +16,7 @@ import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
 
 public abstract class SpiritLanternBlocks {
     public static final Block WHITE_PAPER_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"white_paper_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.WHITE).requiresTool().strength(10.0F, 3600000.0F)/*2x铁门硬度基岩爆炸抗性*/.sounds(BlockSoundGroup.LANTERN).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
+    public static final Block OAK_WOODEN_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"oak_wooden_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.BROWN).requiresTool().strength(10.0F, 3600000.0F).sounds(BlockSoundGroup.LANTERN).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
 
     public static void initialize(){}
 }
