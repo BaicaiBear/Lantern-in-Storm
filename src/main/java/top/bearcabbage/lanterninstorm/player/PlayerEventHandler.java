@@ -12,8 +12,7 @@ import net.minecraft.util.TypedActionResult;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
 
-import static top.bearcabbage.lanterninstorm.LanternInStormItems.SPIRIT_FRAG_ITEM;
-import static top.bearcabbage.lanterninstorm.LanternInStormItems.useSpiritFrag;
+import static top.bearcabbage.lanterninstorm.LanternInStormItems.*;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 
 public abstract class PlayerEventHandler extends LanternInStorm {
@@ -37,9 +36,8 @@ public abstract class PlayerEventHandler extends LanternInStorm {
 
     // 处理玩家每个tick的事件
     public static void onTick(ServerPlayerEntity player) {
-        if (player instanceof PlayerAccessor lsPlayer  && lsPlayer.getLS().onTick()){
-            // 疲惫的状态：扛灵魂灯笼
-            if (!lsPlayer.getLS().getSafety()){
+        if (player instanceof PlayerAccessor lsPlayer && lsPlayer.getLS().onTick()) {
+            if (!lsPlayer.getLS().getSafety()) {
                 lsPlayer.getLS().onUnstableTick();
             }
         }

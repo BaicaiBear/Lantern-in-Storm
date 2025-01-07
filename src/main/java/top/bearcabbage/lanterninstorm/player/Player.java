@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
@@ -31,6 +33,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.LOGGER;
+import static top.bearcabbage.lanterninstorm.LanternInStormItems.TALISMAN;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 
 
@@ -119,11 +122,24 @@ public class Player {
 
     public void onUnstableTick() {
         if (this.player.isSpectator() || this.player.isCreative()) return;
-        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_NIGHTMARE, 200));
+        if (player.getMainHandStack().isOf(TALISMAN)||player.getOffHandStack().isOf(TALISMAN)) {
+            ItemStack talisman = player.getMainHandStack().isOf(TALISMAN) ? player.getMainHandStack() : player.getOffHandStack();
+            talisman.damage(1, player.getServerWorld(), player, item -> {
+            });
+            this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 200)); //speed占位用
+            if (safety) {
+                safety = false;
+                if (player instanceof ServerPlayerEntity serverPlayer) {
+                    serverPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的小熊先知令人安心").withColor(0x996633)));
+                }
+            }
+        } else {
+            this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_NIGHTMARE, 200));
+        }
         if (safety) {
             safety = false;
             if (player instanceof ServerPlayerEntity serverPlayer) {
-                serverPlayer.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("大鹏的噩梦正在吞噬你……!").withColor(0xAAAAAA)));
+                serverPlayer.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("鹏的噩梦正在吞噬你!").withColor(0xAAAAAA)));
             }
         }
     }
