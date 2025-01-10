@@ -2,6 +2,8 @@ package top.bearcabbage.lanterninstorm.lantern;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -9,9 +11,13 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EntityAttachmentType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
@@ -63,6 +69,27 @@ public class BeginningLanternRenderer extends EntityRenderer<BeginningLanternEnt
         }
         super.render(Entity, f, g, matrixStack, vertexConsumerProvider, i);
         matrixStack.pop();
+        this.renderLabelIfPresent(Entity, Entity.getDisplayName(), matrixStack, vertexConsumerProvider, this.getLight(Entity,20), 20);
+    }
+
+
+    protected void renderLabelIfPresent(BeginningLanternEntity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, float tickDelta) {
+        double d = this.dispatcher.getSquaredDistanceToCamera(entity);
+        if (!(d > 4096.0)) {
+            matrices.push();
+            matrices.translate(0, 2.0, 0);
+            matrices.multiply(this.dispatcher.getRotation());
+            matrices.scale(0.025F, -0.025F, 0.025F);
+            Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+            float f = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
+            int j = (int)(f * 255.0F) << 24;
+            TextRenderer textRenderer = this.getTextRenderer();
+            float g = (float)(-textRenderer.getWidth(text) / 2);
+            textRenderer.draw(text, g, 0, 553648127, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, j, light);
+            textRenderer.draw(text, g, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+            matrices.pop();
+
+        }
     }
 
 

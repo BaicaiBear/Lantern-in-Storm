@@ -51,6 +51,8 @@ public class Player {
     private BlockPos rtpSpawn;
     private int spirit;
     private boolean safety;
+    private boolean safetyPrev;
+    private boolean hasTalismanPrev;
 
     private int LSTick;
     private int invincibleTick = 0;
@@ -64,6 +66,7 @@ public class Player {
             data.putIntArray("rtpspawn", new int[]{-1});
             data.putInt("spirit", INIT_SPIRIT);
             PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
+            invincibleTick = 20;
         }
         spirit = data.getInt("spirit");
         int[] posVec = data.getIntArray("rtpspawn");
@@ -92,6 +95,8 @@ public class Player {
             lanternData.set("lanterns", new HashSet<>());
             lanternData.save();
         }
+        safetyPrev = safety = true;
+        hasTalismanPrev = false;
     }
 
     public boolean onTick() {
@@ -100,9 +105,11 @@ public class Player {
         }
         boolean check = ++LSTick % TICK_INTERVAL == 0;
         if (check) {
+            safetyPrev = safety;
             // if player near his rtp spawn (beginning lantern)
             if (rtpSpawn != null && MathHelper.withinHexagonOfRadius(player.getPos(), rtpSpawn.toCenterPos(), LANTERN_RADIUS, LANTERN_HEIGHT)) {
                 safety = true;
+                onStableTick();
                 return true;
             }
             // if player near a lantern
@@ -124,8 +131,18 @@ public class Player {
                 );
                 if (safety) break;
             }
+            if (safety) onStableTick();
+            else onUnstableTick();
         }
         return check;
+    }
+
+    public void onStableTick() {
+        if (this.player.isSpectator() || this.player.isCreative()) return;
+        if (!safetyPrev) {
+            player.clearStatusEffects();
+            player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
+        }
     }
 
     public void onUnstableTick() {
@@ -134,21 +151,20 @@ public class Player {
             ItemStack talisman = player.getMainHandStack().isOf(TALISMAN) ? player.getMainHandStack() : player.getOffHandStack();
             talisman.damage(1, player.getServerWorld(), player, item -> {
             });
-            this.player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 200)); //speed占位用
-            if (safety) {
-                safety = false;
-                if (player instanceof ServerPlayerEntity serverPlayer) {
-                    serverPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的小熊先知令人安心").withColor(0x996633)));
-                }
+            if (safetyPrev) {
+                player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的小熊先知令人安心").withColor(0x996633)));
+            } else if (!hasTalismanPrev){
+                player.clearStatusEffects();
+                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("拿起护符你似乎感到好些了").withColor(0xF6DEAD)));
             }
+            this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+            hasTalismanPrev = true;
         } else {
             this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_NIGHTMARE, 200));
+            hasTalismanPrev = false;
         }
-        if (safety) {
-            safety = false;
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                serverPlayer.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("鹏的噩梦正在吞噬你!").withColor(0xAAAAAA)));
-            }
+        if (safetyPrev) {
+            player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("鹏的噩梦正在吞噬你!").withColor(0xAAAAAA)));
         }
     }
 
@@ -182,6 +198,10 @@ public class Player {
         return safety;
     }
 
+    public boolean getSafetyPrev() {
+        return safetyPrev;
+    }
+
     public void setInvincibleTick(int invincibleTick) {
         this.invincibleTick = invincibleTick;
     }
@@ -210,7 +230,7 @@ public class Player {
 
     public boolean addLantern(RegistryKey<World> world, BlockPos blockPos) {
         GlobalPos pos = new GlobalPos(world, blockPos);
-        if (addSpirit(-1)) {
+        if (!addSpirit(-1)) {
             player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("灵魂不够了……")));
             return false;
         }
@@ -240,6 +260,7 @@ public class Player {
         player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
     }
+
 
     public static class Config {
         private final Path filePath;

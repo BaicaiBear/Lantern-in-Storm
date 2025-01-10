@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -36,10 +37,6 @@ public abstract class PlayerEventHandler extends LanternInStorm {
 
     // 处理玩家每个tick的事件
     public static void onTick(ServerPlayerEntity player) {
-        if (player instanceof PlayerAccessor lsPlayer && lsPlayer.getLS().onTick()) {
-            if (!lsPlayer.getLS().getSafety()) {
-                lsPlayer.getLS().onUnstableTick();
-            }
-        }
+        if (player instanceof PlayerAccessor lsPlayer) lsPlayer.getLS().onTick();
     }
 }
