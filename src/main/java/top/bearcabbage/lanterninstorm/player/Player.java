@@ -19,6 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
@@ -40,7 +41,8 @@ import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 public class Player {
     private static final int INIT_SPIRIT = 5;
     private static final int UPGRADE_FRAG = 2;
-    private static final int RADIUS = 8;
+    private static final int LANTERN_RADIUS = 8;
+    private static final int LANTERN_HEIGHT = 8;
     private static final int TICK_INTERVAL = 20;
 
     private final ServerPlayerEntity player;
@@ -98,18 +100,24 @@ public class Player {
         }
         boolean check = ++LSTick % TICK_INTERVAL == 0;
         if (check) {
+            // if player near his rtp spawn (beginning lantern)
+            if (rtpSpawn != null && MathHelper.withinHexagonOfRadius(player.getPos(), rtpSpawn.toCenterPos(), LANTERN_RADIUS, LANTERN_HEIGHT)) {
+                safety = true;
+                return true;
+            }
+            // if player near a lantern
             Chunk playerChunk = player.getServerWorld().getChunk(player.getBlockPos());
             List<Chunk> chunkCheckList = List.of(playerChunk,
-                    player.getWorld().getChunk(player.getBlockPos().add(RADIUS, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, RADIUS)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-RADIUS, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -RADIUS)));
+                    player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, 0)),
+                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, LANTERN_RADIUS)),
+                    player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, 0)),
+                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -LANTERN_RADIUS)));
             for (Chunk chunk : chunkCheckList) {
                 safety = false;
                 chunk.forEachBlockMatchingPredicate(
                         blockState -> blockState.getBlock().equals(SpiritLanternBlocks.WHITE_PAPER_LANTERN) && blockState.get(STARTUP),
                         (blockPos, blockState) -> {
-                            if (player.getPos().distanceTo(blockPos.toCenterPos()) < RADIUS) {
+                            if (MathHelper.withinHexagonOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS, LANTERN_HEIGHT)) {
                                 safety = true;
                             }
                         }
@@ -202,17 +210,16 @@ public class Player {
 
     public boolean addLantern(RegistryKey<World> world, BlockPos blockPos) {
         GlobalPos pos = new GlobalPos(world, blockPos);
-        if (spirit==0) {
+        if (addSpirit(-1)) {
             player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("灵魂不够了……")));
             return false;
         }
-        spirit--;
         lanterns.add(pos);
         Config lanternData = new Config(PlayerDataApi.getPathFor(player).resolve("lantern_data.json"));
         lanternData.set("lanterns", lanterns);
         lanternData.save();
         player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏路灯！").withColor(0xFCA106)));
-        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近边长16的立方体稳定下来了").withColor(0xBBBBBB)));
+        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+LANTERN_RADIUS+"的六边形稳定下来了").withColor(0xBBBBBB)));
         player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
     }
@@ -283,5 +290,14 @@ public class Player {
             return gson.fromJson(jsonObject.get(key), clazz);
         }
 
+    }
+
+    public static class MathHelper {
+        public static boolean withinHexagonOfRadius (Vec3d pos1, Vec3d pos2, double radius, double height) {
+            double dx = Math.abs(pos1.x - pos2.x);
+            double dy = Math.abs(pos1.y - pos2.y);
+            double dz = Math.abs(pos1.z - pos2.z);
+            return !(dy > height) && !(dx > radius) && !(dz > radius * 0.8660254038) && !(dz > (radius - dx) * 0.8660254038);
+        }
     }
 }

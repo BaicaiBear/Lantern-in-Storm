@@ -33,6 +33,7 @@ public class BeginningLanternEntity extends Entity {
         lantern.setPos(player.getX(), player.getY(), player.getZ());
         world.spawnEntity(lantern);
         lantern.setCustomName(Text.of("入梦点["+player.getName().getLiteralString()+"]"));
+        lantern.setCustomNameVisible(true);
         player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("大鹏的梦").withColor(0x525288)));
         player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("这个「灯笼」是你的起点").withColor(0xFFFFFF)));
     }
