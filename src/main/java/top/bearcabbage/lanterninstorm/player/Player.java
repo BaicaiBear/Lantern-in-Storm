@@ -216,6 +216,7 @@ public class Player {
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         data.putInt("spirit", spirit);
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
+        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
     }
 
@@ -227,6 +228,7 @@ public class Player {
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         data.putInt("spirit", this.spirit);
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
+        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
     }
 
