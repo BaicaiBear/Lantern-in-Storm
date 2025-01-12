@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
 import top.bearcabbage.lanterninstorm.lantern.BeginningLanternEntity;
+import top.bearcabbage.lanterninstorm.particle.BorderParticle;
 import top.bearcabbage.lanterninstorm.player.PlayerEventHandler;
 
 
@@ -26,5 +27,7 @@ public class LanternInStorm implements ModInitializer {
 		LanternInStormItems.initialize();
 		// 注册事件
 		PlayerEventHandler.register();
+		//注册边界粒子
+		BorderParticle.registerModParticles();
 	}
 }
