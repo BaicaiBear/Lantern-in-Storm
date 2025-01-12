@@ -9,13 +9,9 @@ import top.bearcabbage.lanterninstorm.LanternInStorm;
 
 public class BorderParticle {
     public static final SimpleParticleType border = register("border", FabricParticleTypes.simple());
-
     private static SimpleParticleType register(String name, SimpleParticleType type) {
         return Registry.register(Registries.PARTICLE_TYPE, Identifier.of(LanternInStorm.MOD_ID,name),type);
     }
-
     public static void registerModParticles(){
-
     }
-
 }
