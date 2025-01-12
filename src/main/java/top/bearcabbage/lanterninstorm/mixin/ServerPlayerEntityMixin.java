@@ -14,12 +14,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.bearcabbage.lanterninstorm.player.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.player.LiSPlayer;
 import top.bearcabbage.lanterninstorm.player.Player;
 import top.bearcabbage.lanterninstorm.player.PlayerEventHandler;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerAccessor {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements LiSPlayer {
     public ServerPlayerEntityMixin(ServerWorld world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile);
     }
@@ -51,7 +51,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(method = "onDeath", at = @At("TAIL"))
     private void onDeath(CallbackInfo ci) {
-        PlayerAccessor player = (PlayerAccessor) this;
+        LiSPlayer player = (LiSPlayer) this;
         player.getLS().onDeath();
     }
 

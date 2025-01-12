@@ -9,8 +9,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.bearcabbage.lanterninstorm.LanternInStormAPI;
-import top.bearcabbage.lanterninstorm.lantern.BeginningLanternEntity;
-import top.bearcabbage.lanterninstorm.player.PlayerAccessor;
 
 import java.util.Collection;
 import java.util.Iterator;

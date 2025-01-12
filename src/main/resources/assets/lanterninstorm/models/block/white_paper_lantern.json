@@ -1,6 +1,0 @@
-{
-  "parent": "lanterninstorm:block/template_paper_lantern",
-  "textures": {
-    "lantern": "lanterninstorm:block/white_paper_lantern"
-  }
-}

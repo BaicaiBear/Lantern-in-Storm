@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "lanterninstorm:item/fox_tail_item"
+    "layer0": "lantern-in-storm:item/spirit_frag_item"
   }
 }

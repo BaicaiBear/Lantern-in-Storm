@@ -13,8 +13,8 @@ import top.bearcabbage.lanterninstorm.player.PlayerEventHandler;
 
 
 public class LanternInStorm implements ModInitializer {
-	public static final String MOD_ID = "lanterninstorm";
-	public static final Logger LOGGER = LoggerFactory.getLogger("lantern-in-storm");
+	public static final String MOD_ID = "lantern-in-storm";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final NbtDataStorage LSData = new NbtDataStorage("LS_Data");
 
 	@Override

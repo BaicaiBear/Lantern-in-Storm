@@ -1,6 +1,0 @@
-{
-  "parent": "lanterninstorm:block/template_wooden_lantern_hanging",
-  "textures": {
-    "lantern": "lanterninstorm:block/oak_wooden_lantern"
-  }
-}

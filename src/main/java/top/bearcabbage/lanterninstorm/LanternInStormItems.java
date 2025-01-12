@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import top.bearcabbage.lanterninstorm.player.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.player.LiSPlayer;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks.OAK_WOODEN_LANTERN;
@@ -34,11 +34,11 @@ public class LanternInStormItems {
 
     public static TypedActionResult<ItemStack> useSpiritFrag(World world, PlayerEntity player, ItemStack itemStack) {
         if (world.isClient) return TypedActionResult.success(itemStack);
-        int requiredCount = ((PlayerAccessor)player).getLS().getSpiritUpgradeCount();
+        int requiredCount = ((LiSPlayer)player).getLS().getSpiritUpgradeCount();
         if (itemStack.getCount() >= requiredCount){
             itemStack.decrementUnlessCreative(requiredCount,player);
-            ((PlayerAccessor)player).getLS().addSpirit(1);
-            ((ServerPlayerEntity) player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("增加了1点灵魂，现有剩余灵魂量为："+ ((PlayerAccessor)player).getLS().getSpirit())));
+            ((LiSPlayer)player).getLS().addSpirit(1);
+            ((ServerPlayerEntity) player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("增加了1点灵魂，现有剩余灵魂量为："+ ((LiSPlayer)player).getLS().getSpirit())));
             return TypedActionResult.consume(itemStack);
         }
         return TypedActionResult.fail(itemStack);

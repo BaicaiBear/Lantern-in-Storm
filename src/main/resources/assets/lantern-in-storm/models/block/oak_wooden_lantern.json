@@ -1,0 +1,6 @@
+{
+  "parent": "lantern-in-storm:block/template_wooden_lantern",
+  "textures": {
+    "lantern": "lantern-in-storm:block/oak_wooden_lantern"
+  }
+}

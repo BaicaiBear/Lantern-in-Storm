@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "minecraft:block/block",
 	"textures": {
-		"0": "lanterninstorm:item/lantern_core"
+		"0": "lantern-in-storm:item/lantern_core"
 	},
 	"elements": [
 		{

@@ -1,0 +1,6 @@
+{
+  "parent": "lantern-in-storm:block/template_paper_lantern_startup",
+  "textures": {
+    "lantern": "lantern-in-storm:block/white_paper_lantern"
+  }
+}

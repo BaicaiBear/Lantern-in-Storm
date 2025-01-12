@@ -210,11 +210,13 @@ public class Player {
         return spirit;
     }
 
-    public void setSpirit(int spirit) {
+    public boolean setSpirit(int spirit) {
+        if (spirit < 0) return false;
         this.spirit = spirit;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         data.putInt("spirit", spirit);
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
+        return true;
     }
 
     public boolean addSpirit(int spirit) {

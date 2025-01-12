@@ -1,5 +1,5 @@
 package top.bearcabbage.lanterninstorm.player;
 
-public interface PlayerAccessor {
+public interface LiSPlayer {
     Player getLS();
 }

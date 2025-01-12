@@ -10,12 +10,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import top.bearcabbage.lanterninstorm.player.PlayerAccessor;
+import top.bearcabbage.lanterninstorm.player.LiSPlayer;
 import top.bearcabbage.lanterninstorm.player.Player;
 
 public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
@@ -33,7 +31,7 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         }
-        Player lsplayer = ((PlayerAccessor) player).getLS();
+        Player lsplayer = ((LiSPlayer) player).getLS();
         if (!state.get(STARTUP)) {
             if (lsplayer.addLantern(world.getRegistryKey(), pos)) {
                 state = state.cycle(STARTUP);
