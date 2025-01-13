@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.BlockItem;
@@ -16,6 +17,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -25,8 +27,8 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-		pack.addProvider(RecipeGenerator::new);
-		pack.addProvider(LanguageGenerator::new);
+//		pack.addProvider(RecipeGenerator::new);
+//		pack.addProvider(LanguageGenerator::new);
 	}
 
 	private static class RecipeGenerator extends FabricRecipeProvider {
@@ -38,12 +40,26 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 		@Override
 		public void generate(RecipeExporter recipeExporter) {
 			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, TALISMAN).pattern(" a ").pattern("bcb").pattern("b b")
-					.input('a', Ingredient.ofItems(Items.DANDELION,Items.POPPY,Items.BLUE_ORCHID,Items.ALLIUM,Items.AZURE_BLUET,Items.RED_TULIP,Items.ORANGE_TULIP,Items.WHITE_TULIP,Items.PINK_TULIP,Items.OXEYE_DAISY,Items.CORNFLOWER,Items.LILY_OF_THE_VALLEY,Items.WITHER_ROSE,Items.AZALEA,Items.FLOWERING_AZALEA,Items.OAK_SAPLING,Items.SPRUCE_SAPLING,Items.BIRCH_SAPLING,Items.JUNGLE_SAPLING,Items.ACACIA_SAPLING,Items.DARK_OAK_SAPLING,Items.CHERRY_SAPLING,Items.MANGROVE_PROPAGULE,Items.DEAD_BUSH, Items.FERN,Items.CACTUS,Items.BAMBOO,Items.BROWN_MUSHROOM,Items.RED_MUSHROOM,Items.CRIMSON_FUNGUS,Items.WARPED_FUNGUS,Items.CRIMSON_ROOTS,Items.WARPED_ROOTS))
+					.input('a', Ingredient.ofItems(Items.DEAD_BUSH, Items.FERN, Items.CACTUS, Items.BAMBOO, Items.BROWN_MUSHROOM, Items.RED_MUSHROOM, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS, Items.CRIMSON_ROOTS, Items.WARPED_ROOTS))
 					.input('b', Items.STICK)
 					.input('c', ItemTags.PLANKS)
 					.criterion(FabricRecipeProvider.hasItem(Items.STICK),
 							FabricRecipeProvider.conditionsFromItem(Items.STICK))
 					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, TALISMAN).pattern(" a ").pattern("bcb").pattern("b b")
+//					.input('a', ItemTags.SAPLINGS)
+//					.input('b', Items.STICK)
+//					.input('c', ItemTags.PLANKS)
+//					.criterion(FabricRecipeProvider.hasItem(Items.STICK),
+//							FabricRecipeProvider.conditionsFromItem(Items.STICK))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, TALISMAN).pattern(" a ").pattern("bcb").pattern("b b")
+//					.input('a', ItemTags.FLOWERS)
+//					.input('b', Items.STICK)
+//					.input('c', ItemTags.PLANKS)
+//					.criterion(FabricRecipeProvider.hasItem(Items.STICK),
+//							FabricRecipeProvider.conditionsFromItem(Items.STICK))
+//					.offerTo(recipeExporter);
 			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, LANTERN_CORE).pattern("aaa").pattern("aba").pattern("aaa")
 					.input('a', Blocks.IRON_BARS)
 					.input('b', Items.DIAMOND)

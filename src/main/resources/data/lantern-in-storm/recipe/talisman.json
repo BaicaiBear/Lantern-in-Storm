@@ -1,0 +1,59 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": [
+      {
+        "item": "minecraft:dead_bush"
+      },
+      {
+        "item": "minecraft:fern"
+      },
+      {
+        "item": "minecraft:cactus"
+      },
+      {
+        "item": "minecraft:bamboo"
+      },
+      {
+        "item": "minecraft:brown_mushroom"
+      },
+      {
+        "item": "minecraft:red_mushroom"
+      },
+      {
+        "item": "minecraft:crimson_fungus"
+      },
+      {
+        "item": "minecraft:warped_fungus"
+      },
+      {
+        "item": "minecraft:crimson_roots"
+      },
+      {
+        "item": "minecraft:warped_roots"
+      },
+      {
+        "tag": "minecraft:flowers"
+      },
+      {
+        "tag": "minecraft:saplings"
+      }
+    ],
+    "b": {
+      "item": "minecraft:stick"
+    },
+    "c": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    " a ",
+    "bcb",
+    "b b"
+  ],
+  "result": {
+    "count": 1,
+    "id": "lantern-in-storm:talisman"
+  }
+}

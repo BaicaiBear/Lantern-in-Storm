@@ -4,6 +4,8 @@ import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.api.storage.NbtDataStorage;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
@@ -33,6 +35,9 @@ public class LanternInStorm implements ModInitializer {
 		LanternInStormItems.initialize();
 		// 注册事件
 		PlayerEventHandler.register();
+		ServerPlayConnectionEvents.INIT.register((handler, server) -> {
+			PlayerEventHandler.onTick(handler.player);
+		});
 		//注册边界粒子
 		BorderParticle.registerModParticles();
 	}

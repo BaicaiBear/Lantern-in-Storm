@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
+import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
 
 import java.io.FileReader;
@@ -71,24 +72,22 @@ public class Player {
         LSTick = 0;
 
         Config lanternData = new Config(PlayerDataApi.getPathFor(player).resolve("lantern_data.json"));
-        try {
-            lanterns.clear();
-            var tmpSet = lanternData.get("lanterns", Set.class);
-            for (var pos : tmpSet) {
-                Map value = (Map) pos;
-                Identifier new_dimension = Identifier.of((String) ((Map) ((Map) value.get("dimension")).get("value")).get("namespace"), (String) ((Map) ((Map) value.get("dimension")).get("value")).get("path"));
-                Map posMap = (Map) value.get("pos");
-                int x = ((Double) posMap.get("x")).intValue();
-                int y = ((Double) posMap.get("y")).intValue();
-                int z = ((Double) posMap.get("z")).intValue();
-                BlockPos new_pos = new BlockPos(x, y, z);
-                GlobalPos new_global_pos = new GlobalPos(RegistryKey.of(RegistryKeys.WORLD, new_dimension), new_pos);
-                lanterns.add(new_global_pos);
-            }
-        } catch (Exception e) {
+        lanterns.clear();
+        var tmpSet = lanternData.get("lanterns", Set.class);
+        if (tmpSet == null) {
             LanternInStorm.LOGGER.warn("No Lantern Data, generating blank format...");
             lanternData.set("lanterns", new HashSet<>());
             lanternData.save();
+        } else for (var pos : tmpSet) {
+            Map value = (Map) pos;
+            Identifier new_dimension = Identifier.of((String) ((Map) ((Map) value.get("dimension")).get("value")).get("namespace"), (String) ((Map) ((Map) value.get("dimension")).get("value")).get("path"));
+            Map posMap = (Map) value.get("pos");
+            int x = ((Double) posMap.get("x")).intValue();
+            int y = ((Double) posMap.get("y")).intValue();
+            int z = ((Double) posMap.get("z")).intValue();
+            BlockPos new_pos = new BlockPos(x, y, z);
+            GlobalPos new_global_pos = new GlobalPos(RegistryKey.of(RegistryKeys.WORLD, new_dimension), new_pos);
+            lanterns.add(new_global_pos);
         }
         safetyPrev = safety = true;
         hasTalismanPrev = false;
@@ -102,7 +101,7 @@ public class Player {
         if (check) {
             safetyPrev = safety;
             // if player near his rtp spawn (beginning lantern)
-            if (rtpSpawn != null && MathHelper.withinHexagonOfRadius(player.getPos(), rtpSpawn.toCenterPos(), LANTERN_RADIUS, LANTERN_HEIGHT)) {
+            if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), LANTERN_RADIUS)) {
                 safety = true;
                 onStableTick();
                 return true;
@@ -117,9 +116,9 @@ public class Player {
             for (Chunk chunk : chunkCheckList) {
                 safety = false;
                 chunk.forEachBlockMatchingPredicate(
-                        blockState -> blockState.getBlock().equals(SpiritLanternBlocks.WHITE_PAPER_LANTERN) && blockState.get(STARTUP),
+                        blockState -> blockState.getBlock() instanceof SpiritLanternBlock && blockState.get(STARTUP),
                         (blockPos, blockState) -> {
-                            if (MathHelper.withinHexagonOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS, LANTERN_HEIGHT)) {
+                            if (MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS)) {
                                 safety = true;
                             }
                         }
@@ -149,7 +148,7 @@ public class Player {
             if (safetyPrev) {
                 player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的小熊先知令人安心").withColor(0x996633)));
             } else if (!hasTalismanPrev){
-                player.clearStatusEffects();
+//                player.clearStatusEffects();
                 player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("拿起护符你似乎感到好些了").withColor(0xF6DEAD)));
             }
             this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
@@ -179,9 +178,8 @@ public class Player {
             return;
         }
         this.rtpSpawn = pos;
-        NbtCompound data = new NbtCompound();
+        NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
         data.putIntArray("rtpspawn", new int[]{pos.getX(), pos.getY(), pos.getZ()});
-        data.putIntArray("spawnpoint", new int[]{pos.getX(), pos.getY(), pos.getZ()});
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
     }
 
@@ -238,7 +236,7 @@ public class Player {
         lanternData.set("lanterns", lanterns);
         lanternData.save();
         player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏路灯！").withColor(0xFCA106)));
-        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+LANTERN_RADIUS+"的六边形稳定下来了").withColor(0xBBBBBB)));
+        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+LANTERN_RADIUS+"的立方体稳定下来了").withColor(0xBBBBBB)));
         player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
     }
