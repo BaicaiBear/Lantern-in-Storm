@@ -41,7 +41,7 @@ public class BeginningLanternRenderer extends EntityRenderer<BeginningLanternEnt
         this.bottom = modelPart.getChild("base");
     }
 
-    protected int getBlockLight(BeginningLanternEntity glowSquidEntity, BlockPos blockPos) {
+    protected int getBlockLight(BeginningLanternEntity xiaoxiongbaicaidahuaidan, BlockPos wuwuwu) {
         return 15;
     }
 
