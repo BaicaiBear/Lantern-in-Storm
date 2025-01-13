@@ -6,7 +6,7 @@
       "item": "minecraft:oak_wood"
     },
     "b": {
-      "item": "lanterninstorm:lantern_core"
+      "item": "lantern-in-storm:lantern_core"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "lanterninstorm:oak_wooden_lantern"
+    "id": "lantern-in-storm:oak_wooden_lantern"
   }
 }

@@ -33,17 +33,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static top.bearcabbage.lanterninstorm.LanternInStorm.LOGGER;
+import static top.bearcabbage.lanterninstorm.LanternInStorm.*;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.TALISMAN;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 
 
 public class Player {
-    private static final int INIT_SPIRIT = 5;
-    private static final int UPGRADE_FRAG = 2;
-    private static final int LANTERN_RADIUS = 8;
-    private static final int LANTERN_HEIGHT = 8;
-    private static final int TICK_INTERVAL = 20;
 
     private final ServerPlayerEntity player;
     private final Set<GlobalPos> lanterns = new HashSet<>();
@@ -318,6 +313,13 @@ public class Player {
     }
 
     public static class MathHelper {
+        public static boolean withinCubicOfRadius (Vec3d pos1, Vec3d pos2, double radius) {
+            double dx = Math.abs(pos1.x - pos2.x);
+            double dy = Math.abs(pos1.y - pos2.y);
+            double dz = Math.abs(pos1.z - pos2.z);
+            return dx <= radius && dy <= radius && dz <= radius;
+        }
+
         public static boolean withinHexagonOfRadius (Vec3d pos1, Vec3d pos2, double radius, double height) {
             double dx = Math.abs(pos1.x - pos2.x);
             double dy = Math.abs(pos1.y - pos2.y);

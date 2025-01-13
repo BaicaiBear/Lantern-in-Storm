@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "lanterninstorm:lantern_core"
+            "items": "lantern-in-storm:lantern_core"
           }
         ]
       },
@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "lanterninstorm:white_paper_lantern"
+        "recipe": "lantern-in-storm:white_paper_lantern"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -37,7 +37,7 @@
   ],
   "rewards": {
     "recipes": [
-      "lanterninstorm:white_paper_lantern"
+      "lantern-in-storm:white_paper_lantern"
     ]
   }
 }

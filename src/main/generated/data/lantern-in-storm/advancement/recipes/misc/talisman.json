@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "lanterninstorm:talisman"
+        "recipe": "lantern-in-storm:talisman"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "lanterninstorm:talisman"
+      "lantern-in-storm:talisman"
     ]
   }
 }

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "lanterninstorm:lantern_core"
+        "recipe": "lantern-in-storm:lantern_core"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -37,7 +37,7 @@
   ],
   "rewards": {
     "recipes": [
-      "lanterninstorm:lantern_core"
+      "lantern-in-storm:lantern_core"
     ]
   }
 }

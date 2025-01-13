@@ -6,7 +6,7 @@
       "item": "minecraft:paper"
     },
     "b": {
-      "item": "lanterninstorm:lantern_core"
+      "item": "lantern-in-storm:lantern_core"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "lanterninstorm:white_paper_lantern"
+    "id": "lantern-in-storm:white_paper_lantern"
   }
 }

@@ -1,10 +1,13 @@
 package top.bearcabbage.lanterninstorm.particle;
 
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.block.BlockState;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 
 public class BorderParticle {
@@ -14,53 +17,110 @@ public class BorderParticle {
     }
     public static void registerModParticles(){
     }
-    /*
-    @Environment(EnvType.CLIENT)
-    public class EndRodParticle extends AnimatedParticle {
-        EndRodParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteProvider spriteProvider) {
-            super(world, x, y, z, spriteProvider, 0.0125F);
-            this.velocityX = velocityX;
-            this.velocityY = velocityY;
-            this.velocityZ = velocityZ;
-            this.scale *= 0.75F;
-            this.maxAge = 60 + this.random.nextInt(12);
-            this.setSpriteForAge(spriteProvider);
+
+    public static class DrawCubicBorderParticle {
+        public static void drawBox(BlockState state, World world, BlockPos pos) {
+            double centerX = pos.getX() + 0.5;
+            double centerY = pos.getY() + 0.5;
+            double centerZ = pos.getZ() + 0.5;
+            double[][] points = getPoints(centerX, centerY, centerZ);
+            drawLine(world, points[0], points[1]);
+            drawLine(world, points[1], points[2]);
+            drawLine(world, points[2], points[3]);
+            drawLine(world, points[3], points[0]);
+            drawLine(world, points[4], points[5]);
+            drawLine(world, points[5], points[6]);
+            drawLine(world, points[6], points[7]);
+            drawLine(world, points[7], points[4]);
+            drawLine(world, points[0], points[4]);
+            drawLine(world, points[1], points[5]);
+            drawLine(world, points[2], points[6]);
+            drawLine(world, points[3], points[7]);
         }
 
+        private static double[][] getPoints(double centerX, double centerY, double centerZ) {
+            return new double[][] {
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS}
+            };
+        }
 
+        private static void drawLine(World world, double[] start, double[] end) {
+            double steps = 10; // 控制线条的分辨率
+            for (int i = 0; i <= steps; i++) {
+                double t = i / steps;
+                double x = start[0] + (end[0] - start[0]) * t;
+                double y = start[1] + (end[1] - start[1]) * t;
+                double z = start[2] + (end[2] - start[2]) * t;
 
-        @Environment(EnvType.CLIENT)
-        public static class Factory implements ParticleFactory<SimpleParticleType> {
-            private final SpriteProvider spriteProvider;
-
-            public Factory(SpriteProvider spriteProvider) {
-                this.spriteProvider = spriteProvider;
-            }
-
-            public Particle createParticle(SimpleParticleType simpleParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
-                return new net.minecraft.client.particle.EndRodParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
+                // 添加粒子
+                world.addParticle(BorderParticle.border, x, y, z, 0, 0, 0);
             }
         }
     }
-    //ani
-    @Environment(EnvType.CLIENT)
-    public class AnimatedParticle extends SpriteBillboardParticle {
-        protected final SpriteProvider spriteProvider;
 
-        protected AnimatedParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider, float upwardsAcceleration) {
-            super(world, x, y, z);
-            this.velocityMultiplier = 0.91F;
-            this.gravityStrength = upwardsAcceleration;
-            this.spriteProvider = spriteProvider;
+    public static class DrawHexagonBorderParticle {
+        public static void drawBox(BlockState state, World world, BlockPos pos) {
+            double centerX = pos.getX() + 0.5;
+            double centerY = pos.getY() + 0.5;
+            double centerZ = pos.getZ() + 0.5;
+            double[][] points = getPoints(centerX, centerY, centerZ);
+            drawLine(world, points[0], points[1]);
+            drawLine(world, points[1], points[2]);
+            drawLine(world, points[2], points[3]);
+            drawLine(world, points[3], points[4]);
+            drawLine(world, points[4], points[5]);
+            drawLine(world, points[5], points[0]);
+            drawLine(world, points[6], points[7]);
+            drawLine(world, points[7], points[8]);
+            drawLine(world, points[8], points[9]);
+            drawLine(world, points[9], points[10]);
+            drawLine(world, points[10], points[11]);
+            drawLine(world, points[11], points[6]);
+            drawLine(world, points[0], points[6]);
+            drawLine(world, points[1], points[7]);
+            drawLine(world, points[2], points[8]);
+            drawLine(world, points[3], points[9]);
+            drawLine(world, points[4], points[10]);
+            drawLine(world, points[5], points[11]);
+
         }
 
-        @Override
-        public void tick() {
-            super.tick();
-            this.setSpriteForAge(this.spriteProvider);
-            if (this.age > this.maxAge / 2) {
-                this.setAlpha(1.0F - ((float)this.age - (float)(this.maxAge / 2)) / (float)this.maxAge);
+        private static double[][] getPoints(double centerX, double centerY, double centerZ) {
+            return new double[][] {
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
+                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
+                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038}
+            };
+        }
+
+        private static void drawLine(World world, double[] start, double[] end) {
+            double steps = 10; // 控制线条的分辨率
+            for (int i = 0; i <= steps; i++) {
+                double t = i / steps;
+                double x = start[0] + (end[0] - start[0]) * t;
+                double y = start[1] + (end[1] - start[1]) * t;
+                double z = start[2] + (end[2] - start[2]) * t;
+
+                // 添加粒子
+                world.addParticle(BorderParticle.border, x, y, z, 0, 0, 0);
             }
         }
-    }*/
+    }
 }
