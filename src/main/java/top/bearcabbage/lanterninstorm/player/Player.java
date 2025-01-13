@@ -80,12 +80,29 @@ public class Player {
             lanternData.save();
         } else for (var pos : tmpSet) {
             Map value = (Map) pos;
-            Identifier new_dimension = Identifier.of((String) ((Map) ((Map) value.get("dimension")).get("value")).get("namespace"), (String) ((Map) ((Map) value.get("dimension")).get("value")).get("path"));
-            Map posMap = (Map) value.get("pos");
-            int x = ((Double) posMap.get("x")).intValue();
-            int y = ((Double) posMap.get("y")).intValue();
-            int z = ((Double) posMap.get("z")).intValue();
-            BlockPos new_pos = new BlockPos(x, y, z);
+            Identifier new_dimension = null;
+            BlockPos new_pos;
+            int x = 0;
+            int y = 0;
+            int z = 0;
+            try {
+                new_dimension = Identifier.of((String) ((Map) ((Map) value.get("dimension")).get("value")).get("namespace"), (String) ((Map) ((Map) value.get("dimension")).get("value")).get("path"));
+                Map posMap = (Map) value.get("pos");
+                x = ((Double) posMap.get("x")).intValue();
+                y = ((Double) posMap.get("y")).intValue();
+                z = ((Double) posMap.get("z")).intValue();
+            } catch (Exception e) {
+                if (e instanceof NullPointerException) {
+                    new_dimension = Identifier.of((String) ((Map) ((Map) value.get("comp_2207")).get("field_25138")).get("field_13353"), (String) ((Map) ((Map) value.get("comp_2207")).get("field_25138")).get("field_13355"));
+                    Map posMap = (Map) value.get("comp_2208");
+                    x = ((Double) posMap.get("field_11175")).intValue();
+                    y = ((Double) posMap.get("field_11174")).intValue();
+                    z = ((Double) posMap.get("field_11173")).intValue();
+                } else {
+                    LanternInStorm.LOGGER.error(e.toString());
+                }
+            }
+            new_pos = new BlockPos(x, y, z);
             GlobalPos new_global_pos = new GlobalPos(RegistryKey.of(RegistryKeys.WORLD, new_dimension), new_pos);
             lanterns.add(new_global_pos);
         }
