@@ -31,7 +31,7 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if(state.get(STARTUP)) BorderParticle.DrawHexagonBorderParticle.drawBox(state, world, pos);
+        if(state.get(STARTUP)) BorderParticle.DrawCubicBorderParticle.drawBox(state, world, pos ,random);
         super.randomDisplayTick(state, world, pos, random);
     }
 
