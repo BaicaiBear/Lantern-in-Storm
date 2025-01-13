@@ -3,6 +3,7 @@ package top.bearcabbage.lanterninstorm;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -25,6 +26,7 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 		pack.addProvider(RecipeGenerator::new);
+		pack.addProvider(LanguageGenerator::new);
 	}
 
 	private static class RecipeGenerator extends FabricRecipeProvider {
@@ -67,6 +69,23 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
 					.offerTo(recipeExporter);
 
+		}
+	}
+
+	private static class LanguageGenerator extends FabricLanguageProvider {
+
+		protected LanguageGenerator(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(dataOutput, "zh_cn", registryLookup);
+		}
+
+		@Override
+		public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
+			translationBuilder.add(SPIRIT_FRAG_ITEM, "灵魂碎片");
+			translationBuilder.add(TALISMAN, "熊之符");
+			translationBuilder.add(LANTERN_CORE, "彩灯核心");
+			translationBuilder.add(FOX_TAIL_ITEM, "狐狸尾巴");
+			translationBuilder.add(WHITE_PAPER_LANTERN_ITEM, "白色油纸灯");
+			translationBuilder.add(OAK_WOODEN_LANTERN_ITEM, "橡木立方灯");
 		}
 	}
 }
