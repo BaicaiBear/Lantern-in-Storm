@@ -7,6 +7,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 
@@ -19,23 +20,31 @@ public class BorderParticle {
     }
 
     public static class DrawCubicBorderParticle {
-        public static void drawBox(BlockState state, World world, BlockPos pos) {
+        public static void drawBox(BlockState state, World world, BlockPos pos ,Random random) {
             double centerX = pos.getX() + 0.5;
             double centerY = pos.getY() + 0.5;
             double centerZ = pos.getZ() + 0.5;
+
+            double velocityX = -0.1 + (0.1 - (-0.1)) * random.nextDouble();
+            double velocityY = -0.1 + (0.1 - (-0.1)) * random.nextDouble();
+            double velocityZ = -0.1 + (0.1 - (-0.1)) * random.nextDouble();
+            /*
+            double velocityX = 0;
+            double velocityY = 0;
+            double velocityZ = 0;*/
             double[][] points = getPoints(centerX, centerY, centerZ);
-            drawLine(world, points[0], points[1]);
-            drawLine(world, points[1], points[2]);
-            drawLine(world, points[2], points[3]);
-            drawLine(world, points[3], points[0]);
-            drawLine(world, points[4], points[5]);
-            drawLine(world, points[5], points[6]);
-            drawLine(world, points[6], points[7]);
-            drawLine(world, points[7], points[4]);
-            drawLine(world, points[0], points[4]);
-            drawLine(world, points[1], points[5]);
-            drawLine(world, points[2], points[6]);
-            drawLine(world, points[3], points[7]);
+            drawLine(world, points[0], points[1],velocityX,velocityY,velocityZ);
+            drawLine(world, points[1], points[2],velocityX,velocityY,velocityZ);
+            drawLine(world, points[2], points[3],velocityX,velocityY,velocityZ);
+            drawLine(world, points[3], points[0],velocityX,velocityY,velocityZ);
+            drawLine(world, points[4], points[5],velocityX,velocityY,velocityZ);
+            drawLine(world, points[5], points[6],velocityX,velocityY,velocityZ);
+            drawLine(world, points[6], points[7],velocityX,velocityY,velocityZ);
+            drawLine(world, points[7], points[4],velocityX,velocityY,velocityZ);
+            drawLine(world, points[0], points[4],velocityX,velocityY,velocityZ);
+            drawLine(world, points[1], points[5],velocityX,velocityY,velocityZ);
+            drawLine(world, points[2], points[6],velocityX,velocityY,velocityZ);
+            drawLine(world, points[3], points[7],velocityX,velocityY,velocityZ);
         }
 
         private static double[][] getPoints(double centerX, double centerY, double centerZ) {
@@ -51,16 +60,14 @@ public class BorderParticle {
             };
         }
 
-        private static void drawLine(World world, double[] start, double[] end) {
-            double steps = 10; // 控制线条的分辨率
+        private static void drawLine(World world, double[] start, double[] end,double velocityX ,double velocityY ,double velocityZ) {
+            double steps = 8; // 控制线条的分辨率
             for (int i = 0; i <= steps; i++) {
                 double t = i / steps;
                 double x = start[0] + (end[0] - start[0]) * t;
                 double y = start[1] + (end[1] - start[1]) * t;
                 double z = start[2] + (end[2] - start[2]) * t;
-
-                // 添加粒子
-                world.addParticle(BorderParticle.border, x, y, z, 0, 0, 0);
+                world.addParticle(BorderParticle.border, x, y, z, velocityX, velocityY, velocityZ);
             }
         }
     }
@@ -111,7 +118,7 @@ public class BorderParticle {
         }
 
         private static void drawLine(World world, double[] start, double[] end) {
-            double steps = 10; // 控制线条的分辨率
+            double steps = 7000; // 控制线条的分辨率
             for (int i = 0; i <= steps; i++) {
                 double t = i / steps;
                 double x = start[0] + (end[0] - start[0]) * t;
