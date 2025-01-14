@@ -129,7 +129,11 @@ public class Player {
                     player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, 0)),
                     player.getWorld().getChunk(player.getBlockPos().add(0, 0, LANTERN_RADIUS)),
                     player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -LANTERN_RADIUS)));
+                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -LANTERN_RADIUS)),
+                    player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, LANTERN_RADIUS)),
+                    player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, LANTERN_RADIUS)),
+                    player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, -LANTERN_RADIUS)),
+                    player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, -LANTERN_RADIUS)));
             for (Chunk chunk : chunkCheckList) {
                 safety = false;
                 chunk.forEachBlockMatchingPredicate(

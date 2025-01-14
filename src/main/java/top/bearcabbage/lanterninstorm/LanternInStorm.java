@@ -4,13 +4,12 @@ import eu.pb4.playerdata.api.PlayerDataApi;
 import eu.pb4.playerdata.api.storage.NbtDataStorage;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
 import top.bearcabbage.lanterninstorm.lantern.BeginningLanternEntity;
-import top.bearcabbage.lanterninstorm.particle.BorderParticle;
+import top.bearcabbage.lanterninstorm.lantern.BorderParticle;
 import top.bearcabbage.lanterninstorm.player.PlayerEventHandler;
 
 

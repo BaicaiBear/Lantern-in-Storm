@@ -12,11 +12,9 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import top.bearcabbage.lanterninstorm.particle.BorderParticle;
 import top.bearcabbage.lanterninstorm.player.LiSPlayer;
 import top.bearcabbage.lanterninstorm.player.Player;
 

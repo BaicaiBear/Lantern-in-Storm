@@ -1,4 +1,4 @@
-package top.bearcabbage.lanterninstorm.particle;
+package top.bearcabbage.lanterninstorm.lantern;
 
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.block.BlockState;

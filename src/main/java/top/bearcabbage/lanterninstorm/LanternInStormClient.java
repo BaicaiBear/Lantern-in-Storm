@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.particle.EndRodParticle;
 import net.minecraft.client.render.RenderLayer;
 import top.bearcabbage.lanterninstorm.lantern.BeginningLanternRenderer;
-import top.bearcabbage.lanterninstorm.particle.BorderParticle;
+import top.bearcabbage.lanterninstorm.lantern.BorderParticle;
 
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks.OAK_WOODEN_LANTERN;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks.WHITE_PAPER_LANTERN;

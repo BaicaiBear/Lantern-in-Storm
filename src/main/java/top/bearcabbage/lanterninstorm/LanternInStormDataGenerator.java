@@ -3,30 +3,49 @@ package top.bearcabbage.lanterninstorm;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
+import net.minecraft.data.server.loottable.LootTableGenerator;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.condition.RandomChanceLootCondition;
+import net.minecraft.loot.context.LootContextType;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.function.ExplosionDecayLootFunction;
+import net.minecraft.loot.function.SetCountLootFunction;
+import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
+import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
+import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.*;
 
 public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+//		pack.addProvider(BlockLootTable::new);
 //		pack.addProvider(RecipeGenerator::new);
 //		pack.addProvider(LanguageGenerator::new);
 	}
@@ -102,6 +121,20 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 			translationBuilder.add(FOX_TAIL_ITEM, "狐狸尾巴");
 			translationBuilder.add(WHITE_PAPER_LANTERN_ITEM, "白色油纸灯");
 			translationBuilder.add(OAK_WOODEN_LANTERN_ITEM, "橡木立方灯");
+		}
+	}
+
+	private static class BlockLootTable extends FabricBlockLootTableProvider {
+
+		protected BlockLootTable(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(dataOutput, registryLookup);
+		}
+
+		@Override
+		public void generate() {
+			addDrop(SpiritLanternBlocks.CUBIC_GLASS_LANTERN, LootTable.builder().pool(addSurvivesExplosionCondition(LANTERN_CORE, LootPool.builder()
+					.rolls(new BinomialLootNumberProvider(new ConstantLootNumberProvider(1), new ConstantLootNumberProvider(0.8F)))
+					.with(ItemEntry.builder(LANTERN_CORE)))));
 		}
 	}
 }
