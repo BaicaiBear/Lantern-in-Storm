@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "startup=false": {"model": "minecraft:block/glass"},
+    "startup=true": {"model": "lantern-in-storm:block/cubic_glass_lantern_startup"}
+  }
+}

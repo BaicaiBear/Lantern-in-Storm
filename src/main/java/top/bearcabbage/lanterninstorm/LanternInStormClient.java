@@ -27,6 +27,8 @@ public class LanternInStormClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // 注册渲染
+        BlockRenderLayerMap.INSTANCE.putBlock(CUBIC_GLASS_LANTERN, RenderLayer.getTranslucent());
+
         BlockRenderLayerMap.INSTANCE.putBlock(WHITE_PAPER_LANTERN, RenderLayer.getTranslucent());
         // 木质立方灯
         BlockRenderLayerMap.INSTANCE.putBlock(OAK_WOODEN_LANTERN, RenderLayer.getTranslucent());
