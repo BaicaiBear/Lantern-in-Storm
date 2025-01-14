@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:birch_wood"
+    },
+    "b": {
+      "item": "lantern-in-storm:lantern_core"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "count": 1,
+    "id": "lantern-in-storm:birch_wooden_lantern"
+  }
+}

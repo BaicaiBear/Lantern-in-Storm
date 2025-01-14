@@ -33,7 +33,8 @@
 		"minecraft": "~1.21.1",
 		"java": ">=21",
 		"fabric-api": "*",
-		"annoyingeffects": ">=1.0.0"
+		"annoyingeffects": ">=1.0.0",
+		"biomesoplenty": "*"
 	},
 	"suggests": {
 	}

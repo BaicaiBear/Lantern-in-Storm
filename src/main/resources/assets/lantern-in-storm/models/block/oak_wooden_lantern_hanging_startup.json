@@ -1,6 +1,6 @@
 {
   "parent": "lantern-in-storm:block/template_wooden_lantern_hanging_startup",
   "textures": {
-    "lantern": "lantern-in-storm:block/oak_wooden_lantern"
+    "material": "minecraft:block/oak_planks"
   }
 }

@@ -1,0 +1,1 @@
+{"parent": "minecraft:recipes/root", "criteria": {"has_lantern_core": {"conditions": {"items": [{"items": "lantern-in-storm:lantern_core"}]}, "trigger": "minecraft:inventory_changed"}}, "requirements": [["has_lantern_core"]], "rewards": {"recipes": ["lantern-in-storm:birch_wooden_lantern"]}}

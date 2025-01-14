@@ -1,0 +1,6 @@
+{
+  "parent": "lantern-in-storm:block/template_wooden_lantern_startup",
+  "textures": {
+    "material": "biomesoplenty:block/maple_planks"
+  }
+}

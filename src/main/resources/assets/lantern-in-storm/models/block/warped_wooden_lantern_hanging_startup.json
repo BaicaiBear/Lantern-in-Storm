@@ -1,0 +1,6 @@
+{
+  "parent": "lantern-in-storm:block/template_wooden_lantern_hanging_startup",
+  "textures": {
+    "material": "minecraft:block/warped_planks"
+  }
+}
