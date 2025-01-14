@@ -1,1 +1,1 @@
-{"type": "minecraft:crafting_shaped", "category": "misc", "key": {"a": {"item": "minecraft:palm_wood"}, "b": {"item": "lantern-in-storm:lantern_core"}}, "pattern": ["aaa", "aba", "aaa"], "result": {"count": 1, "id": "lantern-in-storm:palm_wooden_lantern"}}
+{"type": "minecraft:crafting_shaped", "category": "misc", "key": {"a": {"item": "biomesoplenty:palm_wood"}, "b": {"item": "lantern-in-storm:lantern_core"}}, "pattern": ["aaa", "aba", "aaa"], "result": {"count": 1, "id": "lantern-in-storm:palm_wooden_lantern"}}
