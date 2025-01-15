@@ -54,6 +54,7 @@ public class BeginningLanternEntity extends Entity {
         ++this.Age;
         this.checkBlockCollision();
         this.tickPortalTeleportation();
+        if(this.Age%10==0) BorderParticle.DrawCubicBorderParticle.drawBox(this.getWorld(), this.getBlockPos(), this.random, 2);
     }
 
     protected void writeCustomDataToNbt(NbtCompound nbt) {

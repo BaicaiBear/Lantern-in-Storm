@@ -118,7 +118,7 @@ public class Player {
         if (check) {
             safetyPrev = safety;
             // if player near his rtp spawn (beginning lantern)
-            if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), LANTERN_RADIUS)) {
+            if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), 2*LANTERN_RADIUS)) {
                 safety = true;
                 onStableTick();
                 return true;

@@ -20,7 +20,7 @@ public class BorderParticle {
     }
 
     public static class DrawCubicBorderParticle {
-        public static void drawBox(BlockState state, World world, BlockPos pos ,Random random) {
+        public static void drawBox(World world, BlockPos pos ,Random random, double amplitude) {
             double centerX = pos.getX() + 0.5;
             double centerY = pos.getY() + 0.5;
             double centerZ = pos.getZ() + 0.5;
@@ -32,7 +32,7 @@ public class BorderParticle {
             double velocityX = 0;
             double velocityY = 0;
             double velocityZ = 0;*/
-            double[][] points = getPoints(centerX, centerY, centerZ);
+            double[][] points = getPoints(centerX, centerY, centerZ, amplitude);
             drawLine(world, points[0], points[1],velocityX,velocityY,velocityZ);
             drawLine(world, points[1], points[2],velocityX,velocityY,velocityZ);
             drawLine(world, points[2], points[3],velocityX,velocityY,velocityZ);
@@ -47,16 +47,16 @@ public class BorderParticle {
             drawLine(world, points[3], points[7],velocityX,velocityY,velocityZ);
         }
 
-        private static double[][] getPoints(double centerX, double centerY, double centerZ) {
+        private static double[][] getPoints(double centerX, double centerY, double centerZ, double amplitude) {
             return new double[][] {
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ - (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_RADIUS, centerZ + (double) LanternInStorm.LANTERN_RADIUS}
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS}
             };
         }
 
@@ -73,7 +73,7 @@ public class BorderParticle {
     }
 
     public static class DrawHexagonBorderParticle {
-        public static void drawBox(BlockState state, World world, BlockPos pos) {
+        public static void drawBox(World world, BlockPos pos) {
             double centerX = pos.getX() + 0.5;
             double centerY = pos.getY() + 0.5;
             double centerZ = pos.getZ() + 0.5;
