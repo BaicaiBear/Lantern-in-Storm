@@ -195,12 +195,15 @@ public class Player {
     }
 
     public void setRtpSpawn(BlockPos pos) {
-        if(rtpSpawn != null){
-            return;
-        }
-        this.rtpSpawn = pos;
         NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
-        data.putIntArray("rtpspawn", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+        if(pos == null){
+            this.rtpSpawn = null;
+            data.putIntArray("rtpspawn", new int[]{-1});
+        }
+        else {
+            this.rtpSpawn = pos;
+            data.putIntArray("rtpspawn", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+        }
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
     }
 
