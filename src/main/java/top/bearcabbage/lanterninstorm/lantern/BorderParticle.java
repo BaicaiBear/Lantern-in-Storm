@@ -2,6 +2,7 @@ package top.bearcabbage.lanterninstorm.lantern;
 
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.block.BlockState;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -72,62 +73,57 @@ public class BorderParticle {
         }
     }
 
-    public static class DrawHexagonBorderParticle {
-        public static void drawBox(World world, BlockPos pos) {
+    public static class DrawSoulCubicBorderParticle {
+        public static void drawBox(World world, BlockPos pos ,Random random, double amplitude) {
             double centerX = pos.getX() + 0.5;
             double centerY = pos.getY() + 0.5;
             double centerZ = pos.getZ() + 0.5;
-            double[][] points = getPoints(centerX, centerY, centerZ);
-            drawLine(world, points[0], points[1]);
-            drawLine(world, points[1], points[2]);
-            drawLine(world, points[2], points[3]);
-            drawLine(world, points[3], points[4]);
-            drawLine(world, points[4], points[5]);
-            drawLine(world, points[5], points[0]);
-            drawLine(world, points[6], points[7]);
-            drawLine(world, points[7], points[8]);
-            drawLine(world, points[8], points[9]);
-            drawLine(world, points[9], points[10]);
-            drawLine(world, points[10], points[11]);
-            drawLine(world, points[11], points[6]);
-            drawLine(world, points[0], points[6]);
-            drawLine(world, points[1], points[7]);
-            drawLine(world, points[2], points[8]);
-            drawLine(world, points[3], points[9]);
-            drawLine(world, points[4], points[10]);
-            drawLine(world, points[5], points[11]);
 
+            double velocityX = -0.1 + (0.1 - (-0.1)) * random.nextDouble();
+            double velocityY = -0.1 + (0.1 - (-0.1)) * random.nextDouble();
+            double velocityZ = -0.1 + (0.1 - (-0.1)) * random.nextDouble();
+            /*
+            double velocityX = 0;
+            double velocityY = 0;
+            double velocityZ = 0;*/
+            double[][] points = getPoints(centerX, centerY, centerZ, amplitude);
+            drawLine(world, points[0], points[1],velocityX,velocityY,velocityZ);
+            drawLine(world, points[1], points[2],velocityX,velocityY,velocityZ);
+            drawLine(world, points[2], points[3],velocityX,velocityY,velocityZ);
+            drawLine(world, points[3], points[0],velocityX,velocityY,velocityZ);
+            drawLine(world, points[4], points[5],velocityX,velocityY,velocityZ);
+            drawLine(world, points[5], points[6],velocityX,velocityY,velocityZ);
+            drawLine(world, points[6], points[7],velocityX,velocityY,velocityZ);
+            drawLine(world, points[7], points[4],velocityX,velocityY,velocityZ);
+            drawLine(world, points[0], points[4],velocityX,velocityY,velocityZ);
+            drawLine(world, points[1], points[5],velocityX,velocityY,velocityZ);
+            drawLine(world, points[2], points[6],velocityX,velocityY,velocityZ);
+            drawLine(world, points[3], points[7],velocityX,velocityY,velocityZ);
         }
 
-        private static double[][] getPoints(double centerX, double centerY, double centerZ) {
+        private static double[][] getPoints(double centerX, double centerY, double centerZ, double amplitude) {
             return new double[][] {
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY - (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ + (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ},
-                    {centerX + (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038},
-                    {centerX - (double) LanternInStorm.LANTERN_RADIUS * 0.5, centerY + (double) LanternInStorm.LANTERN_HEIGHT, centerZ - (double) LanternInStorm.LANTERN_RADIUS * 0.8660254038}
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ - (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS},
+                    {centerX - (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerY + (double) amplitude * LanternInStorm.LANTERN_RADIUS, centerZ + (double) amplitude * LanternInStorm.LANTERN_RADIUS}
             };
         }
 
-        private static void drawLine(World world, double[] start, double[] end) {
-            double steps = 7000; // 控制线条的分辨率
+        private static void drawLine(World world, double[] start, double[] end,double velocityX ,double velocityY ,double velocityZ) {
+            double steps = 30; // 控制线条的分辨率
             for (int i = 0; i <= steps; i++) {
                 double t = i / steps;
                 double x = start[0] + (end[0] - start[0]) * t;
                 double y = start[1] + (end[1] - start[1]) * t;
                 double z = start[2] + (end[2] - start[2]) * t;
-
-                // 添加粒子
-                world.addParticle(BorderParticle.border, x, y, z, 0, 0, 0);
+                world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, velocityX, velocityY, velocityZ);
             }
         }
     }
+
 }
