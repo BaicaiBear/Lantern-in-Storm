@@ -191,6 +191,10 @@ public class Player {
         LSTick = invincibleTick = 0;
     }
 
+    public BlockPos getOriginalRtpSpawn() {
+        return this.rtpSpawn;
+    }
+
     public BlockPos getRtpSpawn() {
         if(this.rtpSpawn == null) {
             return player.getSpawnPointPosition();

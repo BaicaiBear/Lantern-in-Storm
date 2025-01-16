@@ -27,6 +27,10 @@ public class LanternInStormAPI {
         }
     }
 
+    public static BlockPos getRTPSpawn(ServerPlayerEntity player) {
+        return ((LiSPlayer) player).getLS().getOriginalRtpSpawn();
+    }
+
     public static void addSafeWorld(RegistryKey<World> world) {
         safeWorlds.add(world);
     }
