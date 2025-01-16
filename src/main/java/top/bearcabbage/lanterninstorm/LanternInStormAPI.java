@@ -16,6 +16,7 @@ public class LanternInStormAPI {
         if(player instanceof LiSPlayer liSPlayer){
             liSPlayer.getLS().setInvincibleTick(80);
             liSPlayer.getLS().setRtpSpawn(pos);
+            if(!setRTPSpawnWhenSpawnpointCommand) player.setSpawnPoint(player.getServer().getOverworld().getRegistryKey(), pos, 0.0F, true, false);
             BeginningLanternEntity.create(player.getServerWorld(), player);
         }
     }
