@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.*;
+import static top.bearcabbage.lanterninstorm.LanternInStormAPI.safeWorlds;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.TALISMAN;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 
@@ -111,6 +112,9 @@ public class Player {
     }
 
     public boolean onTick() {
+        if (safeWorlds.contains(player.getServerWorld().getRegistryKey())) {
+            return false;
+        }
         if (invincibleTick > 0) {
             invincibleTick--;
         }
