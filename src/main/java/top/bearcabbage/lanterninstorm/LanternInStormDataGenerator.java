@@ -189,7 +189,6 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 			translationBuilder.add(SPIRIT_FRAG_ITEM, "灵魂碎片");
 			translationBuilder.add(TALISMAN, "熊之符");
 			translationBuilder.add(LANTERN_CORE, "彩灯核心");
-			translationBuilder.add(FOX_TAIL_ITEM, "狐狸尾巴");
 			translationBuilder.add(WHITE_PAPER_LANTERN_ITEM, "白色油纸灯");
 			translationBuilder.add(OAK_WOODEN_LANTERN_ITEM, "橡木立方灯");
 			translationBuilder.add(SPRUCE_WOODEN_LANTERN_ITEM, "云杉木立方灯");
