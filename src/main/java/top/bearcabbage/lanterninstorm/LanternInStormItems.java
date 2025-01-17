@@ -20,7 +20,7 @@ import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks.*;
 public class LanternInStormItems {
     public static final Item CUBIC_GLASS_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"cubic_glass_lantern"), new BlockItem(CUBIC_GLASS_LANTERN, new Item.Settings()));
 
-    public static final Item WHITE_PAPER_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"white_paper_lantern"), new BlockItem(WHITE_PAPER_LANTERN, new Item.Settings()));
+//    public static final Item WHITE_PAPER_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"white_paper_lantern"), new BlockItem(WHITE_PAPER_LANTERN, new Item.Settings()));
 
     // 木质立方灯
     public static final Item OAK_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"oak_wooden_lantern"), new BlockItem(OAK_WOODEN_LANTERN, new Item.Settings()));
