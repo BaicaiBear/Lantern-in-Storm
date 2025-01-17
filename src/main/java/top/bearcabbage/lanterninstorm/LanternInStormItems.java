@@ -52,7 +52,6 @@ public class LanternInStormItems {
 
     public static final Item TALISMAN = register("talisman", new Item(new Item.Settings().maxDamage(120)));//120s耐久
     public static final Item LANTERN_CORE = register("lantern_core", new Item(new Item.Settings()));
-    public static final Item FOX_TAIL_ITEM = register("fox_tail_item", new Item(new Item.Settings().maxCount(99)));
     public static final Item SPIRIT_FRAG_ITEM = register("spirit_frag_item", new Item(new Item.Settings().maxCount(99)));
 
 
