@@ -171,10 +171,10 @@ public class Player {
             talisman.damage(1, player.getServerWorld(), player, item -> {
             });
             if (safetyPrev) {
-                player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的小熊先知令人安心").withColor(0x996633)));
+                player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的熊之符令人安心").withColor(0x996633)));
             } else if (!hasTalismanPrev){
 //                player.clearStatusEffects();
-                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("拿起护符你似乎感到好些了").withColor(0xF6DEAD)));
+                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("拿起熊之符你似乎感到好些了").withColor(0xF6DEAD)));
             }
             this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
             hasTalismanPrev = true;
