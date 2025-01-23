@@ -47,8 +47,8 @@ public class LanternInStormItems {
     public static final Item UMBRAN_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"umbran_wooden_lantern"), new BlockItem(UMBRAN_WOODEN_LANTERN, new Item.Settings()));
     public static final Item HELLBARK_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"hellbark_wooden_lantern"), new BlockItem(HELLBARK_WOODEN_LANTERN, new Item.Settings()));
     public static final Item EMPYREAL_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"empyreal_wooden_lantern"), new BlockItem(EMPYREAL_WOODEN_LANTERN, new Item.Settings()));
-
-
+    // 限量版彩灯
+    public static final Item SNOWMAN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snowman_lantern"), new BlockItem(SNOWMAN_LANTERN, new Item.Settings()));
 
     public static final Item TALISMAN = register("talisman", new Item(new Item.Settings().maxDamage(120)));//120s耐久
     public static final Item LANTERN_CORE = register("lantern_core", new Item(new Item.Settings()));

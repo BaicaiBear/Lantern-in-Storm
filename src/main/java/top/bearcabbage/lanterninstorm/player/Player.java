@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import eu.pb4.playerdata.api.PlayerDataApi;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -159,7 +161,13 @@ public class Player {
     public void onStableTick() {
         if (this.player.isSpectator() || this.player.isCreative()) return;
         if (!safetyPrev) {
-            player.clearStatusEffects();
+            Set<RegistryEntry<StatusEffect>> effectsToRemove = new HashSet<>();
+            player.getStatusEffects().forEach((effect) -> {
+                if (!effect.getEffectType().value().isBeneficial()) {
+                    effectsToRemove.add(effect.getEffectType());
+                }
+            });
+            effectsToRemove.forEach(player::removeStatusEffect);
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
         }
     }

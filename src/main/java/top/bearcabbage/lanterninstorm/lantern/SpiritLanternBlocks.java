@@ -41,7 +41,8 @@ public abstract class SpiritLanternBlocks {
     public static final Block UMBRAN_WOODEN_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"umbran_wooden_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.BROWN).strength(10.0F, 3600000.0F).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
     public static final Block HELLBARK_WOODEN_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"hellbark_wooden_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.BROWN).strength(10.0F, 3600000.0F).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
     public static final Block EMPYREAL_WOODEN_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"empyreal_wooden_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.BROWN).strength(10.0F, 3600000.0F).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
-
+    // 限量版彩灯
+    public static final Block SNOWMAN_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"snowman_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.CYAN).strength(10.0F, 3600000.0F).sounds(BlockSoundGroup.GLASS).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
 
     public static void initialize(){}
 }
