@@ -55,7 +55,8 @@ public class LanternInStormClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(UMBRAN_WOODEN_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(HELLBARK_WOODEN_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(EMPYREAL_WOODEN_LANTERN, RenderLayer.getTranslucent());
-
+        // 限量彩灯
+        BlockRenderLayerMap.INSTANCE.putBlock(SNOWMAN_LANTERN, RenderLayer.getTranslucent());
 
         EntityRendererRegistry.INSTANCE.register(BEGINNING_LANTERN, BeginningLanternRenderer::new);
         ParticleFactoryRegistry.getInstance().register(BorderParticle.border, EndRodParticle.Factory::new);

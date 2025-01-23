@@ -13,6 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -267,7 +268,19 @@ public class Player {
 
     public boolean addLantern(RegistryKey<World> world, BlockPos blockPos) {
         GlobalPos pos = new GlobalPos(world, blockPos);
-        if (!addSpirit(-1)) {
+        int spiritCost = 1;
+        switch (player.getServerWorld().getRegistryKey().getValue().toString()) {
+            case "minecraft:overworld":
+                spiritCost = 1;
+                break;
+            case "minecraft:the_nether":
+                spiritCost = 8;
+                break;
+            case "minecraft:the_end":
+                spiritCost = 10;
+                break;
+        }
+        if (!addSpirit(-spiritCost)) {
             player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("灵魂不够了……")));
             return false;
         }
@@ -287,7 +300,19 @@ public class Player {
             player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("灯笼里不是你的灵魂……")));
             return false;
         }
-        spirit++;
+        int spiritCost = 1;
+        switch (player.getServerWorld().getRegistryKey().getValue().toString()) {
+            case "minecraft:overworld":
+                spiritCost = 1;
+                break;
+            case "minecraft:the_nether":
+                spiritCost = 8;
+                break;
+            case "minecraft:the_end":
+                spiritCost = 10;
+                break;
+        }
+        spirit+=spiritCost;
         lanterns.remove(pos);
         Config lanternData = new Config(PlayerDataApi.getPathFor(player).resolve("lantern_data.json"));
         lanternData.set("lanterns", lanterns);
