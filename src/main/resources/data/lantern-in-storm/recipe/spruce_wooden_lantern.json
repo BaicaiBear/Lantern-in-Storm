@@ -3,7 +3,7 @@
     "category": "misc",
     "key": {
         "a": {
-            "item": "minecraft:spruce_plank"
+            "item": "minecraft:spruce_planks"
         },
         "b": {
             "item": "lantern-in-storm:lantern_core"
