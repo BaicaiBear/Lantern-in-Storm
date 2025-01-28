@@ -1,5 +1,16 @@
 package top.bearcabbage.lanterninstorm;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import dev.emi.trinkets.api.SlotAttributes;
+import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.TrinketItem;
+import dev.emi.trinkets.api.TrinketsApi;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -7,12 +18,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.player.LiSPlayer;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks.*;
@@ -49,8 +64,10 @@ public class LanternInStormItems {
     public static final Item EMPYREAL_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"empyreal_wooden_lantern"), new BlockItem(EMPYREAL_WOODEN_LANTERN, new Item.Settings()));
     // 限量版彩灯
     public static final Item SNOWMAN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snowman_lantern"), new BlockItem(SNOWMAN_LANTERN, new Item.Settings()));
+    public static final Item SNAKE_NEWYEAR_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snake_newyear_lantern"), new BlockItem(SNAKE_NEWYEAR_LANTERN, new Item.Settings()));
 
-    public static final Item TALISMAN = register("talisman", new Item(new Item.Settings().maxDamage(120)));//120s耐久
+    public static final Item TALISMAN = register("talisman", new TrinketItem(new Item.Settings().maxDamage(120)));//120s耐久
+    public static final Item FLASHLIGHT = register("flashlight", new TrinketItem(new Item.Settings().maxDamage(600)));//10min耐久
     public static final Item LANTERN_CORE = register("lantern_core", new Item(new Item.Settings()));
     public static final Item SPIRIT_FRAG_ITEM = register("spirit_frag_item", new Item(new Item.Settings().maxCount(99)));
 

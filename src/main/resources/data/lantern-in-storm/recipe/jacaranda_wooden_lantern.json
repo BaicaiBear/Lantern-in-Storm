@@ -1,1 +1,21 @@
-{"type": "minecraft:crafting_shaped", "category": "misc", "key": {"a": {"item": "biomesoplenty:jacaranda_wood"}, "b": {"item": "lantern-in-storm:lantern_core"}}, "pattern": ["aaa", "aba", "aaa"], "result": {"count": 1, "id": "lantern-in-storm:jacaranda_wooden_lantern"}}
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "a": {
+            "item": "biomesoplenty:jacaranda_plank"
+        },
+        "b": {
+            "item": "lantern-in-storm:lantern_core"
+        }
+    },
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "result": {
+        "count": 1,
+        "id": "lantern-in-storm:jacaranda_wooden_lantern"
+    }
+}

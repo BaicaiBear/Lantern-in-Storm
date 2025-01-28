@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "a": {
-      "item": "minecraft:acacia_wood"
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "a": {
+            "item": "minecraft:acacia_plank"
+        },
+        "b": {
+            "item": "lantern-in-storm:lantern_core"
+        }
     },
-    "b": {
-      "item": "lantern-in-storm:lantern_core"
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "result": {
+        "count": 1,
+        "id": "lantern-in-storm:acacia_wooden_lantern"
     }
-  },
-  "pattern": [
-    "aaa",
-    "aba",
-    "aaa"
-  ],
-  "result": {
-    "count": 1,
-    "id": "lantern-in-storm:acacia_wooden_lantern"
-  }
 }

@@ -20,6 +20,15 @@ repositories {
 	// Player Data API
 	maven { url 'https://maven.nucleoid.xyz' }
 
+	// trinkets
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
+	maven {
+		name = "Ladysnake Libs"
+		url = 'https://maven.ladysnake.org/releases'
+	}
 
 }
 
@@ -43,6 +52,8 @@ dependencies {
 
 	// OBJ
 	implementation 'de.javagl:obj:0.4.0'
+
+	modImplementation include("dev.emi:trinkets:${trinkets_version}")
 
 	modImplementation fileTree("libs")
 }

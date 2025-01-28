@@ -1,1 +1,21 @@
-{"type": "minecraft:crafting_shaped", "category": "misc", "key": {"a": {"item": "biomesoplenty:dead_wood"}, "b": {"item": "lantern-in-storm:lantern_core"}}, "pattern": ["aaa", "aba", "aaa"], "result": {"count": 1, "id": "lantern-in-storm:dead_wooden_lantern"}}
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "a": {
+            "item": "biomesoplenty:dead_plank"
+        },
+        "b": {
+            "item": "lantern-in-storm:lantern_core"
+        }
+    },
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "result": {
+        "count": 1,
+        "id": "lantern-in-storm:dead_wooden_lantern"
+    }
+}

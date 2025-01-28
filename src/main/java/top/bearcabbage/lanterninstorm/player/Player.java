@@ -4,16 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.emi.trinkets.api.SlotGroup;
+import dev.emi.trinkets.api.TrinketInventory;
+import dev.emi.trinkets.api.TrinketItem;
+import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.playerdata.api.PlayerDataApi;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -27,8 +30,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
+import top.bearcabbage.lanterninstorm.LanternInStormItems;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
-import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -39,6 +42,7 @@ import java.util.*;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.*;
 import static top.bearcabbage.lanterninstorm.LanternInStormAPI.safeWorlds;
+import static top.bearcabbage.lanterninstorm.LanternInStormItems.FLASHLIGHT;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.TALISMAN;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
 
@@ -52,10 +56,12 @@ public class Player {
     private int spirit;
     private boolean safety;
     private boolean safetyPrev;
+    private boolean cleared;
     private boolean hasTalismanPrev;
 
     private int LSTick;
-    private int invincibleTick = 0;
+    private final static int INVINCIBLE_TICK = 10;
+    private int invincibleSec = 0;
 
 
     public Player(ServerPlayerEntity player) {
@@ -66,7 +72,7 @@ public class Player {
             data.putIntArray("rtpspawn", new int[]{-1});
             data.putInt("spirit", INIT_SPIRIT);
             PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
-            invincibleTick = 20;
+            invincibleSec = INVINCIBLE_TICK;
         }
         spirit = data.getInt("spirit");
         int[] posVec = data.getIntArray("rtpspawn");
@@ -112,22 +118,25 @@ public class Player {
         }
         safetyPrev = safety = true;
         hasTalismanPrev = false;
+        cleared = false;
     }
 
     public boolean onTick() {
         if (safeWorlds.contains(player.getServerWorld().getRegistryKey())) {
             return false;
         }
-        if (invincibleTick > 0) {
-            invincibleTick--;
-        }
         boolean check = ++LSTick % TICK_INTERVAL == 0;
         if (check) {
             safetyPrev = safety;
+            if (invincibleSec > 0) {
+                invincibleSec--;
+                safety = true;
+                return false;
+            }
             // if player near his rtp spawn (beginning lantern)
             if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), 2*LANTERN_RADIUS)) {
                 safety = true;
-                onStableTick();
+                onRTPSpawnTick();
                 return true;
             }
             // if player near a lantern
@@ -153,7 +162,7 @@ public class Player {
                 );
                 if (safety) break;
             }
-            if (safety) onStableTick();
+            if (safety) onLanternTick();
             else onUnstableTick();
         }
         return check;
@@ -171,33 +180,132 @@ public class Player {
             effectsToRemove.forEach(player::removeStatusEffect);
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
         }
+        cleared = true;
+    }
+
+    public void onRTPSpawnTick() {
+        onStableTick();
+    }
+
+    public void onLanternTick() {
+        onStableTick();
+        TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
+            trinkets.forEach((slot, stack) -> {
+                if (slot.getId().contains("offhand/glove")) {
+                    if (stack.isOf(FLASHLIGHT)) {
+                        if (stack.getDamage() > 2) stack.setDamage(stack.getDamage() - 2);
+                        else stack.setDamage(0);
+                    }
+                    else if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
+                        ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
+                        if (flashlight.getDamage() > 2) flashlight.setDamage(flashlight.getDamage() - 2);
+                        else flashlight.setDamage(0);
+                    }
+                }
+            });
+        });
     }
 
     public void onUnstableTick() {
         if (this.player.isSpectator() || this.player.isCreative()) return;
-        if (player.getMainHandStack().isOf(TALISMAN)||player.getOffHandStack().isOf(TALISMAN)) {
-            ItemStack talisman = player.getMainHandStack().isOf(TALISMAN) ? player.getMainHandStack() : player.getOffHandStack();
-            talisman.damage(1, player.getServerWorld(), player, item -> {
-            });
-            if (safetyPrev) {
-                player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("但手中的熊之符令人安心").withColor(0x996633)));
-            } else if (!hasTalismanPrev){
-//                player.clearStatusEffects();
-                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("拿起熊之符你似乎感到好些了").withColor(0xF6DEAD)));
+        if (safetyPrev) player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
+        // First check flashlight
+        TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> trinkets.forEach((slot, stack) -> {
+            if (slot.getId().contains("offhand/glove")) {
+                // 手电在饰品位
+                if (stack.isOf(FLASHLIGHT)) {
+                    if (stack.getDamage()==stack.getMaxDamage()-1) {
+                        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+                        cleared = false;
+                    }
+                    else {
+                        if (!cleared) {
+                            cleared = true;
+                            List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
+                            player.getStatusEffects().forEach((effect) -> {
+                                if (!effect.getEffectType().value().isBeneficial()) {
+                                    harmfulEffects.add(effect);
+                                }
+                            });
+                            if (!harmfulEffects.isEmpty()) {
+                                harmfulEffects.forEach((effect) -> {
+                                    if(stack.getDamage()<stack.getMaxDamage()-3) {
+                                        stack.damage(2, player.getServerWorld(), player, item -> {});
+                                        player.removeStatusEffect(effect.getEffectType());
+                                    } else cleared = false;
+                                });
+                            }
+                        }
+                        stack.damage(1, player.getServerWorld(), player, item -> {});;
+                    }
+                }
+                // 护符在饰品位
+                else if (stack.isOf(TALISMAN)) {
+                    if(stack.getDamage()==stack.getMaxDamage()-1) {
+                        stack.damage(1, player.getServerWorld(), player, item -> {});
+                        if (player.getInventory().contains((itemStack) -> itemStack.isOf(TALISMAN))) {
+                            for (int i=PlayerInventory.MAIN_SIZE-1;i>0;i--) {
+                                ItemStack flashlight = player.getInventory().getStack(i);
+                                if (flashlight.isOf(TALISMAN)) {
+                                    TrinketItem.equipItem(player, flashlight);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else stack.damage(1, player.getServerWorld(), player, item -> {});
+                    this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+                    cleared = false;
+                }
+                else {
+                    // 手电在手上
+                    if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
+                        ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
+                        if (flashlight.getDamage()==flashlight.getMaxDamage()-1) {
+                            this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+                            cleared = false;
+                        }
+                        else {
+                            if (!cleared) {
+                                cleared = true;
+                                List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
+                                player.getStatusEffects().forEach((effect) -> {
+                                    if (!effect.getEffectType().value().isBeneficial()) {
+                                        harmfulEffects.add(effect);
+                                    }
+                                });
+                                if (!harmfulEffects.isEmpty()) {
+                                    harmfulEffects.forEach((effect) -> {
+                                        if(flashlight.getDamage()<flashlight.getMaxDamage()-3) {
+                                            flashlight.damage(2, player.getServerWorld(), player, item -> {});
+                                            player.removeStatusEffect(effect.getEffectType());
+                                        } else cleared = false;
+                                    });
+                                }
+                            }
+                            flashlight.damage(1, player.getServerWorld(), player, item -> {});;
+                        }
+                    }
+                    // 护符在手上
+                    else if (player.getMainHandStack().isOf(TALISMAN)||player.getOffHandStack().isOf(TALISMAN)) {
+                        ItemStack talisman = player.getMainHandStack().isOf(TALISMAN) ? player.getMainHandStack() : player.getOffHandStack();
+                        talisman.damage(1, player.getServerWorld(), player, item -> {});
+                        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+                    } else {
+                        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_NIGHTMARE, 200));
+                    }
+                    cleared = false;
+                }
             }
-            this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
-            hasTalismanPrev = true;
-        } else {
-            this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_NIGHTMARE, 200));
-            hasTalismanPrev = false;
-        }
-        if (safetyPrev) {
-            player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("鹏的噩梦正在吞噬你!").withColor(0xAAAAAA)));
-        }
+        }));
     }
 
     public void onDeath() {
-        LSTick = invincibleTick = 0;
+        LSTick = invincibleSec = 0;
+    }
+
+    public void onRespawn() {
+        invincibleSec = INVINCIBLE_TICK;
     }
 
     public BlockPos getOriginalRtpSpawn() {
@@ -236,8 +344,8 @@ public class Player {
         return safetyPrev;
     }
 
-    public void setInvincibleTick(int invincibleTick) {
-        this.invincibleTick = invincibleTick;
+    public void setInvincibleSec(int invincibleSec) {
+        this.invincibleSec = invincibleSec;
     }
 
     public int getSpirit() {
@@ -321,6 +429,10 @@ public class Player {
         player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("你感受到噩梦的迫近...").withColor(0xBBBBBB)));
         player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
         return true;
+    }
+
+    public void initTrinkets() {
+
     }
 
 

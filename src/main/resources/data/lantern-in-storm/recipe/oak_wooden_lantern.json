@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "a": {
-      "item": "minecraft:oak_wood"
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "a": {
+            "item": "minecraft:oak_plank"
+        },
+        "b": {
+            "item": "lantern-in-storm:lantern_core"
+        }
     },
-    "b": {
-      "item": "lantern-in-storm:lantern_core"
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "result": {
+        "count": 1,
+        "id": "lantern-in-storm:oak_wooden_lantern"
     }
-  },
-  "pattern": [
-    "aaa",
-    "aba",
-    "aaa"
-  ],
-  "result": {
-    "count": 1,
-    "id": "lantern-in-storm:oak_wooden_lantern"
-  }
 }

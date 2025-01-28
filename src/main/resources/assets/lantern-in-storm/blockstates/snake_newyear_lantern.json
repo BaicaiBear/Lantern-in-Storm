@@ -1,0 +1,1 @@
+{"variants": {"startup=false": {"model": "lantern-in-storm:block/snake_newyear_lantern"},"startup=true": {"model": "lantern-in-storm:block/snake_newyear_lantern_startup"}}}
