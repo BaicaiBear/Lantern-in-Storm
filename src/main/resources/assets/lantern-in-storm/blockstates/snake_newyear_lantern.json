@@ -1,1 +1,28 @@
-{"variants": {"startup=false": {"model": "lantern-in-storm:block/snake_newyear_lantern"},"startup=true": {"model": "lantern-in-storm:block/snake_newyear_lantern_startup"}}}
+{
+    "variants": {
+        "startup=false,facing=east": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_e"
+        },
+        "startup=false,facing=north": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_n"
+        },
+        "startup=false,facing=south": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_s"
+        },
+        "startup=false,facing=west": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_w"
+        },
+        "startup=true,facing=east": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_e_startup"
+        },
+        "startup=true,facing=north": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_n_startup"
+        },
+        "startup=true,facing=south": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_s_startup"
+        },
+        "startup=true,facing=west": {
+            "model": "lantern-in-storm:block/snake_newyear_lantern_w_startup"
+        }
+    }
+}

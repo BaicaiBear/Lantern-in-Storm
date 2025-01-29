@@ -178,7 +178,7 @@ public class Player {
                 }
             });
             effectsToRemove.forEach(player::removeStatusEffect);
-            player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
+            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
         }
         cleared = true;
     }
@@ -208,7 +208,7 @@ public class Player {
 
     public void onUnstableTick() {
         if (this.player.isSpectator() || this.player.isCreative()) return;
-        if (safetyPrev) player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
+        if (safetyPrev) player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
         // First check flashlight
         TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> trinkets.forEach((slot, stack) -> {
             if (slot.getId().contains("offhand/glove")) {

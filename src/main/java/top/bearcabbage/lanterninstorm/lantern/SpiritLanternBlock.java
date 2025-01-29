@@ -2,16 +2,18 @@ package top.bearcabbage.lanterninstorm.lantern;
 
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LanternBlock;
-import net.minecraft.block.Waterloggable;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
@@ -22,6 +24,7 @@ import top.bearcabbage.lanterninstorm.player.Player;
 public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
     public static final MapCodec<SpiritLanternBlock> CODEC = createCodec(SpiritLanternBlock::new);
     public static final BooleanProperty STARTUP;
+    public static final DirectionProperty FACING;
 
 
     public SpiritLanternBlock(Settings settings) {
@@ -32,6 +35,11 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
     @Override
     protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         return true;
+    }
+
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        return super.getPlacementState(ctx).with(FACING, ctx.getHorizontalPlayerFacing());
     }
 
     @Override
@@ -65,11 +73,12 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(HANGING, WATERLOGGED, STARTUP);
+        builder.add(HANGING, WATERLOGGED, STARTUP, FACING);
     }
 
     static {
         STARTUP = BooleanProperty.of("startup");
+        FACING = HorizontalFacingBlock.FACING;
     }
 
 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "lantern-in-storm:lantern_core"
+    },
+    {
+      "item": "minecraft:snowball"
+    },
+    {
+      "item": "minecraft:daylight_detector"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "lantern-in-storm:flashlight"
+  }
+}

@@ -1,0 +1,53 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "lantern-in-storm:block/snake_newyear_lantern_on",
+		"particle": "lantern-in-storm:block/snake_newyear_lantern_on"
+	},
+	"elements": [
+		{
+			"name": "snake",
+			"from": [4, 4, 15.7],
+			"to": [12, 12, 16],
+			"rotation": {"angle": 45, "axis": "z", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 4, 4], "texture": "#0", "cullface": "north"},
+				"east": {"uv": [4, 0, 4.125, 4], "texture": "#0"},
+				"south": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"west": {"uv": [4, 4, 4.125, 8], "texture": "#0"},
+				"up": {"uv": [8.5, 0.125, 4.5, 0], "texture": "#0"},
+				"down": {"uv": [8.5, 0.5, 4.5, 0.625], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 0, -4],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 0, -4],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 100, 0],
+			"translation": [0, 0, -4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 100, 0],
+			"translation": [0, 0, -4]
+		},
+		"ground": {
+			"translation": [0, 1, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"gui": {
+			"rotation": [0, 180, 0]
+		},
+		"fixed": {
+			"translation": [0, 0, -7.3]
+		}
+	}
+}

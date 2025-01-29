@@ -3,22 +3,22 @@
 	"parent": "minecraft:block/block",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "lantern-in-storm:block/snake_lantern_off",
-		"particle": "lantern-in-storm:block/snake_lantern_off"
+		"0": "lantern-in-storm:block/snake_newyear_lantern_off",
+		"particle": "lantern-in-storm:block/snake_newyear_lantern_off"
 	},
 	"elements": [
 		{
 			"name": "snake",
-			"from": [2.79289, 3.91421, 15.7],
-			"to": [10.79289, 11.91421, 16],
-			"rotation": {"angle": 45, "axis": "z", "origin": [7.29289, 9.41421, 15]},
+			"from": [0, 4, 4],
+			"to": [0.3, 12, 12],
+			"rotation": {"angle": -45, "axis": "x", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 4, 4], "texture": "#0", "cullface": "north"},
-				"east": {"uv": [4, 0, 4.125, 4], "texture": "#0"},
-				"south": {"uv": [0, 4, 4, 8], "texture": "#0"},
-				"west": {"uv": [4, 4, 4.125, 8], "texture": "#0"},
-				"up": {"uv": [8.5, 0.125, 4.5, 0], "texture": "#0"},
-				"down": {"uv": [8.5, 0.5, 4.5, 0.625], "texture": "#0"}
+				"north": {"uv": [4, 4, 4.125, 8], "texture": "#0"},
+				"east": {"uv": [0, 0, 4, 4], "texture": "#0", "cullface": "north"},
+				"south": {"uv": [4, 0, 4.125, 4], "texture": "#0"},
+				"west": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"up": {"uv": [8.5, 0.125, 4.5, 0], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [8.5, 0.5, 4.5, 0.625], "rotation": 270, "texture": "#0"}
 			}
 		}
 	],
@@ -47,7 +47,7 @@
 			"rotation": [0, 180, 0]
 		},
 		"fixed": {
-			"translation": [0, 0, -7.25]
+			"translation": [0, 0, -7.3]
 		}
 	}
 }

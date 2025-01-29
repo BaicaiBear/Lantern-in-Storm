@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
@@ -49,6 +50,11 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generate(RecipeExporter recipeExporter) {
+//			ShapelessRecipeJsonBuilder.create(RecipeCategory.TOOLS, FLASHLIGHT)
+//					.input(LANTERN_CORE).input(Items.SNOWBALL).input(Items.DAYLIGHT_DETECTOR)
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
 //			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, TALISMAN).pattern(" a ").pattern("bcb").pattern("b b")
 //					.input('a', Ingredient.ofItems(Items.DEAD_BUSH, Items.FERN, Items.CACTUS, Items.BAMBOO, Items.BROWN_MUSHROOM, Items.RED_MUSHROOM, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS, Items.CRIMSON_ROOTS, Items.WARPED_ROOTS))
 //					.input('b', Items.STICK)
@@ -86,94 +92,94 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 //					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
 //							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
 //					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, OAK_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.OAK_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.OAK_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.OAK_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, SPRUCE_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.SPRUCE_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.SPRUCE_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.SPRUCE_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, BIRCH_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.BIRCH_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.BIRCH_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.BIRCH_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, JUNGLE_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.JUNGLE_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.JUNGLE_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.JUNGLE_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, ACACIA_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.ACACIA_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.ACACIA_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.ACACIA_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, DARK_OAK_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.DARK_OAK_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.DARK_OAK_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.DARK_OAK_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, MANGROVE_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.MANGROVE_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.MANGROVE_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.MANGROVE_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, CHERRY_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.CHERRY_WOOD)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.CHERRY_WOOD),
-							FabricRecipeProvider.conditionsFromItem(Blocks.CHERRY_WOOD))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, BAMBOO_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.BAMBOO)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.BAMBOO),
-							FabricRecipeProvider.conditionsFromItem(Blocks.BAMBOO))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, CRIMSON_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.CRIMSON_HYPHAE)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.CRIMSON_HYPHAE),
-							FabricRecipeProvider.conditionsFromItem(Blocks.CRIMSON_HYPHAE))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, WARPED_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
-					.input('a', Blocks.WARPED_HYPHAE)
-					.input('b', LANTERN_CORE)
-					.criterion(FabricRecipeProvider.hasItem(Blocks.WARPED_HYPHAE),
-							FabricRecipeProvider.conditionsFromItem(Blocks.WARPED_HYPHAE))
-					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
-							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
-					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, OAK_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.OAK_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.OAK_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.OAK_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, SPRUCE_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.SPRUCE_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.SPRUCE_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.SPRUCE_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, BIRCH_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.BIRCH_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.BIRCH_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.BIRCH_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, JUNGLE_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.JUNGLE_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.JUNGLE_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.JUNGLE_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, ACACIA_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.ACACIA_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.ACACIA_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.ACACIA_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, DARK_OAK_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.DARK_OAK_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.DARK_OAK_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.DARK_OAK_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, MANGROVE_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.MANGROVE_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.MANGROVE_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.MANGROVE_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, CHERRY_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.CHERRY_WOOD)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.CHERRY_WOOD),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.CHERRY_WOOD))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, BAMBOO_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.BAMBOO)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.BAMBOO),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.BAMBOO))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, CRIMSON_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.CRIMSON_HYPHAE)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.CRIMSON_HYPHAE),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.CRIMSON_HYPHAE))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
+//			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, WARPED_WOODEN_LANTERN_ITEM).pattern("aaa").pattern("aba").pattern("aaa")
+//					.input('a', Blocks.WARPED_HYPHAE)
+//					.input('b', LANTERN_CORE)
+//					.criterion(FabricRecipeProvider.hasItem(Blocks.WARPED_HYPHAE),
+//							FabricRecipeProvider.conditionsFromItem(Blocks.WARPED_HYPHAE))
+//					.criterion(FabricRecipeProvider.hasItem(LANTERN_CORE),
+//							FabricRecipeProvider.conditionsFromItem(LANTERN_CORE))
+//					.offerTo(recipeExporter);
 
 		}
 	}
