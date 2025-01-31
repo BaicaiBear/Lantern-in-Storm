@@ -198,7 +198,7 @@ public class Player {
                     }
                     else if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
                         ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
-                        if (flashlight.getDamage() > 2) flashlight.setDamage(flashlight.getDamage() - 2);
+                        if (flashlight.getDamage() > 60) flashlight.setDamage(flashlight.getDamage() - 60);
                         else flashlight.setDamage(0);
                     }
                 }
