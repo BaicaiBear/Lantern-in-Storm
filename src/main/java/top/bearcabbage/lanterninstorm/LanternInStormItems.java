@@ -3,10 +3,8 @@ package top.bearcabbage.lanterninstorm;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import dev.emi.trinkets.api.SlotAttributes;
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketItem;
-import dev.emi.trinkets.api.TrinketsApi;
+import dev.emi.trinkets.api.*;
+import dev.emi.trinkets.api.event.TrinketDropCallback;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -89,5 +87,11 @@ public class LanternInStormItems {
     }
 
     public static void initialize() {
+        TrinketDropCallback.EVENT.register((rule, stack, ref, entity) -> {
+            if (stack.getItem() == FLASHLIGHT||stack.getItem() == TALISMAN) {
+                return TrinketEnums.DropRule.KEEP;
+            }
+            return rule;
+        });
     }
 }
