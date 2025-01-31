@@ -133,12 +133,6 @@ public class Player {
                 safety = true;
                 return false;
             }
-            // if player near his rtp spawn (beginning lantern)
-            if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), 2*LANTERN_RADIUS)) {
-                safety = true;
-                onRTPSpawnTick();
-                return true;
-            }
             // if player near a lantern
             Chunk playerChunk = player.getServerWorld().getChunk(player.getBlockPos());
             List<Chunk> chunkCheckList = List.of(playerChunk,
@@ -163,6 +157,12 @@ public class Player {
                 if (safety) break;
             }
             if (safety) onLanternTick();
+            // if player near his rtp spawn (beginning lantern)
+            else if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), 2*LANTERN_RADIUS)) {
+                    safety = true;
+                    onRTPSpawnTick();
+                    return true;
+            }
             else onUnstableTick();
         }
         return check;
@@ -193,7 +193,7 @@ public class Player {
             trinkets.forEach((slot, stack) -> {
                 if (slot.getId().contains("offhand/glove")) {
                     if (stack.isOf(FLASHLIGHT)) {
-                        if (stack.getDamage() > 2) stack.setDamage(stack.getDamage() - 2);
+                        if (stack.getDamage() > 60) stack.setDamage(stack.getDamage() - 60);
                         else stack.setDamage(0);
                     }
                     else if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
