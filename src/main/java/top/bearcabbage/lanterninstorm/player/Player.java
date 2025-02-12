@@ -125,15 +125,19 @@ public class Player {
     }
 
     public boolean onTick() {
-        if (safeWorlds.contains(player.getServerWorld().getRegistryKey())) {
-            return false;
-        }
         boolean check = ++LSTick % TICK_INTERVAL == 0;
         if (check) {
+            if (safeWorlds.contains(player.getServerWorld().getRegistryKey())) {
+                ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(false));
+                ServerPlayNetworking.send(player, new AnnoyingBarStagePayload(0));
+                return false;
+            }
             safetyPrev = safety;
             if (invincibleSec > 0) {
                 invincibleSec--;
                 safety = true;
+                ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(false));
+                ServerPlayNetworking.send(player, new AnnoyingBarStagePayload(0));
                 return false;
             }
             // if player near a lantern
