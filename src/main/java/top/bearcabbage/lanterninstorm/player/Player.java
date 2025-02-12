@@ -9,6 +9,7 @@ import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.playerdata.api.PlayerDataApi;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,6 +29,8 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import top.bearcabbage.annoyingeffects.network.AnnoyingBarDisplayPayload;
+import top.bearcabbage.annoyingeffects.network.AnnoyingBarStagePayload;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
 import top.bearcabbage.lanterninstorm.LanternInStormItems;
@@ -178,7 +181,9 @@ public class Player {
                 }
             });
             effectsToRemove.forEach(player::removeStatusEffect);
-            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
+            ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(false));
+            ServerPlayNetworking.send(player, new AnnoyingBarStagePayload(0));
+//            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
         }
         cleared = true;
     }
@@ -208,7 +213,8 @@ public class Player {
 
     public void onUnstableTick() {
         if (this.player.isSpectator() || this.player.isCreative()) return;
-        if (safetyPrev) player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
+        ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(true));
+//        if (safetyPrev) player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
         // First check flashlight
         TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> trinkets.forEach((slot, stack) -> {
             if (slot.getId().contains("offhand/glove")) {

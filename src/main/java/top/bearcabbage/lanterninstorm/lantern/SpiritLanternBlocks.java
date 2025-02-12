@@ -44,6 +44,7 @@ public abstract class SpiritLanternBlocks {
     // 限量版彩灯
     public static final Block SNOWMAN_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"snowman_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.CYAN).strength(10.0F, 3600000.0F).sounds(BlockSoundGroup.GLASS).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
     public static final Block SNAKE_NEWYEAR_LANTERN = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"snake_newyear_lantern"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.CYAN).strength(10.0F, 3600000.0F).sounds(BlockSoundGroup.GLASS).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
+    public static final Block KONGMING_LANTERN_2025 = (Block) Registry.register(Registries.BLOCK, Identifier.of(MOD_ID,"kongming_lantern_2025"), new SpiritLanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.CYAN).strength(10.0F, 3600000.0F).sounds(BlockSoundGroup.GLASS).luminance((state) -> {return 10;}).nonOpaque().pistonBehavior(PistonBehavior.BLOCK)));
 
     public static void initialize(){}
 }

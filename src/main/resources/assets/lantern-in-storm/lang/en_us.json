@@ -26,7 +26,9 @@
   "block.lantern-in-storm.hellbark_wooden_lantern": "Hellbark Wooden Lantern",
   "block.lantern-in-storm.empyreal_wooden_lantern": "Empyreal Wooden Lantern",
 
-  "block.lantern-in-storm.snowman_lantern": "HHHor Snowman Lantern",
+  "block.lantern-in-storm.snowman_lantern": "HHHor Snowman Lantern (Private Testing limited edition)",
+  "block.lantern-in-storm.kongming_lantern_2025": "Marshmallow Lantern (2025 Lantern Festival limited edition)",
+  "block.lantern-in-storm.snake_newyear_lantern": "Snake Newyear Lantern (2025 Spring Festival limited edition)",
 
   "item.lantern-in-storm.lantern_core": "Lantern Core",
   "item.lantern-in-storm.spirit_frag_item": "Spirit Fragment",

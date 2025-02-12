@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "startup=false": {
+            "model": "lantern-in-storm:block/kmlight_off"
+        },
+        "startup=true": {
+            "model": "lantern-in-storm:block/kmlight_on"
+        }
+    }
+}
