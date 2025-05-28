@@ -64,6 +64,7 @@ public class LanternInStormItems {
     public static final Item SNOWMAN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snowman_lantern"), new BlockItem(SNOWMAN_LANTERN, new Item.Settings()));
     public static final Item SNAKE_NEWYEAR_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snake_newyear_lantern"), new BlockItem(SNAKE_NEWYEAR_LANTERN, new Item.Settings()));
     public static final Item KONGMING_LANTERN_2025_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"kongming_lantern_2025"), new BlockItem(KONGMING_LANTERN_2025, new Item.Settings()));
+    public static final Item DEATHBEAR_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"deathbear_lantern"), new BlockItem(DEATHBEAR_LANTERN, new Item.Settings()));
 
     public static final Item TALISMAN = register("talisman", new TrinketItem(new Item.Settings().maxDamage(120)));//120s耐久
     public static final Item FLASHLIGHT = register("flashlight", new TrinketItem(new Item.Settings().maxDamage(600)));//10min耐久

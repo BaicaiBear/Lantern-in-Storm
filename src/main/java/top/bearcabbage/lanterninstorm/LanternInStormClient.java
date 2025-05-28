@@ -69,6 +69,7 @@ public class LanternInStormClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(SNOWMAN_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(SNAKE_NEWYEAR_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(KONGMING_LANTERN_2025, RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(DEATHBEAR_LANTERN, RenderLayer.getTranslucent());
 
 
         ClientTickEvents.END_WORLD_TICK.register(clientWorld -> {
