@@ -1,28 +1,28 @@
 {
     "variants": {
         "startup=false,facing=east": {
-            "model": "lantern-in-storm:block/deathbear_lantern_e"
+            "model": "lantern-in-storm:block/deathbear_lantern_w"
         },
         "startup=false,facing=north": {
-            "model": "lantern-in-storm:block/deathbear_lantern_n"
+            "model": "lantern-in-storm:block/deathbear_lantern_s"
         },
         "startup=false,facing=south": {
-            "model": "lantern-in-storm:block/deathbear_lantern_s"
-        },
-        "startup=false,facing=west": {
-            "model": "lantern-in-storm:block/deathbear_lantern_w"
-        },
-        "startup=true,facing=east": {
-            "model": "lantern-in-storm:block/deathbear_lantern_e"
-        },
-        "startup=true,facing=north": {
             "model": "lantern-in-storm:block/deathbear_lantern_n"
         },
-        "startup=true,facing=south": {
+        "startup=false,facing=west": {
+            "model": "lantern-in-storm:block/deathbear_lantern_e"
+        },
+        "startup=true,facing=east": {
+            "model": "lantern-in-storm:block/deathbear_lantern_w"
+        },
+        "startup=true,facing=north": {
             "model": "lantern-in-storm:block/deathbear_lantern_s"
         },
+        "startup=true,facing=south": {
+            "model": "lantern-in-storm:block/deathbear_lantern_n"
+        },
         "startup=true,facing=west": {
-            "model": "lantern-in-storm:block/deathbear_lantern_w"
+            "model": "lantern-in-storm:block/deathbear_lantern_e"
         }
     }
 }
