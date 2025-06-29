@@ -1,8 +1,11 @@
 package top.bearcabbage.lanterninstorm;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Position;
 import net.minecraft.world.World;
 import top.bearcabbage.lanterninstorm.lantern.BeginningLanternEntity;
 import top.bearcabbage.lanterninstorm.player.LiSPlayer;
@@ -18,13 +21,17 @@ public class LanternInStormAPI {
         setRTPSpawnWhenSpawnpointCommand = false;
     }
 
-    public static void setRTPSpawn(ServerPlayerEntity player, BlockPos pos) {
+    public static void setRTPSpawn(ServerPlayerEntity player, BlockPos pos, boolean warp) {
         if(player instanceof LiSPlayer liSPlayer){
             liSPlayer.getLS().setInvincibleSec(80);
             liSPlayer.getLS().setRtpSpawn(pos);
             if(!setRTPSpawnWhenSpawnpointCommand) player.setSpawnPoint(player.getServer().getOverworld().getRegistryKey(), pos, 0.0F, true, false);
-            BeginningLanternEntity.create(player.getServerWorld(), player);
+            if(!warp) BeginningLanternEntity.create(player.getServerWorld(), player);
         }
+    }
+
+    public static void setWarpSpawn(ServerPlayerEntity player, Position pos, String name) {
+        BeginningLanternEntity.createWarp(player, pos, name);
     }
 
     public static BlockPos getRTPSpawn(ServerPlayerEntity player) {

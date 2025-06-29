@@ -11,6 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Position;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -27,6 +28,12 @@ public class BeginningLanternEntity extends Entity {
             .dimensions(2.0F, 2.0F)
             .maxTrackingRange(64)
             .trackingTickInterval(Integer.MAX_VALUE).build("beginning_lantern"));
+    public static final EntityType<BeginningLanternEntity> WARP_BEGINNING_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","warp_beginning_lantern"), EntityType.Builder.create(BeginningLanternEntity::new, SpawnGroup.MISC)
+            .makeFireImmune()
+            .dimensions(4.0F, 4.0F)
+            .maxTrackingRange(64)
+            .trackingTickInterval(Integer.MAX_VALUE).build("warp_beginning_lantern"));
+
 
     public static void create(World world, ServerPlayerEntity player) {
         BeginningLanternEntity lantern = new BeginningLanternEntity(BEGINNING_LANTERN, world);
@@ -35,6 +42,16 @@ public class BeginningLanternEntity extends Entity {
         lantern.setCustomName(Text.of("入梦点["+player.getName().getLiteralString()+"]"));
         player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("大鹏的梦").withColor(0x525288)));
         player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("这个「灯笼」是你的起点").withColor(0xFFFFFF)));
+    }
+
+    public static void createWarp(ServerPlayerEntity player, Position pos, String name) {
+        World world = player.getServerWorld();
+        BeginningLanternEntity lantern = new BeginningLanternEntity(WARP_BEGINNING_LANTERN, world);
+        lantern.setPos(pos.getX(), pos.getY(), pos.getZ());
+        world.spawnEntity(lantern);
+        lantern.setCustomName(Text.of("聚落入梦点["+name+"]"));
+        player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal(name).withColor(0x525288)));
+        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("这个「灯笼」就是聚落的入梦点了").withColor(0xFFFFFF)));
     }
 
     public static void initialize(){}

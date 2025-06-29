@@ -23,7 +23,7 @@ public class SpawnPointCommandMixin {
             Iterator<ServerPlayerEntity> iterator = targets.iterator();
             while (iterator.hasNext()) {
                 ServerPlayerEntity serverPlayerEntity = iterator.next();
-                LanternInStormAPI.setRTPSpawn(serverPlayerEntity, pos);
+                LanternInStormAPI.setRTPSpawn(serverPlayerEntity, pos, false);
             }
         }
     }
