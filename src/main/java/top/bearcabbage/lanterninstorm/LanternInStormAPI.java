@@ -30,8 +30,8 @@ public class LanternInStormAPI {
         }
     }
 
-    public static void setWarpSpawn(ServerPlayerEntity player, Position pos, String name) {
-        BeginningLanternEntity.createWarp(player, pos, name);
+    public static void setWarpSpawn(World world, Position pos, String name) {
+        BeginningLanternEntity.createWarp(world, pos, name);
     }
 
     public static BlockPos getRTPSpawn(ServerPlayerEntity player) {

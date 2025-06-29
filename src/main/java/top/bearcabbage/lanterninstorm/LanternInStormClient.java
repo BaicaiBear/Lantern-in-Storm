@@ -21,6 +21,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import top.bearcabbage.lanterninstorm.lantern.BeginningLanternRenderer;
+import top.bearcabbage.lanterninstorm.lantern.WarpBeginningLanternRenderer;
 import top.bearcabbage.lanterninstorm.lantern.BorderParticle;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
 
@@ -99,6 +100,7 @@ public class LanternInStormClient implements ClientModInitializer {
             }
         });
         EntityRendererRegistry.INSTANCE.register(BEGINNING_LANTERN, BeginningLanternRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(WARP_BEGINNING_LANTERN, WarpBeginningLanternRenderer::new);
         ParticleFactoryRegistry.getInstance().register(BorderParticle.border, EndRodParticle.Factory::new);
     }
 }

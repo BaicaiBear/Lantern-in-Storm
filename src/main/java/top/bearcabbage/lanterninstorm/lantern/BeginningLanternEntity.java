@@ -30,7 +30,7 @@ public class BeginningLanternEntity extends Entity {
             .trackingTickInterval(Integer.MAX_VALUE).build("beginning_lantern"));
     public static final EntityType<BeginningLanternEntity> WARP_BEGINNING_LANTERN =  Registry.register(Registries.ENTITY_TYPE, Identifier.of("lanterninstorm","warp_beginning_lantern"), EntityType.Builder.create(BeginningLanternEntity::new, SpawnGroup.MISC)
             .makeFireImmune()
-            .dimensions(4.0F, 4.0F)
+            .dimensions(2.0F, 2.0F)
             .maxTrackingRange(64)
             .trackingTickInterval(Integer.MAX_VALUE).build("warp_beginning_lantern"));
 
@@ -44,14 +44,11 @@ public class BeginningLanternEntity extends Entity {
         player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("这个「灯笼」是你的起点").withColor(0xFFFFFF)));
     }
 
-    public static void createWarp(ServerPlayerEntity player, Position pos, String name) {
-        World world = player.getServerWorld();
+    public static void createWarp(World world, Position pos, String name) {
         BeginningLanternEntity lantern = new BeginningLanternEntity(WARP_BEGINNING_LANTERN, world);
         lantern.setPos(pos.getX(), pos.getY(), pos.getZ());
         world.spawnEntity(lantern);
         lantern.setCustomName(Text.of("聚落入梦点["+name+"]"));
-        player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal(name).withColor(0x525288)));
-        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("这个「灯笼」就是聚落的入梦点了").withColor(0xFFFFFF)));
     }
 
     public static void initialize(){}
