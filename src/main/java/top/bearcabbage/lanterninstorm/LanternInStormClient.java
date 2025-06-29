@@ -92,11 +92,15 @@ public class LanternInStormClient implements ClientModInitializer {
                 });
 
         HudRenderCallback.EVENT.register((context, renderTickCounter) -> {
-            if (how_to_defend == 1) {
-                context.drawTexture(Identifier.of(MOD_ID, "textures/item/flashlight.png"),10,context.getScaledWindowHeight()-46,0,0,36,36,36,36);
+            int textureWidth = 36; // Width of the texture
+            int margin = 10; // Margin from the edge of the window
+            int x = context.getScaledWindowWidth() - textureWidth - margin; // Calculate x for the right side
+            int y = context.getScaledWindowHeight() - 46; // Keep y the same for the bottom
 
+            if (how_to_defend == 1) {
+                context.drawTexture(Identifier.of(MOD_ID, "textures/item/flashlight.png"), x, y, 0, 0, textureWidth, textureWidth, textureWidth, textureWidth);
             } else if (how_to_defend == 2) {
-                context.drawTexture(Identifier.of(MOD_ID, "textures/item/talisman.png"),10,context.getScaledWindowHeight()-46,0,0,36,36,36,36);
+                context.drawTexture(Identifier.of(MOD_ID, "textures/item/talisman.png"), x, y, 0, 0, textureWidth, textureWidth, textureWidth, textureWidth);
             }
         });
         EntityRendererRegistry.INSTANCE.register(BEGINNING_LANTERN, BeginningLanternRenderer::new);
