@@ -192,7 +192,6 @@ public class LanternInStormDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-			translationBuilder.add(SPIRIT_FRAG_ITEM, "灵魂碎片");
 			translationBuilder.add(TALISMAN, "熊之符");
 			translationBuilder.add(LANTERN_CORE, "彩灯核心");
 //			translationBuilder.add(WHITE_PAPER_LANTERN_ITEM, "白色油纸灯");

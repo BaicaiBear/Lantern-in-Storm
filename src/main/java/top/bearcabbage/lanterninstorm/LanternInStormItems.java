@@ -60,6 +60,12 @@ public class LanternInStormItems {
     public static final Item UMBRAN_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"umbran_wooden_lantern"), new BlockItem(UMBRAN_WOODEN_LANTERN, new Item.Settings()));
     public static final Item HELLBARK_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"hellbark_wooden_lantern"), new BlockItem(HELLBARK_WOODEN_LANTERN, new Item.Settings()));
     public static final Item EMPYREAL_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"empyreal_wooden_lantern"), new BlockItem(EMPYREAL_WOODEN_LANTERN, new Item.Settings()));
+    // 神话金属灯
+    public static final Item MIDAS_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"midas_lantern"), new BlockItem(MIDAS_LANTERN, new Item.Settings()));
+    public static final Item MORKITE_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"morkite_lantern"), new BlockItem(MORKITE_LANTERN, new Item.Settings()));
+    public static final Item STARRITE_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"starrite_lantern"), new BlockItem(STARRITE_LANTERN, new Item.Settings()));
+    public static final Item PROMETHIUM_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"promethium_lantern"), new BlockItem(PROMETHIUM_LANTERN, new Item.Settings()));
+
     // 限量版彩灯
     public static final Item SNOWMAN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snowman_lantern"), new BlockItem(SNOWMAN_LANTERN, new Item.Settings()));
     public static final Item SNAKE_NEWYEAR_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snake_newyear_lantern"), new BlockItem(SNAKE_NEWYEAR_LANTERN, new Item.Settings()));
@@ -69,23 +75,10 @@ public class LanternInStormItems {
     public static final Item TALISMAN = register("talisman", new TrinketItem(new Item.Settings().maxDamage(120)));//120s耐久
     public static final Item FLASHLIGHT = register("flashlight", new TrinketItem(new Item.Settings().maxDamage(600)));//10min耐久
     public static final Item LANTERN_CORE = register("lantern_core", new Item(new Item.Settings()));
-    public static final Item SPIRIT_FRAG_ITEM = register("spirit_frag_item", new Item(new Item.Settings().maxCount(99)));
 
 
     public static <T extends Item> T register(String path, T item) {
         return Registry.register(Registries.ITEM, Identifier.of(MOD_ID, path), item);
-    }
-
-    public static TypedActionResult<ItemStack> useSpiritFrag(World world, PlayerEntity player, ItemStack itemStack) {
-        if (world.isClient) return TypedActionResult.success(itemStack);
-        int requiredCount = ((LiSPlayer)player).getLS().getSpiritUpgradeCount();
-        if (itemStack.getCount() >= requiredCount){
-            itemStack.decrementUnlessCreative(requiredCount,player);
-            ((LiSPlayer)player).getLS().addSpirit(1);
-            ((ServerPlayerEntity) player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("增加了1点灵魂，现有剩余灵魂量为："+ ((LiSPlayer)player).getLS().getSpirit())));
-            return TypedActionResult.consume(itemStack);
-        }
-        return TypedActionResult.fail(itemStack);
     }
 
     public static void initialize() {

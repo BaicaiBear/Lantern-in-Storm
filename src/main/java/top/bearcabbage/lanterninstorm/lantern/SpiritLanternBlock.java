@@ -4,32 +4,51 @@ package top.bearcabbage.lanterninstorm.lantern;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.registry.Registries;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.IntProperty;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import top.bearcabbage.lanterninstorm.player.LiSPlayer;
 import top.bearcabbage.lanterninstorm.player.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static top.bearcabbage.lanterninstorm.LanternInStorm.LANTERN_RADIUS;
+
 
 public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
     public static final MapCodec<SpiritLanternBlock> CODEC = createCodec(SpiritLanternBlock::new);
     public static final BooleanProperty STARTUP;
     public static final DirectionProperty FACING;
+    public static final IntProperty RADIUS;
+    public static final IntProperty REMAIN_TIME_IN_SECOND;
 
+    public static final int TimePerItem = 20 * 60;
+
+    public SpiritLanternBlock(Settings settings, int radius) {
+        super(settings);
+        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, radius).with(REMAIN_TIME_IN_SECOND, 0));
+    }
 
     public SpiritLanternBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false));
+        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, 0).with(REMAIN_TIME_IN_SECOND, 0));
     }
 
     @Override
@@ -44,7 +63,7 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if(state.get(STARTUP)) BorderParticle.DrawCubicBorderParticle.drawBox(world, pos, random, 1);
+        if(state.get(STARTUP)) BorderParticle.DrawCubicBorderParticle.drawBox(world, pos, random, 1, state.get(RADIUS));
         super.randomDisplayTick(state, world, pos, random);
     }
 
@@ -53,32 +72,41 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         }
-        Player lsplayer = ((LiSPlayer) player).getLS();
-        if (!state.get(STARTUP)) {
-            if (lsplayer.addLantern(world.getRegistryKey(), pos)) {
-                state = state.cycle(STARTUP);
-                world.setBlockState(pos, state, 3);
-                return ActionResult.SUCCESS;
-            }
-            else return ActionResult.FAIL;
+        if (!world.getRegistryKey().getValue().getNamespace().equals("starry_skies")) {
+            state = state.cycle(STARTUP);
+            world.setBlockState(pos, state, 3);
+            ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
+            ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+state.get(RADIUS)+"的立方体稳定下来了").withColor(0xBBBBBB)));
+            return ActionResult.SUCCESS;
         } else {
-            if (lsplayer.removeLantern(world.getRegistryKey(), pos)) {
-                state = state.cycle(STARTUP);
+            if (!player.getMainHandStack().isOf(Registries.ITEM.get(Identifier.of("numismatic-overhaul","silver_coin")))) {
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("在可怕的世界里你需要花费银币才可以点亮彩灯")));
+                return ActionResult.SUCCESS;
+            } else {
+                player.getMainHandStack().setCount(player.getMainHandStack().getCount() - 1);
+                state.with(REMAIN_TIME_IN_SECOND, state.get(REMAIN_TIME_IN_SECOND) + TimePerItem);
+                if (!state.get(STARTUP)) {
+                    state.cycle(STARTUP);
+                    ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
+                } else ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("彩灯的时间增加了！").withColor(0x06BDFC)));
                 world.setBlockState(pos, state, 3);
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+state.get(RADIUS)+"的立方体稳定下来了").withColor(0xBBBBBB)));
                 return ActionResult.SUCCESS;
             }
-            else return ActionResult.FAIL;
+
         }
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(HANGING, WATERLOGGED, STARTUP, FACING);
+        builder.add(HANGING, WATERLOGGED, STARTUP, FACING, RADIUS);
     }
 
     static {
         STARTUP = BooleanProperty.of("startup");
         FACING = HorizontalFacingBlock.FACING;
+        RADIUS = IntProperty.of("radius",0,16);
+        REMAIN_TIME_IN_SECOND = IntProperty.of("time",0,30*24*60*60);
     }
 
 }

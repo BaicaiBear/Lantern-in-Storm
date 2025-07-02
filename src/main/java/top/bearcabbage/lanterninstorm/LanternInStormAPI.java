@@ -42,15 +42,4 @@ public class LanternInStormAPI {
         safeWorlds.add(world);
     }
 
-    public static boolean setPlayerSpirit(ServerPlayerEntity player, int spirit) {
-        return ((LiSPlayer) player).getLS().setSpirit(spirit);
-    }
-
-    public static int getPlayerSpirit(ServerPlayerEntity player) {
-        return ((LiSPlayer) player).getLS().getSpirit();
-    }
-
-    public static boolean addPlayerSpirit(ServerPlayerEntity player, int spirit) {
-        return ((LiSPlayer) player).getLS().addSpirit(spirit);
-    }
 }

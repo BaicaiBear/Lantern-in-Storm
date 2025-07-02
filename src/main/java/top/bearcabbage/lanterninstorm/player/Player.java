@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dev.emi.trinkets.api.SlotGroup;
-import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.playerdata.api.PlayerDataApi;
@@ -16,24 +14,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
-import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
-import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import top.bearcabbage.annoyingeffects.network.AnnoyingBarDisplayPayload;
 import top.bearcabbage.annoyingeffects.network.AnnoyingBarStagePayload;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
-import top.bearcabbage.lanterninstorm.LanternInStormItems;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
 
 import java.io.FileReader;
@@ -47,23 +37,20 @@ import static top.bearcabbage.lanterninstorm.LanternInStorm.*;
 import static top.bearcabbage.lanterninstorm.LanternInStormAPI.safeWorlds;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.FLASHLIGHT;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.TALISMAN;
-import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.STARTUP;
+import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock.*;
 
 
 public class Player {
 
     private final ServerPlayerEntity player;
-    private final Set<GlobalPos> lanterns = new HashSet<>();
 
     private BlockPos rtpSpawn;
-    private int spirit;
     private boolean safety;
     private boolean safetyPrev;
     private boolean cleared;
-    private boolean hasTalismanPrev;
 
     private int LSTick;
-    private final static int INVINCIBLE_TICK = 10;
+    private final static int INVINCIBLE_SECONDS = 10;
     private int invincibleSec = 0;
 
 
@@ -73,64 +60,24 @@ public class Player {
         if(data == null){
             data = new NbtCompound();
             data.putIntArray("rtpspawn", new int[]{-1});
-            data.putInt("spirit", INIT_SPIRIT);
-            PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
-            invincibleSec = INVINCIBLE_TICK;
+            invincibleSec = INVINCIBLE_SECONDS;
         }
-        spirit = data.getInt("spirit");
         int[] posVec = data.getIntArray("rtpspawn");
         if (posVec.length == 3) {
             this.rtpSpawn = new BlockPos(posVec[0], posVec[1], posVec[2]);
         }
         LSTick = 0;
-
-        Config lanternData = new Config(PlayerDataApi.getPathFor(player).resolve("lantern_data.json"));
-        lanterns.clear();
-        var tmpSet = lanternData.get("lanterns", Set.class);
-        if (tmpSet == null) {
-            LanternInStorm.LOGGER.warn("No Lantern Data, generating blank format...");
-            lanternData.set("lanterns", new HashSet<>());
-            lanternData.save();
-        } else for (var pos : tmpSet) {
-            Map value = (Map) pos;
-            Identifier new_dimension = null;
-            BlockPos new_pos;
-            int x = 0;
-            int y = 0;
-            int z = 0;
-            try {
-                new_dimension = Identifier.of((String) ((Map) ((Map) value.get("dimension")).get("value")).get("namespace"), (String) ((Map) ((Map) value.get("dimension")).get("value")).get("path"));
-                Map posMap = (Map) value.get("pos");
-                x = ((Double) posMap.get("x")).intValue();
-                y = ((Double) posMap.get("y")).intValue();
-                z = ((Double) posMap.get("z")).intValue();
-            } catch (Exception e) {
-                if (e instanceof NullPointerException) {
-                    new_dimension = Identifier.of((String) ((Map) ((Map) value.get("comp_2207")).get("field_25138")).get("field_13353"), (String) ((Map) ((Map) value.get("comp_2207")).get("field_25138")).get("field_13355"));
-                    Map posMap = (Map) value.get("comp_2208");
-                    x = ((Double) posMap.get("field_11175")).intValue();
-                    y = ((Double) posMap.get("field_11174")).intValue();
-                    z = ((Double) posMap.get("field_11173")).intValue();
-                } else {
-                    LanternInStorm.LOGGER.error(e.toString());
-                }
-            }
-            new_pos = new BlockPos(x, y, z);
-            GlobalPos new_global_pos = new GlobalPos(RegistryKey.of(RegistryKeys.WORLD, new_dimension), new_pos);
-            lanterns.add(new_global_pos);
-        }
         safetyPrev = safety = true;
-        hasTalismanPrev = false;
         cleared = false;
     }
 
-    public boolean onTick() {
+    public void onTick() {
         boolean check = ++LSTick % TICK_INTERVAL == 0;
         if (check) {
             if (safeWorlds.contains(player.getServerWorld().getRegistryKey())) {
                 ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(false));
                 ServerPlayNetworking.send(player, new AnnoyingBarStagePayload(0));
-                return false;
+                return;
             }
             safetyPrev = safety;
             if (invincibleSec > 0) {
@@ -138,26 +85,41 @@ public class Player {
                 safety = true;
                 ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(false));
                 ServerPlayNetworking.send(player, new AnnoyingBarStagePayload(0));
-                return false;
+                return;
             }
             // if player near a lantern
             Chunk playerChunk = player.getServerWorld().getChunk(player.getBlockPos());
             List<Chunk> chunkCheckList = List.of(playerChunk,
-                    player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, LANTERN_RADIUS)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -LANTERN_RADIUS)),
-                    player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, LANTERN_RADIUS)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, LANTERN_RADIUS)),
-                    player.getWorld().getChunk(player.getBlockPos().add(LANTERN_RADIUS, 0, -LANTERN_RADIUS)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-LANTERN_RADIUS, 0, -LANTERN_RADIUS)));
+                    player.getWorld().getChunk(player.getBlockPos().add(16, 0, 0)),
+                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, 16)),
+                    player.getWorld().getChunk(player.getBlockPos().add(-16, 0, 0)),
+                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -16)),
+                    player.getWorld().getChunk(player.getBlockPos().add(16, 0, 16)),
+                    player.getWorld().getChunk(player.getBlockPos().add(-16, 0, 16)),
+                    player.getWorld().getChunk(player.getBlockPos().add(16, 0, -16)),
+                    player.getWorld().getChunk(player.getBlockPos().add(-16, 0, -16)));
             for (Chunk chunk : chunkCheckList) {
                 safety = false;
                 chunk.forEachBlockMatchingPredicate(
                         blockState -> blockState.getBlock() instanceof SpiritLanternBlock && blockState.get(STARTUP),
                         (blockPos, blockState) -> {
-                            if (MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS)) {
+                            if (!player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")
+                                    ? MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS)
+                                    : MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), blockState.get(RADIUS))) {
                                 safety = true;
+                            }
+                            if (player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")) {
+                                int remain_time = blockState.get(REMAIN_TIME_IN_SECOND) - TICK_INTERVAL / 20;
+                                if (remain_time < 0) {
+                                    blockState.with(REMAIN_TIME_IN_SECOND, 0);
+                                    blockState.with(STARTUP, false);
+                                    player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                                            Text.literal("这盏彩灯已经熄灭，再也无法抵御噩梦的侵蚀" )));
+                                } else {
+                                    blockState.with(REMAIN_TIME_IN_SECOND, remain_time);
+                                    player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                                            Text.literal("这盏彩灯的剩余时间：" + remain_time / 60 + "分" + (remain_time % 60) + "秒")));
+                                }
                             }
                         }
                 );
@@ -168,26 +130,34 @@ public class Player {
             else if (rtpSpawn != null && MathHelper.withinCubicOfRadius(player.getPos(), rtpSpawn.toCenterPos(), 2*LANTERN_RADIUS)) {
                     safety = true;
                     onRTPSpawnTick();
-                    return true;
             }
             else onUnstableTick();
         }
-        return check;
     }
 
     public void onStableTick() {
         if (this.player.isSpectator() || this.player.isCreative()) return;
         if (!safetyPrev) {
             Set<RegistryEntry<StatusEffect>> effectsToRemove = new HashSet<>();
-            player.getStatusEffects().forEach((effect) -> {
+            if (!player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies"))
+                player.getStatusEffects().forEach((effect) -> {
                 if (!effect.getEffectType().value().isBeneficial()) {
                     effectsToRemove.add(effect.getEffectType());
                 }
             });
+            else {
+                player.getStatusEffects().forEach((effect) -> {
+                    if (effect.getEffectType().equals(AnnoyingEffects.TANGLING_NIGHTMARE)
+                            || effect.getEffectType().equals(AnnoyingEffects.TANGLING_DREAMS)) {
+                        effectsToRemove.add(effect.getEffectType());
+                    }
+                });
+                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                        Text.literal("这个世界噩梦的侵蚀太严重了，彩灯也只能帮助你不再受到更多的诅咒").withColor(0xAA0000)));
+            }
             effectsToRemove.forEach(player::removeStatusEffect);
             ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(false));
             ServerPlayNetworking.send(player, new AnnoyingBarStagePayload(0));
-//            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("世界稳定下来了").withColor(0xF6DEAD)));
         }
         cleared = true;
     }
@@ -200,14 +170,15 @@ public class Player {
         onStableTick();
         TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
             trinkets.forEach((slot, stack) -> {
+                int chargeSpeed = player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies") ? 2 : 60;
                 if (slot.getId().contains("offhand/glove")) {
                     if (stack.isOf(FLASHLIGHT)) {
-                        if (stack.getDamage() > 60) stack.setDamage(stack.getDamage() - 60);
+                        if (stack.getDamage() > chargeSpeed) stack.setDamage(stack.getDamage() - chargeSpeed);
                         else stack.setDamage(0);
                     }
                     else if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
                         ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
-                        if (flashlight.getDamage() > 60) flashlight.setDamage(flashlight.getDamage() - 60);
+                        if (flashlight.getDamage() > chargeSpeed) flashlight.setDamage(flashlight.getDamage() - chargeSpeed);
                         else flashlight.setDamage(0);
                     }
                 }
@@ -219,12 +190,14 @@ public class Player {
         if (this.player.isSpectator() || this.player.isCreative()) return;
         ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(true));
 //        if (safetyPrev) player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
+        boolean inStarrySkies = player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies");
+        int consumeSpeed = inStarrySkies ? 2 : 1;
         // First check flashlight
         TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> trinkets.forEach((slot, stack) -> {
             if (slot.getId().contains("offhand/glove")) {
                 // 手电在饰品位
                 if (stack.isOf(FLASHLIGHT)) {
-                    if (stack.getDamage()==stack.getMaxDamage()-1) {
+                    if ((!inStarrySkies) && stack.getDamage()==stack.getMaxDamage()-1) {
                         this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
                         cleared = false;
                     }
@@ -232,11 +205,21 @@ public class Player {
                         if (!cleared) {
                             cleared = true;
                             List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
-                            player.getStatusEffects().forEach((effect) -> {
+                            if (!inStarrySkies) player.getStatusEffects().forEach((effect) -> {
                                 if (!effect.getEffectType().value().isBeneficial()) {
                                     harmfulEffects.add(effect);
                                 }
                             });
+                            else {
+                                player.getStatusEffects().forEach((effect) -> {
+                                    if (effect.getEffectType().equals(AnnoyingEffects.TANGLING_NIGHTMARE)
+                                            || effect.getEffectType().equals(AnnoyingEffects.TANGLING_DREAMS)) {
+                                        harmfulEffects.add(effect);
+                                    }
+                                });
+                                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                                        Text.literal("这个世界噩梦的侵蚀太严重了，琪露诺只能帮你不再产生新的诅咒了").withColor(0x55FFFF)));
+                            }
                             if (!harmfulEffects.isEmpty()) {
                                 harmfulEffects.forEach((effect) -> {
                                     if(stack.getDamage()<stack.getMaxDamage()-3) {
@@ -246,13 +229,13 @@ public class Player {
                                 });
                             }
                         }
-                        stack.damage(1, player.getServerWorld(), player, item -> {});;
+                        stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});;
                     }
                 }
                 // 护符在饰品位
                 else if (stack.isOf(TALISMAN)) {
-                    if(stack.getDamage()==stack.getMaxDamage()-1) {
-                        stack.damage(1, player.getServerWorld(), player, item -> {});
+                    if(stack.getDamage()<=stack.getMaxDamage()-consumeSpeed) {
+                        stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
                         if (player.getInventory().contains((itemStack) -> itemStack.isOf(TALISMAN))) {
                             for (int i=PlayerInventory.MAIN_SIZE-1;i>0;i--) {
                                 ItemStack flashlight = player.getInventory().getStack(i);
@@ -263,7 +246,7 @@ public class Player {
                             }
                         }
                     }
-                    else stack.damage(1, player.getServerWorld(), player, item -> {});
+                    else stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
                     this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
                     cleared = false;
                 }
@@ -271,7 +254,7 @@ public class Player {
                     // 手电在手上
                     if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
                         ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
-                        if (flashlight.getDamage()==flashlight.getMaxDamage()-1) {
+                        if (flashlight.getDamage()<=flashlight.getMaxDamage()-consumeSpeed) {
                             this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
                             cleared = false;
                         }
@@ -279,11 +262,21 @@ public class Player {
                             if (!cleared) {
                                 cleared = true;
                                 List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
-                                player.getStatusEffects().forEach((effect) -> {
+                                if (!inStarrySkies) player.getStatusEffects().forEach((effect) -> {
                                     if (!effect.getEffectType().value().isBeneficial()) {
                                         harmfulEffects.add(effect);
                                     }
                                 });
+                                else {
+                                    player.getStatusEffects().forEach((effect) -> {
+                                        if (effect.getEffectType().equals(AnnoyingEffects.TANGLING_NIGHTMARE)
+                                                || effect.getEffectType().equals(AnnoyingEffects.TANGLING_DREAMS)) {
+                                            harmfulEffects.add(effect);
+                                        }
+                                    });
+                                    player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                                            Text.literal("这个世界噩梦的侵蚀太严重了，琪露诺只能帮你不再产生新的诅咒了").withColor(0x55FFFF)));
+                                }
                                 if (!harmfulEffects.isEmpty()) {
                                     harmfulEffects.forEach((effect) -> {
                                         if(flashlight.getDamage()<flashlight.getMaxDamage()-3) {
@@ -293,7 +286,7 @@ public class Player {
                                     });
                                 }
                             }
-                            flashlight.damage(1, player.getServerWorld(), player, item -> {});;
+                            flashlight.damage(consumeSpeed, player.getServerWorld(), player, item -> {});;
                         }
                     }
                     // 护符在手上
@@ -315,7 +308,7 @@ public class Player {
     }
 
     public void onRespawn() {
-        invincibleSec = INVINCIBLE_TICK;
+        invincibleSec = INVINCIBLE_SECONDS;
     }
 
     public BlockPos getOriginalRtpSpawn() {
@@ -342,10 +335,6 @@ public class Player {
         PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
     }
 
-    public int getSpiritUpgradeCount() {
-        return UPGRADE_FRAG;
-    }
-
     public boolean getSafety() {
         return safety;
     }
@@ -356,89 +345,6 @@ public class Player {
 
     public void setInvincibleSec(int invincibleSec) {
         this.invincibleSec = invincibleSec;
-    }
-
-    public int getSpirit() {
-        return spirit;
-    }
-
-    public boolean setSpirit(int spirit) {
-        if (spirit < 0) return false;
-        this.spirit = spirit;
-        NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
-        data.putInt("spirit", spirit);
-        PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
-        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
-        return true;
-    }
-
-    public boolean addSpirit(int spirit) {
-        if (spirit < 0 && this.spirit + spirit < 0) {
-            return false;
-        }
-        this.spirit += spirit;
-        NbtCompound data = PlayerDataApi.getCustomDataFor(player, LanternInStorm.LSData);
-        data.putInt("spirit", this.spirit);
-        PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
-        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
-        return true;
-    }
-
-    public boolean addLantern(RegistryKey<World> world, BlockPos blockPos) {
-        GlobalPos pos = new GlobalPos(world, blockPos);
-        int spiritCost = 1;
-        switch (player.getServerWorld().getRegistryKey().getValue().toString()) {
-            case "minecraft:overworld":
-                spiritCost = 1;
-                break;
-            case "minecraft:the_nether":
-                spiritCost = 8;
-                break;
-            case "minecraft:the_end":
-                spiritCost = 10;
-                break;
-        }
-        if (!addSpirit(-spiritCost)) {
-            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("灵魂不够了……")));
-            return false;
-        }
-        lanterns.add(pos);
-        Config lanternData = new Config(PlayerDataApi.getPathFor(player).resolve("lantern_data.json"));
-        lanternData.set("lanterns", lanterns);
-        lanternData.save();
-        player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏路灯！").withColor(0xFCA106)));
-        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+LANTERN_RADIUS+"的立方体稳定下来了").withColor(0xBBBBBB)));
-        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
-        return true;
-    }
-
-    public boolean removeLantern(RegistryKey<World> world, BlockPos blockPos) {
-        GlobalPos pos = new GlobalPos(world, blockPos);
-        if (!lanterns.contains(pos)) {
-            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("灯笼里不是你的灵魂……")));
-            return false;
-        }
-        int spiritCost = 1;
-        switch (player.getServerWorld().getRegistryKey().getValue().toString()) {
-            case "minecraft:overworld":
-                spiritCost = 1;
-                break;
-            case "minecraft:the_nether":
-                spiritCost = 8;
-                break;
-            case "minecraft:the_end":
-                spiritCost = 10;
-                break;
-        }
-        spirit+=spiritCost;
-        lanterns.remove(pos);
-        Config lanternData = new Config(PlayerDataApi.getPathFor(player).resolve("lantern_data.json"));
-        lanternData.set("lanterns", lanterns);
-        lanternData.save();
-        player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("一盏路灯熄灭了").withColor(0x815C94)));
-        player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("你感受到噩梦的迫近...").withColor(0xBBBBBB)));
-        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("你的灵魂剩余："+getSpirit()+"点")));
-        return true;
     }
 
     public void initTrinkets() {

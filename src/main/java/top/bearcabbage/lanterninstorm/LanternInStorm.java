@@ -26,8 +26,6 @@ public class LanternInStorm implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final NbtDataStorage LSData = new NbtDataStorage("LS_Data");
 
-	public static final int INIT_SPIRIT = 0;
-	public static final int UPGRADE_FRAG = 1;
 	public static final int TICK_INTERVAL = 20;
 	public static final int LANTERN_RADIUS = 8;
 
