@@ -83,17 +83,17 @@ public class LanternInStormClient implements ClientModInitializer {
                                 // 手电在饰品位
                                 if (stack.isOf(FLASHLIGHT) || player.getMainHandStack().isOf(FLASHLIGHT) || player.getOffHandStack().isOf(FLASHLIGHT)) {
                                     how_to_defend = 1;
-                                    damaged = stack.isOf(FLASHLIGHT) && ((double) stack.getDamage()) / ((double) stack.getMaxDamage()) < 0.1
-                                            || player.getMainHandStack().isOf(FLASHLIGHT) && ((double) player.getMainHandStack().getDamage()) / ((double) player.getMainHandStack().getMaxDamage()) < 0.1
-                                            || player.getOffHandStack().isOf(FLASHLIGHT) && ((double) player.getOffHandStack().getDamage()) / ((double) player.getOffHandStack().getMaxDamage()) < 0.1;
+                                    damaged = stack.isOf(FLASHLIGHT) && ((double) stack.getDamage()) / ((double) stack.getMaxDamage()) > 0.9
+                                            || player.getMainHandStack().isOf(FLASHLIGHT) && ((double) player.getMainHandStack().getDamage()) / ((double) player.getMainHandStack().getMaxDamage()) > 0.9
+                                            || player.getOffHandStack().isOf(FLASHLIGHT) && ((double) player.getOffHandStack().getDamage()) / ((double) player.getOffHandStack().getMaxDamage()) > 0.9;
                                 } else if (stack.isOf(TALISMAN) || player.getMainHandStack().isOf(TALISMAN) || player.getOffHandStack().isOf(TALISMAN)) {
                                     how_to_defend = 2;
                                     exhausted = stack.isOf(TALISMAN) && stack.getDamage() == stack.getMaxDamage() - 1
                                             || player.getMainHandStack().isOf(TALISMAN) && player.getMainHandStack().getDamage() == player.getMainHandStack().getMaxDamage() - 1
                                             || player.getOffHandStack().isOf(TALISMAN) && player.getOffHandStack().getDamage() == player.getOffHandStack().getMaxDamage() - 1;
-                                    if (!exhausted) damaged = stack.isOf(TALISMAN) && ((double) stack.getDamage()) / ((double) stack.getMaxDamage()) < 0.1
-                                            || player.getMainHandStack().isOf(TALISMAN) && ((double) player.getMainHandStack().getDamage()) / ((double) player.getMainHandStack().getMaxDamage()) < 0.1
-                                            || player.getOffHandStack().isOf(TALISMAN) && ((double) player.getOffHandStack().getDamage()) / ((double) player.getOffHandStack().getMaxDamage()) < 0.1;
+                                    if (!exhausted) damaged = stack.isOf(TALISMAN) && ((double) stack.getDamage()) / ((double) stack.getMaxDamage()) > 0.9
+                                            || player.getMainHandStack().isOf(TALISMAN) && ((double) player.getMainHandStack().getDamage()) / ((double) player.getMainHandStack().getMaxDamage()) > 0.9
+                                            || player.getOffHandStack().isOf(TALISMAN) && ((double) player.getOffHandStack().getDamage()) / ((double) player.getOffHandStack().getMaxDamage()) > 0.9;
                                     else  damaged = false;
                                 } else {
                                     how_to_defend = 0;
