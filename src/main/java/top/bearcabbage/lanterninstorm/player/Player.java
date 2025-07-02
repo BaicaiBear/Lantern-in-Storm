@@ -25,6 +25,8 @@ import top.bearcabbage.annoyingeffects.network.AnnoyingBarStagePayload;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
+import top.bearcabbage.lanterninstorm.lantern.LanternTimeManager;
+import net.minecraft.util.math.GlobalPos;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -72,6 +74,7 @@ public class Player {
     }
 
     public void onTick() {
+        if (player.isSpectator() || player.isCreative()) return;
         boolean check = ++LSTick % TICK_INTERVAL == 0;
         if (check) {
             if (safeWorlds.contains(player.getServerWorld().getRegistryKey())) {
@@ -103,24 +106,28 @@ public class Player {
                 chunk.forEachBlockMatchingPredicate(
                         blockState -> blockState.getBlock() instanceof SpiritLanternBlock && blockState.get(STARTUP),
                         (blockPos, blockState) -> {
+                            GlobalPos gpos = GlobalPos.create(player.getWorld().getRegistryKey(), blockPos);
                             if (!player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")
                                     ? MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS)
                                     : MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), blockState.get(RADIUS))) {
                                 safety = true;
-                            }
-                            if (player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")) {
-                                int remain_time = blockState.get(REMAIN_TIME_IN_SECOND) - TICK_INTERVAL / 20;
-                                if (remain_time < 0) {
-                                    blockState.with(REMAIN_TIME_IN_SECOND, 0);
-                                    blockState.with(STARTUP, false);
-                                    player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
-                                            Text.literal("这盏彩灯已经熄灭，再也无法抵御噩梦的侵蚀" )));
-                                } else {
-                                    blockState.with(REMAIN_TIME_IN_SECOND, remain_time);
-                                    player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
-                                            Text.literal("这盏彩灯的剩余时间：" + remain_time / 60 + "分" + (remain_time % 60) + "秒")));
+                                if (player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")) {
+                                    Integer remain_time = LanternTimeManager.getTime(gpos);
+                                    if (remain_time == null) remain_time = 0;
+                                    remain_time -= TICK_INTERVAL / 20;
+                                    if (remain_time < 0) {
+                                        LanternTimeManager.removeLantern(gpos);
+                                        blockState.with(STARTUP, false);
+                                        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                                                Text.literal("这盏彩灯已经熄灭，再也无法抵御噩梦的侵蚀" )));
+                                    } else {
+                                        LanternTimeManager.setTime(gpos, remain_time);
+                                        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                                                Text.literal("这盏彩灯的剩余时间：" + remain_time / 60 + "分" + (remain_time % 60) + "秒")));
+                                    }
                                 }
                             }
+
                         }
                 );
                 if (safety) break;
@@ -197,7 +204,7 @@ public class Player {
             if (slot.getId().contains("offhand/glove")) {
                 // 手电在饰品位
                 if (stack.isOf(FLASHLIGHT)) {
-                    if ((!inStarrySkies) && stack.getDamage()==stack.getMaxDamage()-1) {
+                    if ((!inStarrySkies) && stack.getDamage()>=stack.getMaxDamage()-consumeSpeed) {
                         this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
                         cleared = false;
                     }
@@ -234,7 +241,7 @@ public class Player {
                 }
                 // 护符在饰品位
                 else if (stack.isOf(TALISMAN)) {
-                    if(stack.getDamage()<=stack.getMaxDamage()-consumeSpeed) {
+                    if(stack.getDamage()>=stack.getMaxDamage()-consumeSpeed) {
                         stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
                         if (player.getInventory().contains((itemStack) -> itemStack.isOf(TALISMAN))) {
                             for (int i=PlayerInventory.MAIN_SIZE-1;i>0;i--) {
@@ -254,7 +261,7 @@ public class Player {
                     // 手电在手上
                     if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
                         ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
-                        if (flashlight.getDamage()<=flashlight.getMaxDamage()-consumeSpeed) {
+                        if ((!inStarrySkies) && flashlight.getDamage()>=flashlight.getMaxDamage()-consumeSpeed) {
                             this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
                             cleared = false;
                         }

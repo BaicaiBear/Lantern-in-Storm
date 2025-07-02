@@ -21,10 +21,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import top.bearcabbage.lanterninstorm.player.LiSPlayer;
-import top.bearcabbage.lanterninstorm.player.Player;
+import top.bearcabbage.lanterninstorm.LanternInStorm;
+import top.bearcabbage.lanterninstorm.LanternInStormItems;
+import net.minecraft.util.math.GlobalPos;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,17 +43,21 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
     public static final DirectionProperty FACING;
     public static final IntProperty RADIUS;
     public static final IntProperty REMAIN_TIME_IN_SECOND;
+    protected static final VoxelShape HANGING_SPIRIT_LANTERN_SHAPE;
+    protected static final VoxelShape STANDING_SPIRIT_LANTERN_SHAPE;
 
     public static final int TimePerItem = 20 * 60;
 
     public SpiritLanternBlock(Settings settings, int radius) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, radius).with(REMAIN_TIME_IN_SECOND, 0));
+        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, radius));
+        LanternInStorm.LOGGER.info("SpiritLanternBlock initialized with radius: " + radius);
     }
 
     public SpiritLanternBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, 0).with(REMAIN_TIME_IN_SECOND, 0));
+        this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, 0));
+        LanternInStorm.LOGGER.info("SpiritLanternBlock initialized with default radius: 0");
     }
 
     @Override
@@ -72,28 +81,50 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         }
+        GlobalPos gpos = GlobalPos.create(world.getRegistryKey(), pos);
         if (!world.getRegistryKey().getValue().getNamespace().equals("starry_skies")) {
             state = state.cycle(STARTUP);
             world.setBlockState(pos, state, 3);
+            if (state.get(STARTUP)) {
+                LanternTimeManager.addLantern(gpos, 0); // 0 means infinite or not tracked
+            } else {
+                LanternTimeManager.removeLantern(gpos);
+            }
             ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
             ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+state.get(RADIUS)+"的立方体稳定下来了").withColor(0xBBBBBB)));
             return ActionResult.SUCCESS;
         } else {
-            if (!player.getMainHandStack().isOf(Registries.ITEM.get(Identifier.of("numismatic-overhaul","silver_coin")))) {
+            if (state.get(RADIUS)==0) {
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("这种彩灯抵御不住球球世界的噩梦侵蚀")));
+                return ActionResult.FAIL;
+            }
+            else if (!state.get(STARTUP) && !player.getMainHandStack().isOf(Registries.ITEM.get(Identifier.of("numismatic-overhaul","silver_coin")))) {
                 ((ServerPlayerEntity)player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("在可怕的世界里你需要花费银币才可以点亮彩灯")));
                 return ActionResult.SUCCESS;
-            } else {
+            }
+            else if (state.get(STARTUP) && player.getMainHandStack().isEmpty()) {
+                LanternTimeManager.removeLantern(gpos);
+                state.cycle(STARTUP);
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("这盏彩灯被关掉了")));
+                return ActionResult.SUCCESS;
+            }
+            else if (state.get(STARTUP) && !(player.getMainHandStack().isEmpty() || player.getMainHandStack().isOf(Registries.ITEM.get(Identifier.of("numismatic-overhaul","silver_coin"))))) {
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("继续加入银币可以增加彩灯时间，空手右键会关掉彩灯（但不会返还银币）")));
+                return ActionResult.SUCCESS;
+            }
+            else {
                 player.getMainHandStack().setCount(player.getMainHandStack().getCount() - 1);
-                state.with(REMAIN_TIME_IN_SECOND, state.get(REMAIN_TIME_IN_SECOND) + TimePerItem);
+                int current = LanternTimeManager.getTime(gpos) == null ? 0 : LanternTimeManager.getTime(gpos);
+                int newTime = current + TimePerItem;
+                LanternTimeManager.setTime(gpos, newTime);
                 if (!state.get(STARTUP)) {
-                    state.cycle(STARTUP);
+                    state = state.cycle(STARTUP);
+                    world.setBlockState(pos, state, 3);
                     ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
                 } else ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("彩灯的时间增加了！").withColor(0x06BDFC)));
-                world.setBlockState(pos, state, 3);
                 ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+state.get(RADIUS)+"的立方体稳定下来了").withColor(0xBBBBBB)));
                 return ActionResult.SUCCESS;
             }
-
         }
     }
 
@@ -102,11 +133,27 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
         builder.add(HANGING, WATERLOGGED, STARTUP, FACING, RADIUS);
     }
 
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        super.onStateReplaced(state, world, pos, newState, moved);
+        if (!world.isClient && state.getBlock() != newState.getBlock()) {
+            GlobalPos gpos = GlobalPos.create(world.getRegistryKey(), pos);
+            LanternTimeManager.removeLantern(gpos);
+        }
+    }
+
+    @Override
+    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return (Boolean)state.get(HANGING) ? HANGING_SPIRIT_LANTERN_SHAPE : STANDING_SPIRIT_LANTERN_SHAPE;
+    }
+
     static {
         STARTUP = BooleanProperty.of("startup");
         FACING = HorizontalFacingBlock.FACING;
         RADIUS = IntProperty.of("radius",0,16);
-        REMAIN_TIME_IN_SECOND = IntProperty.of("time",0,30*24*60*60);
+        REMAIN_TIME_IN_SECOND = null; // No longer used
+        HANGING_SPIRIT_LANTERN_SHAPE = VoxelShapes.union(Block.createCuboidShape(3.0, 2.0, 3.0, 13.0, 12.0, 13.0));
+        STANDING_SPIRIT_LANTERN_SHAPE = VoxelShapes.union(Block.createCuboidShape(3.0, 3.0, 3.0, 13.0, 13.0, 13.0));
     }
 
 }

@@ -34,18 +34,18 @@ public class BorderParticle {
             double velocityY = 0;
             double velocityZ = 0;*/
             double[][] points = getPoints(centerX, centerY, centerZ, amplitude, radius);
-            drawLine(world, points[0], points[1],velocityX,velocityY,velocityZ);
-            drawLine(world, points[1], points[2],velocityX,velocityY,velocityZ);
-            drawLine(world, points[2], points[3],velocityX,velocityY,velocityZ);
-            drawLine(world, points[3], points[0],velocityX,velocityY,velocityZ);
-            drawLine(world, points[4], points[5],velocityX,velocityY,velocityZ);
-            drawLine(world, points[5], points[6],velocityX,velocityY,velocityZ);
-            drawLine(world, points[6], points[7],velocityX,velocityY,velocityZ);
-            drawLine(world, points[7], points[4],velocityX,velocityY,velocityZ);
-            drawLine(world, points[0], points[4],velocityX,velocityY,velocityZ);
-            drawLine(world, points[1], points[5],velocityX,velocityY,velocityZ);
-            drawLine(world, points[2], points[6],velocityX,velocityY,velocityZ);
-            drawLine(world, points[3], points[7],velocityX,velocityY,velocityZ);
+            drawLine(world, points[0], points[1],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[1], points[2],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[2], points[3],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[3], points[0],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS );
+            drawLine(world, points[4], points[5],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[5], points[6],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[6], points[7],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[7], points[4],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[0], points[4],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[1], points[5],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[2], points[6],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
+            drawLine(world, points[3], points[7],velocityX,velocityY,velocityZ, (double) radius / LanternInStorm.LANTERN_RADIUS);
         }
 
         private static double[][] getPoints(double centerX, double centerY, double centerZ, double amplitude, int radius) {
@@ -71,8 +71,9 @@ public class BorderParticle {
             };
         }
 
-        private static void drawLine(World world, double[] start, double[] end,double velocityX ,double velocityY ,double velocityZ) {
-            double steps = 8; // 控制线条的分辨率
+        private static void drawLine(World world, double[] start, double[] end,double velocityX ,double velocityY ,double velocityZ, double stepAmp) {
+            if (stepAmp==0) stepAmp = 1;
+            double steps = 8 * stepAmp; // 控制线条的分辨率
             for (int i = 0; i <= steps; i++) {
                 double t = i / steps;
                 double x = start[0] + (end[0] - start[0]) * t;
