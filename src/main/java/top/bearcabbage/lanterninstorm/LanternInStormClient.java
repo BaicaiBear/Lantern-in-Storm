@@ -34,6 +34,8 @@ import static top.bearcabbage.lanterninstorm.lantern.BeginningLanternEntity.*;
 public class LanternInStormClient implements ClientModInitializer {
 
     public static int how_to_defend = 0;
+    public static boolean damaged = false;
+    public static boolean exhausted = false;
     public static int client_tick = 0;
 
     @Override
@@ -81,8 +83,18 @@ public class LanternInStormClient implements ClientModInitializer {
                                 // 手电在饰品位
                                 if (stack.isOf(FLASHLIGHT) || player.getMainHandStack().isOf(FLASHLIGHT) || player.getOffHandStack().isOf(FLASHLIGHT)) {
                                     how_to_defend = 1;
+                                    damaged = stack.isOf(FLASHLIGHT) && ((double) stack.getDamage()) / ((double) stack.getMaxDamage()) < 0.1
+                                            || player.getMainHandStack().isOf(FLASHLIGHT) && ((double) player.getMainHandStack().getDamage()) / ((double) player.getMainHandStack().getMaxDamage()) < 0.1
+                                            || player.getOffHandStack().isOf(FLASHLIGHT) && ((double) player.getOffHandStack().getDamage()) / ((double) player.getOffHandStack().getMaxDamage()) < 0.1;
                                 } else if (stack.isOf(TALISMAN) || player.getMainHandStack().isOf(TALISMAN) || player.getOffHandStack().isOf(TALISMAN)) {
                                     how_to_defend = 2;
+                                    exhausted = stack.isOf(TALISMAN) && stack.getDamage() == stack.getMaxDamage() - 1
+                                            || player.getMainHandStack().isOf(TALISMAN) && player.getMainHandStack().getDamage() == player.getMainHandStack().getMaxDamage() - 1
+                                            || player.getOffHandStack().isOf(TALISMAN) && player.getOffHandStack().getDamage() == player.getOffHandStack().getMaxDamage() - 1;
+                                    if (!exhausted) damaged = stack.isOf(TALISMAN) && ((double) stack.getDamage()) / ((double) stack.getMaxDamage()) < 0.1
+                                            || player.getMainHandStack().isOf(TALISMAN) && ((double) player.getMainHandStack().getDamage()) / ((double) player.getMainHandStack().getMaxDamage()) < 0.1
+                                            || player.getOffHandStack().isOf(TALISMAN) && ((double) player.getOffHandStack().getDamage()) / ((double) player.getOffHandStack().getMaxDamage()) < 0.1;
+                                    else  damaged = false;
                                 } else {
                                     how_to_defend = 0;
                                 }
@@ -92,15 +104,17 @@ public class LanternInStormClient implements ClientModInitializer {
                 });
 
         HudRenderCallback.EVENT.register((context, renderTickCounter) -> {
+            if (MinecraftClient.getInstance().options.hudHidden) return;
             int textureWidth = 36; // Width of the texture
             int margin = 10; // Margin from the edge of the window
             int x = context.getScaledWindowWidth() - textureWidth - margin; // Calculate x for the right side
             int y = context.getScaledWindowHeight() - 46; // Keep y the same for the bottom
-
+            if (damaged && client_tick % 20 < 10) return;
             if (how_to_defend == 1) {
                 context.drawTexture(Identifier.of(MOD_ID, "textures/item/flashlight.png"), x, y, 0, 0, textureWidth, textureWidth, textureWidth, textureWidth);
             } else if (how_to_defend == 2) {
-                context.drawTexture(Identifier.of(MOD_ID, "textures/item/talisman.png"), x, y, 0, 0, textureWidth, textureWidth, textureWidth, textureWidth);
+                if (!exhausted) context.drawTexture(Identifier.of(MOD_ID, "textures/item/talisman.png"), x, y, 0, 0, textureWidth, textureWidth, textureWidth, textureWidth);
+                else context.drawTexture(Identifier.of(MOD_ID, "textures/item/talisman_exhausted.png"), x, y, 0, 0, textureWidth, textureWidth, textureWidth, textureWidth);
             }
         });
         EntityRendererRegistry.INSTANCE.register(BEGINNING_LANTERN, BeginningLanternRenderer::new);
