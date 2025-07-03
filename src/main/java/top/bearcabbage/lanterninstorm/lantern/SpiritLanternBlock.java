@@ -147,6 +147,7 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
         return (Boolean)state.get(HANGING) ? HANGING_SPIRIT_LANTERN_SHAPE : STANDING_SPIRIT_LANTERN_SHAPE;
     }
 
+
     static {
         STARTUP = BooleanProperty.of("startup");
         FACING = HorizontalFacingBlock.FACING;
