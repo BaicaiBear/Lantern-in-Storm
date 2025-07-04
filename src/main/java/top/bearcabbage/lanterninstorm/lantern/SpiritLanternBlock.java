@@ -46,18 +46,16 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
     protected static final VoxelShape HANGING_SPIRIT_LANTERN_SHAPE;
     protected static final VoxelShape STANDING_SPIRIT_LANTERN_SHAPE;
 
-    public static final int TimePerItem = 20 * 60;
+    public static final int TimePerItem = 5 * 60;
 
     public SpiritLanternBlock(Settings settings, int radius) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, radius));
-        LanternInStorm.LOGGER.info("SpiritLanternBlock initialized with radius: " + radius);
     }
 
     public SpiritLanternBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(STARTUP, false).with(RADIUS, 0));
-        LanternInStorm.LOGGER.info("SpiritLanternBlock initialized with default radius: 0");
     }
 
     @Override
@@ -91,7 +89,7 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
                 LanternTimeManager.removeLantern(gpos);
             }
             ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
-            ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+state.get(RADIUS)+"的立方体稳定下来了").withColor(0xBBBBBB)));
+            ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+(state.get(RADIUS)==0?16:state.get(RADIUS))+"的立方体稳定下来了").withColor(0xBBBBBB)));
             return ActionResult.SUCCESS;
         } else {
             if (state.get(RADIUS)==0) {
