@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "startup=false": {"model": "mythicmetals:promethium_block"},
-    "startup=true": {"model": "lantern-in-storm:block/cubic_glass_lantern_startup"}
-  }
-}

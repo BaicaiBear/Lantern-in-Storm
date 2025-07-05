@@ -1,31 +1,12 @@
 package top.bearcabbage.lanterninstorm;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import dev.emi.trinkets.api.*;
 import dev.emi.trinkets.api.event.TrinketDropCallback;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
-import top.bearcabbage.lanterninstorm.player.LiSPlayer;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
 import static top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlocks.*;
@@ -61,10 +42,10 @@ public class LanternInStormItems {
     public static final Item HELLBARK_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"hellbark_wooden_lantern"), new BlockItem(HELLBARK_WOODEN_LANTERN, new Item.Settings()));
     public static final Item EMPYREAL_WOODEN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"empyreal_wooden_lantern"), new BlockItem(EMPYREAL_WOODEN_LANTERN, new Item.Settings()));
     // 神话金属灯
-    public static final Item MIDAS_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"midas_lantern"), new BlockItem(MIDAS_LANTERN, new Item.Settings()));
+    public static final Item MIDAS_GOLD_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"midas_gold_lantern"), new BlockItem(MIDAS_GOLD_LANTERN, new Item.Settings()));
     public static final Item MORKITE_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"morkite_lantern"), new BlockItem(MORKITE_LANTERN, new Item.Settings()));
     public static final Item STARRITE_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"starrite_lantern"), new BlockItem(STARRITE_LANTERN, new Item.Settings()));
-    public static final Item PROMETHIUM_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"promethium_lantern"), new BlockItem(PROMETHIUM_LANTERN, new Item.Settings()));
+    public static final Item PROMETHEUM_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"prometheum_lantern"), new BlockItem(PROMETHEUM_LANTERN, new Item.Settings()));
 
     // 限量版彩灯
     public static final Item SNOWMAN_LANTERN_ITEM = (Item)Registry.register(Registries.ITEM, Identifier.of(MOD_ID,"snowman_lantern"), new BlockItem(SNOWMAN_LANTERN, new Item.Settings()));

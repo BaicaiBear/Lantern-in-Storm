@@ -1,6 +1,1 @@
-{
-  "variants": {
-    "startup=false": {"model": "mythicmetals:starrite_block"},
-    "startup=true": {"model": "lantern-in-storm:block/cubic_glass_lantern_startup"}
-  }
-}
+{"variants": {"hanging=false,startup=false": {"model": "lantern-in-storm:block/starrite_lantern"}, "hanging=true,startup=false": {"model": "lantern-in-storm:block/starrite_lantern_hanging"}, "hanging=false,startup=true": {"model": "lantern-in-storm:block/starrite_lantern_startup"}, "hanging=true,startup=true": {"model": "lantern-in-storm:block/starrite_lantern_hanging_startup"}}}

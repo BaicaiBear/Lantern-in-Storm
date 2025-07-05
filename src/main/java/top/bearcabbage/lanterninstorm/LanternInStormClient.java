@@ -3,27 +3,18 @@ package top.bearcabbage.lanterninstorm;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.EndRodParticle;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import top.bearcabbage.lanterninstorm.lantern.BeginningLanternRenderer;
 import top.bearcabbage.lanterninstorm.lantern.WarpBeginningLanternRenderer;
 import top.bearcabbage.lanterninstorm.lantern.BorderParticle;
-import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
 
 import static top.bearcabbage.lanterninstorm.LanternInStorm.MOD_ID;
 import static top.bearcabbage.lanterninstorm.LanternInStormItems.FLASHLIGHT;
@@ -69,10 +60,10 @@ public class LanternInStormClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(HELLBARK_WOODEN_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(EMPYREAL_WOODEN_LANTERN, RenderLayer.getTranslucent());
         // 神话金属灯
-        BlockRenderLayerMap.INSTANCE.putBlock(MIDAS_LANTERN, RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(MIDAS_GOLD_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(MORKITE_LANTERN, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(STARRITE_LANTERN, RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(PROMETHIUM_LANTERN, RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(PROMETHEUM_LANTERN, RenderLayer.getTranslucent());
 
         // 限量彩灯
         BlockRenderLayerMap.INSTANCE.putBlock(SNOWMAN_LANTERN, RenderLayer.getTranslucent());

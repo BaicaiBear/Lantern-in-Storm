@@ -26,6 +26,16 @@
     "lantern-in-storm:magic_wooden_lantern",
     "lantern-in-storm:umbran_wooden_lantern",
     "lantern-in-storm:hellbark_wooden_lantern",
-    "lantern-in-storm:empyreal_wooden_lantern"
+    "lantern-in-storm:empyreal_wooden_lantern",
+
+    "lantern-in-storm:midas_gold_lantern",
+    "lantern-in-storm:morkite_lantern",
+    "lantern-in-storm:starrite_lantern",
+    "lantern-in-storm:promethium_lantern",
+
+    "lantern-in-storm:snowman_lantern",
+    "lantern-in-storm:snake_newyear_lantern",
+    "lantern-in-storm:kongming_lantern_2025",
+    "lantern-in-storm:deathbear_lantern"
   ]
 }
