@@ -62,6 +62,7 @@ public class Player {
         if(data == null){
             data = new NbtCompound();
             data.putIntArray("rtpspawn", new int[]{-1});
+            PlayerDataApi.setCustomDataFor(player, LanternInStorm.LSData, data);
             invincibleSec = INVINCIBLE_SECONDS;
         }
         int[] posVec = data.getIntArray("rtpspawn");
