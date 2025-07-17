@@ -85,11 +85,12 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
             world.setBlockState(pos, state, 3);
             if (state.get(STARTUP)) {
                 LanternTimeManager.addLantern(gpos, 0); // 0 means infinite or not tracked
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+(state.get(RADIUS)==0?16:state.get(RADIUS))+"的立方体稳定下来了").withColor(0xBBBBBB)));
             } else {
                 LanternTimeManager.removeLantern(gpos);
+                ((ServerPlayerEntity)player).networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.of("这盏彩灯被关掉了")));
             }
-            ((ServerPlayerEntity)player).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("又点亮了一盏彩灯！").withColor(0xFCA106)));
-            ((ServerPlayerEntity)player).networkHandler.sendPacket(new SubtitleS2CPacket(Text.literal("附近半径"+(state.get(RADIUS)==0?16:state.get(RADIUS))+"的立方体稳定下来了").withColor(0xBBBBBB)));
             return ActionResult.SUCCESS;
         } else {
             if (state.get(RADIUS)==0) {
