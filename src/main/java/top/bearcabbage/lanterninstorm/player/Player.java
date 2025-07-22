@@ -16,10 +16,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 import top.bearcabbage.annoyingeffects.network.AnnoyingBarDisplayPayload;
 import top.bearcabbage.annoyingeffects.network.AnnoyingBarStagePayload;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
@@ -92,16 +95,19 @@ public class Player {
                 return;
             }
             // if player near a lantern
-            Chunk playerChunk = player.getServerWorld().getChunk(player.getBlockPos());
-            List<Chunk> chunkCheckList = List.of(playerChunk,
-                    player.getWorld().getChunk(player.getBlockPos().add(16, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, 16)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-16, 0, 0)),
-                    player.getWorld().getChunk(player.getBlockPos().add(0, 0, -16)),
-                    player.getWorld().getChunk(player.getBlockPos().add(16, 0, 16)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-16, 0, 16)),
-                    player.getWorld().getChunk(player.getBlockPos().add(16, 0, -16)),
-                    player.getWorld().getChunk(player.getBlockPos().add(-16, 0, -16)));
+            List<Chunk> chunkCheckList = new ArrayList<>();
+            ServerWorld world = player.getServerWorld();
+            BlockPos playerPos = player.getBlockPos();
+            int[] offsets = {-16, 0, 16};
+            for (int dx : offsets) {
+                for (int dz : offsets) {
+                    BlockPos offsetPos = playerPos.add(dx, 0, dz);
+                    int chunkX = ChunkSectionPos.getSectionCoord(offsetPos.getX());
+                    int chunkZ = ChunkSectionPos.getSectionCoord(offsetPos.getZ());
+                    Chunk chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+                    if (chunk != null) chunkCheckList.add(chunk);
+                }
+            }
             for (Chunk chunk : chunkCheckList) {
                 safety = false;
                 chunk.forEachBlockMatchingPredicate(
