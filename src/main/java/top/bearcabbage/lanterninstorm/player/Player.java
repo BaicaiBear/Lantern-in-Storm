@@ -28,7 +28,6 @@ import top.bearcabbage.annoyingeffects.network.AnnoyingBarStagePayload;
 import top.bearcabbage.lanterninstorm.LanternInStorm;
 import top.bearcabbage.annoyingeffects.AnnoyingEffects;
 import top.bearcabbage.lanterninstorm.lantern.SpiritLanternBlock;
-import top.bearcabbage.lanterninstorm.lantern.LanternTimeManager;
 import net.minecraft.util.math.GlobalPos;
 
 import java.io.FileReader;
@@ -114,25 +113,10 @@ public class Player {
                         blockState -> blockState.getBlock() instanceof SpiritLanternBlock && blockState.get(STARTUP),
                         (blockPos, blockState) -> {
                             GlobalPos gpos = GlobalPos.create(player.getWorld().getRegistryKey(), blockPos);
-                            if (!player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")
+                            if (player.getWorld().getRegistryKey().getValue().getNamespace().equals("minecraft")
                                     ? MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), LANTERN_RADIUS)
                                     : MathHelper.withinCubicOfRadius(player.getPos(), blockPos.toCenterPos(), blockState.get(RADIUS))) {
                                 safety = true;
-                                if (player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies")) {
-                                    Integer remain_time = LanternTimeManager.getTime(gpos);
-                                    if (remain_time == null) remain_time = 0;
-                                    remain_time -= TICK_INTERVAL / 20;
-                                    if (remain_time < 0) {
-                                        LanternTimeManager.removeLantern(gpos);
-                                        blockState.with(STARTUP, false);
-                                        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
-                                                Text.literal("这盏彩灯已经熄灭，再也无法抵御噩梦的侵蚀" )));
-                                    } else {
-                                        LanternTimeManager.setTime(gpos, remain_time);
-                                        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
-                                                Text.literal("这盏彩灯的剩余时间：" + remain_time / 60 + "分" + (remain_time % 60) + "秒")));
-                                    }
-                                }
                             }
 
                         }
@@ -201,120 +185,102 @@ public class Player {
     }
 
     public void onUnstableTick() {
-        if (this.player.isSpectator() || this.player.isCreative()) return;
+        if (player.isSpectator() || player.isCreative()) return;
+
         ServerPlayNetworking.send(player, new AnnoyingBarDisplayPayload(true));
-//        if (safetyPrev) player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("噩梦正试图将你吞噬…").withColor(0xEF6F48)));
-        boolean inStarrySkies = player.getWorld().getRegistryKey().getValue().getNamespace().equals("starry_skies");
-        int consumeSpeed = inStarrySkies ? 2 : 1;
-        // First check flashlight
+        int consumeSpeed = 1;
+        boolean inDreamWorld = player.getWorld().getRegistryKey().getValue().getNamespace().equals("minecraft");
+
+        // 遍历饰品位
         TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> trinkets.forEach((slot, stack) -> {
             if (slot.getId().contains("offhand/glove")) {
-                // 手电在饰品位
-                if (stack.isOf(FLASHLIGHT)) {
-                    if ((!inStarrySkies) && stack.getDamage()>=stack.getMaxDamage()-consumeSpeed) {
-                        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
-                        cleared = false;
-                    }
-                    else {
-                        if (!cleared) {
-                            cleared = true;
-                            List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
-                            if (!inStarrySkies) player.getStatusEffects().forEach((effect) -> {
-                                if (!effect.getEffectType().value().isBeneficial()) {
-                                    harmfulEffects.add(effect);
-                                }
-                            });
-                            else {
-                                player.getStatusEffects().forEach((effect) -> {
-                                    if (effect.getEffectType().equals(AnnoyingEffects.TANGLING_NIGHTMARE)
-                                            || effect.getEffectType().equals(AnnoyingEffects.TANGLING_DREAMS)) {
-                                        harmfulEffects.add(effect);
-                                    }
-                                });
-                                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
-                                        Text.literal("这个世界噩梦的侵蚀太严重了，琪露诺只能帮你不再产生新的诅咒了").withColor(0x55FFFF)));
-                            }
-                            if (!harmfulEffects.isEmpty()) {
-                                harmfulEffects.forEach((effect) -> {
-                                    if(stack.getDamage()<stack.getMaxDamage()-3) {
-                                        stack.damage(2, player.getServerWorld(), player, item -> {});
-                                        player.removeStatusEffect(effect.getEffectType());
-                                    } else cleared = false;
-                                });
-                            }
-                        }
-                        stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});;
-                    }
-                }
-                // 护符在饰品位
-                else if (stack.isOf(TALISMAN)) {
-                    if(stack.getDamage()>=stack.getMaxDamage()-consumeSpeed) {
-                        stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
-                        if (player.getInventory().contains((itemStack) -> itemStack.isOf(TALISMAN))) {
-                            for (int i=PlayerInventory.MAIN_SIZE-1;i>0;i--) {
-                                ItemStack flashlight = player.getInventory().getStack(i);
-                                if (flashlight.isOf(TALISMAN)) {
-                                    TrinketItem.equipItem(player, flashlight);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
-                    this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
-                    cleared = false;
-                }
-                else {
-                    // 手电在手上
-                    if (player.getMainHandStack().isOf(FLASHLIGHT)||player.getOffHandStack().isOf(FLASHLIGHT)) {
-                        ItemStack flashlight = player.getMainHandStack().isOf(FLASHLIGHT) ? player.getMainHandStack() : player.getOffHandStack();
-                        if ((!inStarrySkies) && flashlight.getDamage()>=flashlight.getMaxDamage()-consumeSpeed) {
-                            this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
-                            cleared = false;
-                        }
-                        else {
-                            if (!cleared) {
-                                cleared = true;
-                                List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
-                                if (!inStarrySkies) player.getStatusEffects().forEach((effect) -> {
-                                    if (!effect.getEffectType().value().isBeneficial()) {
-                                        harmfulEffects.add(effect);
-                                    }
-                                });
-                                else {
-                                    player.getStatusEffects().forEach((effect) -> {
-                                        if (effect.getEffectType().equals(AnnoyingEffects.TANGLING_NIGHTMARE)
-                                                || effect.getEffectType().equals(AnnoyingEffects.TANGLING_DREAMS)) {
-                                            harmfulEffects.add(effect);
-                                        }
-                                    });
-                                    player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
-                                            Text.literal("这个世界噩梦的侵蚀太严重了，琪露诺只能帮你不再产生新的诅咒了").withColor(0x55FFFF)));
-                                }
-                                if (!harmfulEffects.isEmpty()) {
-                                    harmfulEffects.forEach((effect) -> {
-                                        if(flashlight.getDamage()<flashlight.getMaxDamage()-3) {
-                                            flashlight.damage(2, player.getServerWorld(), player, item -> {});
-                                            player.removeStatusEffect(effect.getEffectType());
-                                        } else cleared = false;
-                                    });
-                                }
-                            }
-                            flashlight.damage(consumeSpeed, player.getServerWorld(), player, item -> {});;
-                        }
-                    }
-                    // 护符在手上
-                    else if (player.getMainHandStack().isOf(TALISMAN)||player.getOffHandStack().isOf(TALISMAN)) {
-                        ItemStack talisman = player.getMainHandStack().isOf(TALISMAN) ? player.getMainHandStack() : player.getOffHandStack();
-                        talisman.damage(1, player.getServerWorld(), player, item -> {});
-                        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
-                    } else {
-                        this.player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_NIGHTMARE, 200));
-                    }
-                    cleared = false;
-                }
+                handleItemEffect(stack, consumeSpeed, inDreamWorld);
             }
         }));
+
+        // 手上未放饰品的情况
+        boolean hasFlashlightOrTalisman = player.getMainHandStack().isOf(FLASHLIGHT) || player.getOffHandStack().isOf(FLASHLIGHT)
+                || player.getMainHandStack().isOf(TALISMAN) || player.getOffHandStack().isOf(TALISMAN);
+
+        if (!hasFlashlightOrTalisman) {
+            RegistryEntry<StatusEffect> effect = inDreamWorld ? AnnoyingEffects.TANGLING_DREAMS : AnnoyingEffects.TANGLING_NIGHTMARE;
+            player.addStatusEffect(new StatusEffectInstance(effect, 200));
+            cleared = false;
+        } else {
+            // 检查手持物
+            ItemStack handItem = player.getMainHandStack().isOf(FLASHLIGHT) || player.getMainHandStack().isOf(TALISMAN)
+                    ? player.getMainHandStack() : player.getOffHandStack();
+            handleItemEffect(handItem, consumeSpeed, inDreamWorld);
+        }
+    }
+
+    // 统一处理 FLASHLIGHT / TALISMAN 的逻辑
+    private void handleItemEffect(ItemStack stack, int consumeSpeed, boolean inDreamWorld) {
+        if (!cleared) {
+            cleared = true;
+            clearHarmfulEffects(stack, inDreamWorld);
+        }
+
+        if (stack.isOf(FLASHLIGHT)) {
+            if (!inDreamWorld) {
+                // 普通世界手电耐久处理
+                if (stack.getDamage() >= stack.getMaxDamage() - consumeSpeed) {
+                    player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+                    cleared = false;
+                } else {
+                    stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
+                }
+            }
+            // 梦境世界手电不掉耐久，也不施加负面效果，只清理
+        } else if (stack.isOf(TALISMAN)) {
+            // TALISMAN 始终消耗耐久
+            stack.damage(consumeSpeed, player.getServerWorld(), player, item -> {});
+            if (!inDreamWorld) {
+                // 普通世界施加负面效果
+                player.addStatusEffect(new StatusEffectInstance(AnnoyingEffects.TANGLING_DREAMS, 200));
+                cleared = false;
+                if (stack.getDamage() >= stack.getMaxDamage() - consumeSpeed) {
+                    equipNextTalismanIfAvailable();
+                }
+            }
+            // 梦境世界不施加负面效果
+        }
+    }
+
+    // 清理负面效果逻辑
+    private void clearHarmfulEffects(ItemStack stack, boolean inDreamWorld) {
+        List<StatusEffectInstance> harmfulEffects = new ArrayList<>();
+        player.getStatusEffects().forEach(effect -> {
+            if (!effect.getEffectType().value().isBeneficial()) {
+                harmfulEffects.add(effect);
+            }
+        });
+
+        if (!harmfulEffects.isEmpty()) {
+            for (StatusEffectInstance effect : harmfulEffects) {
+                boolean preventDurabilityLoss = inDreamWorld && stack.isOf(FLASHLIGHT);
+                if (!preventDurabilityLoss && stack.getDamage() < stack.getMaxDamage() - 3) {
+                    stack.damage(2, player.getServerWorld(), player, item -> {});
+                } else if (!preventDurabilityLoss) {
+                    cleared = false;
+                }
+                // 始终移除负面效果
+                player.removeStatusEffect(effect.getEffectType());
+            }
+        }
+    }
+
+    // 自动装备下一个护符（如果存在）
+    private void equipNextTalismanIfAvailable() {
+        if (player.getInventory().contains(itemStack -> itemStack.isOf(TALISMAN))) {
+            for (int i = PlayerInventory.MAIN_SIZE - 1; i > 0; i--) {
+                ItemStack talisman = player.getInventory().getStack(i);
+                if (talisman.isOf(TALISMAN)) {
+                    TrinketItem.equipItem(player, talisman);
+                    break;
+                }
+            }
+        }
     }
 
     public void onDeath() {
