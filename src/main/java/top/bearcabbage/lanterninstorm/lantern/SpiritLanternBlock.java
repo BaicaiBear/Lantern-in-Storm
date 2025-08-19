@@ -74,7 +74,7 @@ public class SpiritLanternBlock extends LanternBlock implements Waterloggable {
             ((ServerPlayerEntity) player).networkHandler.sendPacket(
                     new OverlayMessageS2CPacket(Text.of("这种彩灯抵御不住球球世界的噩梦侵蚀"))
             );
-            return ActionResult.FAIL;
+            return ActionResult.SUCCESS;
         }
 
         // 切换彩灯状态
